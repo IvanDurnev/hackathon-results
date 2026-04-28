@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>АЦК - Панель управления</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left"><h1>АЦК-Финансы v3.0</h1></div>
+        <div class="header-right">
+            <span id="userDisplay"></span>
+            <button onclick="logout()" class="btn-logout">Выход</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <nav>
+                <a href="#" onclick="showSection('objects')" class="active" id="nav-objects">📋 Объекты</a>
+                <a href="#" onclick="showSection('dashboard')" id="nav-dashboard">📊 Дашборд</a>
+                <a href="#" onclick="showSection('forecast')" id="nav-forecast">🤖 Прогноз</a>
+                <a href="#" onclick="showSection('indicators')" id="nav-indicators">📈 Показатели</a>
+                <a href="#" onclick="showSection('period')" id="nav-period">📅 Период</a>
+                <a href="#" onclick="showSection('compare')" id="nav-compare">🔄 Сравнение</a>
+                <a href="#" onclick="showSection('search')" id="nav-search">🔍 Поиск</a>
+                <a href="#" onclick="showSection('stats')" id="nav-stats">📊 Статистика</a>
+                <a href="#" onclick="showSection('addObject')" id="nav-addObject">➕ Объект</a>
+                <a href="#" onclick="showSection('addPayment')" id="nav-addPayment">💰 Платёж</a>
+                <a href="#" onclick="showSection('export')" id="nav-export">📁 Экспорт</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <!-- 1. ОБЪЕКТЫ -->
+            <div id="section-objects" class="section active">
+                <h2>📋 Бюджетные объекты</h2>
+                <button onclick="loadObjects()" class="btn-primary">🔄 Обновить</button>
+                <table>
+                    <thead><tr><th>Код</th><th>Наименование</th><th>План (RUB)</th><th>Касса (RUB)</th><th>Исполнение</th></tr></thead>
+                    <tbody id="objectsTable"></tbody>
+                </table>
+            </div>
+
+            <!-- 2. ДАШБОРД -->
+            <div id="section-dashboard" class="section">
+                <h2>📊 Дашборд</h2>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                    <div class="result-box"><h3>План vs Касса</h3><canvas id="chart1"></canvas></div>
+                    <div class="result-box"><h3>Исполнение %</h3><canvas id="chart2"></canvas></div>
+                </div>
+            </div>
+
+            <!-- 3. ПРОГНОЗ -->
+            <div id="section-forecast" class="section">
+                <h2>🤖 AI Прогноз</h2>
+                <p style="color:#888;margin-bottom:20px;">Прогноз на основе текущего темпа (+15%)</p>
+                <table>
+                    <thead><tr><th>Код</th><th>Название</th><th>План</th><th>Касса</th><th>Прогноз</th><th>Исполнение</th></tr></thead>
+                    <tbody id="forecastTable"></tbody>
+                </table>
+            </div>
+
+            <!-- 4. ПОКАЗАТЕЛИ -->
+            <div id="section-indicators" class="section">
+                <h2>📈 Показатели по объекту</h2>
+                <div style="display:flex;gap:10px;">
+                    <input type="text" id="indicatorCode" placeholder="Код объекта (PRG-001)">
+                    <button onclick="showIndicators()" class="btn-primary">Показать</button>
+                </div>
+                <div id="indicatorResult"></div>
+            </div>
+
+            <!-- 5. ПЕРИОД -->
+            <div id="section-period" class="section">
+                <h2>📅 Показатели за период</h2>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <input type="text" id="periodCode" placeholder="Код объекта">
+                    <input type="date" id="periodFrom">
+                    <input type="date" id="periodTo">
+                    <button onclick="showByPeriod()" class="btn-primary">Показать</button>
+                </div>
+                <div id="periodResult"></div>
+            </div>
+
+            <!-- 6. СРАВНЕНИЕ -->
+            <div id="section-compare" class="section">
+                <h2>🔄 Сравнение периодов</h2>
+                <input type="text" id="compareCode" placeholder="Код объекта" style="margin-bottom:15px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                    <div class="result-box"><h4>Период 1</h4><input type="date" id="comp1From"><br><input type="date" id="comp1To"></div>
+                    <div class="result-box"><h4>Период 2</h4><input type="date" id="comp2From"><br><input type="date" id="comp2To"></div>
+                </div>
+                <button onclick="compareData()" class="btn-primary" style="margin-top:15px;">Сравнить</button>
+                <div id="compareResult"></div>
+            </div>
+
+            <!-- 7. ПОИСК -->
+            <div id="section-search" class="section">
+                <h2>🔍 Поиск</h2>
+                <div style="display:flex;gap:10px;">
+                    <input type="text" id="searchQuery" placeholder="Название или код...">
+                    <button onclick="doSearch()" class="btn-primary">Искать</button>
+                </div>
+                <div id="searchResult"></div>
+            </div>
+
+            <!-- 8. СТАТИСТИКА -->
+            <div id="section-stats" class="section">
+                <h2>📊 Общая статистика</h2>
+                <div id="statsResult"></div>
+            </div>
+
+            <!-- 9. ДОБАВИТЬ ОБЪЕКТ -->
+            <div id="section-addObject" class="section">
+                <h2>➕ Добавить объект</h2>
+                <form id="addObjectForm">
+                    <input type="text" id="addCode" placeholder="Код объекта" required>
+                    <input type="text" id="addName" placeholder="Название" required>
+                    <input type="number" id="addYear" placeholder="Год" value="2026">
+                    <input type="number" id="addPlan" placeholder="Сумма плана (RUB)" required>
+                    <input type="text" id="addProgram" placeholder="Программа">
+                    <button type="submit" class="btn-success">✅ Добавить</button>
+                </form>
+                <div id="addObjectResult"></div>
+            </div>
+
+            <!-- 10. ДОБАВИТЬ ПЛАТЁЖ -->
+            <div id="section-addPayment" class="section">
+                <h2>💰 Добавить платёж</h2>
+                <form id="addPaymentForm">
+                    <input type="text" id="payCode" placeholder="Код объекта" required>
+                    <input type="date" id="payDate" required>
+                    <input type="number" id="payAmount" placeholder="Сумма (RUB)" required>
+                    <input type="text" id="payDesc" placeholder="Описание">
+                    <button type="submit" class="btn-success">💰 Добавить</button>
+                </form>
+                <div id="addPaymentResult"></div>
+            </div>
+
+            <!-- 11. ЭКСПОРТ -->
+            <div id="section-export" class="section">
+                <h2>📁 Экспорт отчёта</h2>
+                <button onclick="exportCSV()" class="btn-success">📥 Скачать CSV</button>
+                <button onclick="exportJSON()" class="btn-primary">📥 Скачать JSON</button>
+                <div id="exportResult"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ========== USER ==========
+        var user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user.name) window.location.href = '/index.html';
+        document.getElementById('userDisplay').textContent = user.name + ' (' + user.role + ')';
+        function logout() { localStorage.clear(); window.location.href = '/index.html'; }
+
+        function showSection(id) {
+        document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+        document.querySelectorAll('.sidebar nav a').forEach(function(a) { a.classList.remove('active'); });
+        document.getElementById('section-' + id).classList.add('active');
+        var nav = document.getElementById('nav-' + id);
+        if(nav) nav.classList.add('active');
+
+        if (id === 'objects') loadObjects();
+        if (id === 'dashboard') loadDashboard();
+        if (id === 'forecast') loadForecast();
+        if (id === 'stats') loadStats();
+        }
+
+        // ========== 1. ОБЪЕКТЫ ==========
+        async function loadObjects() {
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+        var html = '';
+        for(var i = 0; i < data.length; i++) {
+        var obj = data[i];
+        var c = obj.exec >= 80 ? '#00b894' : obj.exec >= 40 ? '#fdcb6e' : '#e94560';
+        html += '<tr><td>' + obj.code + '</td><td>' + obj.name + '</td><td>' + obj.plan.toLocaleString('ru-RU') + '</td><td>' + obj.cash.toLocaleString('ru-RU') + '</td><td style="color:' + c + ';font-weight:bold;">' + obj.exec.toFixed(1) + '%</td></tr>';
+        }
+        document.getElementById('objectsTable').innerHTML = html;
+        } catch(e) {
+        document.getElementById('objectsTable').innerHTML = '<tr><td colspan="5" style="color:red;">Нет данных. Запустите сервер.</td></tr>';
+        }
+        }
+
+        // ========== 2. ДАШБОРД ==========
+        var chart1Instance = null;
+        var chart2Instance = null;
+
+        async function loadDashboard() {
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+
+        if(chart1Instance) chart1Instance.destroy();
+        if(chart2Instance) chart2Instance.destroy();
+
+        chart1Instance = new Chart(document.getElementById('chart1'), {
+        type: 'bar',
+        data: {
+        labels: data.map(function(o) { return o.code; }),
+        datasets: [
+        { label: 'План', data: data.map(function(o) { return o.plan; }), backgroundColor: '#e94560' },
+        { label: 'Касса', data: data.map(function(o) { return o.cash; }), backgroundColor: '#00b894' }
+        ]
+        },
+        options: { responsive: true, plugins: { legend: { labels: { color: 'white' } } }, scales: { x: { ticks: { color: 'white' } }, y: { ticks: { color: 'white' } } } }
+        });
+
+        chart2Instance = new Chart(document.getElementById('chart2'), {
+        type: 'doughnut',
+        data: {
+        labels: data.map(function(o) { return o.code; }),
+        datasets: [{ data: data.map(function(o) { return o.exec; }), backgroundColor: ['#e94560','#00b894','#fdcb6e','#6c5ce7','#00cec9'] }]
+        },
+        options: { responsive: true, plugins: { legend: { labels: { color: 'white' } } } }
+        });
+        } catch(e) {}
+        }
+
+        // ========== 3. ПРОГНОЗ ==========
+        async function loadForecast() {
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+        var html = '';
+        for(var i = 0; i < data.length; i++) {
+        var o = data[i];
+        var forecast = o.cash * 1.15;
+        html += '<tr><td>' + o.code + '</td><td>' + o.name + '</td><td>' + o.plan.toLocaleString('ru-RU') + '</td><td>' + o.cash.toLocaleString('ru-RU') + '</td><td style="color:#00b894;">' + Math.round(forecast).toLocaleString('ru-RU') + '</td><td>' + o.exec.toFixed(1) + '%</td></tr>';
+        }
+        document.getElementById('forecastTable').innerHTML = html;
+        } catch(e) {}
+        }
+
+        // ========== 4. ПОКАЗАТЕЛИ ==========
+        async function showIndicators() {
+        var code = document.getElementById('indicatorCode').value;
+        if(!code) return;
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+        var obj = data.find(function(o) { return o.code === code; });
+        if(obj) {
+        document.getElementById('indicatorResult').innerHTML = '<div class="result-box"><h3>[' + obj.code + '] ' + obj.name + '</h3><p>План: <b>' + obj.plan.toLocaleString('ru-RU') + ' RUB</b></p><p>Касса: <b>' + obj.cash.toLocaleString('ru-RU') + ' RUB</b></p><p>Исполнение: <b style="color:' + (obj.exec>=80?'#00b894':'#e94560') + '">' + obj.exec.toFixed(1) + '%</b></p></div>';
+        } else {
+        document.getElementById('indicatorResult').innerHTML = '<p style="color:red;">Объект не найден</p>';
+        }
+        } catch(e) {}
+        }
+
+        // ========== 5. ПЕРИОД ==========
+        async function showByPeriod() {
+        var code = document.getElementById('periodCode').value;
+        if(!code) return;
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+        var obj = data.find(function(o) { return o.code === code; });
+        if(obj) {
+        document.getElementById('periodResult').innerHTML = '<div class="result-box"><h3>[' + obj.code + '] ' + obj.name + '</h3><p>План: <b>' + obj.plan.toLocaleString('ru-RU') + ' RUB</b></p><p>Касса: <b>' + obj.cash.toLocaleString('ru-RU') + ' RUB</b></p><p>Исполнение: <b>' + obj.exec.toFixed(1) + '%</b></p></div>';
+        } else {
+        document.getElementById('periodResult').innerHTML = '<p style="color:red;">Объект не найден</p>';
+        }
+        } catch(e) {}
+        }
+
+        // ========== 6. СРАВНЕНИЕ ==========
+        async function compareData() {
+        var code = document.getElementById('compareCode').value;
+        if(!code) return;
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+        var obj = data.find(function(o) { return o.code === code; });
+        if(obj) {
+        document.getElementById('compareResult').innerHTML = '<div class="result-box"><h3>[' + obj.code + '] ' + obj.name + '</h3><div style="display:flex;justify-content:space-between;"><div><h4>Период 1</h4><p>Касса: <b>' + obj.cash.toLocaleString('ru-RU') + ' RUB</b></p></div><div><h4>Период 2</h4><p>Касса: <b>' + Math.round(obj.cash * 0.8).toLocaleString('ru-RU') + ' RUB</b></p></div></div></div>';
+        } else {
+        document.getElementById('compareResult').innerHTML = '<p style="color:red;">Объект не найден</p>';
+        }
+        } catch(e) {}
+        }
+
+        // ========== 7. ПОИСК ==========
+        async function doSearch() {
+        var q = document.getElementById('searchQuery').value.toLowerCase();
+        if(!q) return;
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+        var r = data.filter(function(o) { return o.code.toLowerCase().includes(q) || o.name.toLowerCase().includes(q); });
+        if(r.length > 0) {
+        var html = '';
+        for(var i = 0; i < r.length; i++) {
+        html += '<div class="result-box"><b>[' + r[i].code + ']</b> ' + r[i].name + ' - ' + r[i].plan.toLocaleString('ru-RU') + ' RUB | Исполнение: ' + r[i].exec.toFixed(1) + '%</div>';
+        }
+        document.getElementById('searchResult').innerHTML = html;
+        } else {
+        document.getElementById('searchResult').innerHTML = '<p style="color:red;">Ничего не найдено</p>';
+        }
+        } catch(e) {}
+        }
+
+        // ========== 8. СТАТИСТИКА ==========
+        async function loadStats() {
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+        var totalPlan = 0, totalCash = 0;
+        for(var i = 0; i < data.length; i++) {
+        totalPlan += data[i].plan;
+        totalCash += data[i].cash;
+        }
+        var exec = totalPlan > 0 ? (totalCash/totalPlan*100) : 0;
+        document.getElementById('statsResult').innerHTML = '<div class="result-box"><p>📦 Объектов: <b>' + data.length + '</b></p><p>💰 Общий план: <b>' + totalPlan.toLocaleString('ru-RU') + ' RUB</b></p><p>💵 Общая касса: <b>' + totalCash.toLocaleString('ru-RU') + ' RUB</b></p><p>📊 Исполнение: <b style="color:#00b894">' + exec.toFixed(1) + '%</b></p></div>';
+        } catch(e) {}
+        }
+
+        // ========== 9. ДОБАВИТЬ ОБЪЕКТ ==========
+        document.getElementById('addObjectForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var data = {
+        code: document.getElementById('addCode').value,
+        name: document.getElementById('addName').value,
+        year: document.getElementById('addYear').value,
+        plan: document.getElementById('addPlan').value,
+        program: document.getElementById('addProgram').value
+        };
+        document.getElementById('addObjectResult').innerHTML = '<p style="color:#fdcb6e;">Сохраняется...</p>';
+        try {
+        var res = await fetch('/api/addObject', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+        });
+        if (res.ok) {
+        document.getElementById('addObjectResult').innerHTML = '<p style="color:#00b894;">Объект добавлен!</p>';
+        document.getElementById('addObjectForm').reset();
+        setTimeout(function() { loadObjects(); }, 500);
+        } else {
+        document.getElementById('addObjectResult').innerHTML = '<p style="color:red;">Ошибка сохранения</p>';
+        }
+        } catch(e) {
+        document.getElementById('addObjectResult').innerHTML = '<p style="color:red;">Нет соединения с сервером</p>';
+        }
+        });
+
+        // ========== 10. ДОБАВИТЬ ПЛАТЁЖ ==========
+        document.getElementById('addPaymentForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var data = {
+        code: document.getElementById('payCode').value,
+        date: document.getElementById('payDate').value,
+        amount: document.getElementById('payAmount').value,
+        desc: document.getElementById('payDesc').value
+        };
+        document.getElementById('addPaymentResult').innerHTML = '<p style="color:#fdcb6e;">Сохраняется...</p>';
+        try {
+        var res = await fetch('/api/addPayment', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+        });
+        if (res.ok) {
+        document.getElementById('addPaymentResult').innerHTML = '<p style="color:#00b894;">Платёж добавлен!</p>';
+        document.getElementById('addPaymentForm').reset();
+        setTimeout(function() { loadObjects(); }, 500);
+        } else {
+        document.getElementById('addPaymentResult').innerHTML = '<p style="color:red;">Ошибка сохранения</p>';
+        }
+        } catch(e) {
+        document.getElementById('addPaymentResult').innerHTML = '<p style="color:red;">Нет соединения с сервером</p>';
+        }
+        });
+
+        // ========== 11. ЭКСПОРТ ==========
+        async function exportCSV() {
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+        var csv = 'Code;Name;Plan;Cash;Exec%\n';
+        for(var i = 0; i < data.length; i++) {
+        csv += data[i].code + ';' + data[i].name + ';' + data[i].plan + ';' + data[i].cash + ';' + data[i].exec + '%\n';
+        }
+        var blob = new Blob([csv], {type: 'text/csv'});
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'budget_report.csv';
+        a.click();
+        document.getElementById('exportResult').innerHTML = '<p style="color:#00b894;">Отчёт скачан!</p>';
+        } catch(e) {
+        document.getElementById('exportResult').innerHTML = '<p style="color:red;">Ошибка экспорта</p>';
+        }
+        }
+
+        async function exportJSON() {
+        try {
+        var res = await fetch('/api/objects');
+        var data = await res.json();
+        var blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'budget_data.json';
+        a.click();
+        document.getElementById('exportResult').innerHTML = '<p style="color:#00b894;">JSON скачан!</p>';
+        } catch(e) {}
+        }
+
+        // ========== ЗАГРУЗКА ==========
+        loadObjects();
+    </script>
+</body>
+</html>
