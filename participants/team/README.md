@@ -1,7 +1,7 @@
-# Поколение чудес
+# Спартак
 
-- Repository: https://github.com/lLAYT0Nl/Our_decision-pokolenie-chudes-
+- Repository: https://github.com/Xaze-debug/Xakaton
 - Video: n/a
 - Description: n/a
-- Updated at: 2026-04-28T19:10:50+00:00
+- Updated at: 2026-04-28T19:11:00+00:00
 - Repository accessible: yes
