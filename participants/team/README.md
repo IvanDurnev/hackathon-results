@@ -1,7 +1,7 @@
-# ДНК
+# КПН
 
-- Repository: https://github.com/Picjavard/amurcode-hackathon-team-DNK
+- Repository: https://github.com/ArtemChik103/amurcode
 - Video: n/a
 - Description: n/a
-- Updated at: 2026-04-28T13:14:48+00:00
+- Updated at: 2026-04-28T13:15:05+00:00
 - Repository accessible: yes
