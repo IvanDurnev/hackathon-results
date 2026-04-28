@@ -1,0 +1,54 @@
+// Colors
+$primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$primary: #667eea;
+$primary-dark: #5a67d8;
+$secondary: #764ba2;
+$success: #48bb78;
+$danger: #e53e3e;
+$warning: #ed8936;
+$dark: #2d3748;
+$gray: #4a5568;
+$light-gray: #a0aec0;
+$lighter-gray: #e2e8f0;
+$bg-light: #f7fafc;
+$white: #ffffff;
+$black: #1a202c;
+
+// Spacing
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 4rem;
+
+// Border Radius
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 20px;
+$radius-xl: 30px;
+$radius-full: 50%;
+
+// Shadows
+$shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 5px 20px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+
+// Breakpoints
+$breakpoint-mobile: 640px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-wide: 1280px;
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.5s ease;
+
+// Z-index
+$z-dropdown: 1000;
+$z-modal: 1100;
+$z-loader: 1200;
+$z-toast: 1300;

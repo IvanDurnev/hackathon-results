@@ -1,0 +1,187 @@
+@import '../styles/variables';
+@import '../styles/mixins';
+
+.form {
+  @include card;
+}
+
+.section {
+  margin-bottom: $spacing-lg;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-weight: 600;
+  color: $dark;
+  margin-bottom: $spacing-sm;
+}
+
+.labelIcon {
+  color: $primary;
+}
+
+.textarea {
+  width: 100%;
+  padding: $spacing-md;
+  border: 2px solid $lighter-gray;
+  border-radius: $radius-md;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: all $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+}
+
+.dropzone {
+  border: 2px dashed $light-gray;
+  border-radius: $radius-md;
+  padding: $spacing-xl;
+  text-align: center;
+  cursor: pointer;
+  transition: all $transition-normal;
+  background: $bg-light;
+
+  &.active {
+    border-color: $primary;
+    background: rgba(102, 126, 234, 0.05);
+  }
+
+  &.hasFile {
+    border-color: $success;
+    background: rgba(72, 187, 120, 0.05);
+  }
+}
+
+.dropzoneContent {
+  @include flex-column;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.uploadIcon {
+  font-size: 2rem;
+  color: $light-gray;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: $light-gray;
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  justify-content: center;
+}
+
+.removeFile {
+  background: none;
+  border: none;
+  color: $danger;
+  cursor: pointer;
+  padding: $spacing-xs;
+  font-size: 1rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 5px;
+  background: $lighter-gray;
+  outline: none;
+  -webkit-appearance: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: $radius-full;
+    background: $primary;
+    cursor: pointer;
+  }
+}
+
+.sliderValue {
+  text-align: center;
+  margin-top: $spacing-sm;
+  font-weight: 600;
+  color: $primary;
+}
+
+.reactSelect {
+  width: 100%;
+}
+
+.selectOption {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.optionIcon {
+  font-size: 1.25rem;
+}
+
+.optionLabel {
+  font-weight: 500;
+}
+
+.optionDescription {
+  font-size: 0.75rem;
+  color: $light-gray;
+}
+
+.checkboxGroup {
+  margin-bottom: $spacing-lg;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+
+  input {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+}
+
+.submitButton {
+  width: 100%;
+  @include button-primary;
+  font-size: 1.1rem;
+  padding: $spacing-md;
+}
+
+.buttonLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+}
+
+.buttonSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid $white;
+  border-top-color: transparent;
+  border-radius: $radius-full;
+  animation: spin 0.6s linear infinite;
+}

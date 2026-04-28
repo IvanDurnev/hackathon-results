@@ -1,0 +1,124 @@
+@import '../styles/variables';
+@import '../styles/mixins';
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  @include flex-center;
+  z-index: $z-modal;
+  padding: $spacing-md;
+}
+
+.modal {
+  background: $white;
+  border-radius: $radius-lg;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideIn $transition-normal;
+}
+
+.header {
+  @include flex-between;
+  padding: $spacing-lg;
+  border-bottom: 1px solid $lighter-gray;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: $light-gray;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $danger;
+  }
+}
+
+.content {
+  padding: $spacing-lg;
+}
+
+.field {
+  margin-bottom: $spacing-lg;
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: $spacing-sm;
+    color: $gray;
+  }
+}
+
+.input, .textarea {
+  width: 100%;
+  padding: $spacing-sm;
+  border: 1px solid $lighter-gray;
+  border-radius: $radius-sm;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: all $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  border-top: 1px solid $lighter-gray;
+  flex-wrap: wrap;
+}
+
+.cancelButton {
+  background: $lighter-gray;
+  color: $gray;
+  padding: $spacing-sm $spacing-lg;
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: darken($lighter-gray, 10%);
+  }
+}
+
+.saveButton {
+  background: $primary;
+  color: $white;
+  padding: $spacing-sm $spacing-lg;
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $primary-dark;
+    transform: translateY(-1px);
+  }
+}

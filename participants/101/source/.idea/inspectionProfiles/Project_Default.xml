@@ -1,0 +1,44 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="aiofiles" />
+          <option value="aiogram" />
+          <option value="aiohappyeyeballs" />
+          <option value="aiohttp" />
+          <option value="aiosignal" />
+          <option value="alembic" />
+          <option value="annotated-types" />
+          <option value="asyncpg" />
+          <option value="attrs" />
+          <option value="certifi" />
+          <option value="frozenlist" />
+          <option value="greenlet" />
+          <option value="idna" />
+          <option value="magic-filter" />
+          <option value="Mako" />
+          <option value="MarkupSafe" />
+          <option value="multidict" />
+          <option value="propcache" />
+          <option value="pydantic" />
+          <option value="pydantic_core" />
+          <option value="python-dotenv" />
+          <option value="SQLAlchemy" />
+          <option value="typing-inspection" />
+          <option value="typing_extensions" />
+          <option value="yarl" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N803" />
+          <option value="N806" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

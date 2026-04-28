@@ -1,0 +1,55 @@
+@import './variables';
+@import './mixins';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: $primary-gradient;
+  min-height: 100vh;
+  color: $dark;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+// Scrollbar styles
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $lighter-gray;
+  border-radius: $radius-full;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary;
+  border-radius: $radius-full;
+
+  &:hover {
+    background: $primary-dark;
+  }
+}
+
+// Loading animation
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, $lighter-gray 25%, $bg-light 50%, $lighter-gray 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}

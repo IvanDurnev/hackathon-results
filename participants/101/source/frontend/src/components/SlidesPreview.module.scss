@@ -1,0 +1,207 @@
+@import '../styles/variables';
+@import '../styles/mixins';
+
+.preview {
+  @include card;
+  animation: slideIn $transition-normal;
+}
+
+.header {
+  @include flex-between;
+  margin-bottom: $spacing-xl;
+  padding-bottom: $spacing-md;
+  border-bottom: 2px solid $lighter-gray;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.editButton {
+  background: $lighter-gray;
+  color: $gray;
+  padding: $spacing-sm $spacing-lg;
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: darken($lighter-gray, 10%);
+  }
+}
+
+.downloadButton {
+  background: $primary-gradient;
+  color: $white;
+  padding: $spacing-sm $spacing-lg;
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: $shadow-sm;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.carousel {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  @include tablet {
+    flex-direction: column;
+  }
+}
+
+.navButton {
+  background: $lighter-gray;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: $radius-full;
+  @include flex-center;
+  cursor: pointer;
+  transition: all $transition-fast;
+  font-size: 1.25rem;
+
+  &:hover:not(:disabled) {
+    background: $primary;
+    color: $white;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  @include tablet {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.viewer {
+  flex: 1;
+}
+
+.slide {
+  background: $white;
+  border: 1px solid $lighter-gray;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  min-height: 400px;
+  box-shadow: $shadow-md;
+
+  @include mobile {
+    padding: $spacing-md;
+  }
+}
+
+.slideNumber {
+  font-size: 0.85rem;
+  color: $light-gray;
+  margin-bottom: $spacing-md;
+}
+
+.slideTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $dark;
+  margin-bottom: $spacing-lg;
+
+  @include desktop {
+    font-size: 2rem;
+  }
+}
+
+.slideContent {
+  margin-bottom: $spacing-lg;
+}
+
+.bullet {
+  padding: $spacing-sm 0;
+  color: $gray;
+  line-height: 1.6;
+}
+
+.slideImage {
+  margin-top: $spacing-md;
+
+  img {
+    max-width: 100%;
+    border-radius: $radius-sm;
+  }
+}
+
+.imagePlaceholder {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background: $bg-light;
+  border-radius: $radius-sm;
+  color: $light-gray;
+  margin-top: $spacing-md;
+}
+
+.thumbnails {
+  display: flex;
+  gap: $spacing-md;
+  overflow-x: auto;
+  padding: $spacing-md 0;
+}
+
+.thumbnail {
+  flex-shrink: 0;
+  width: 150px;
+  padding: $spacing-sm;
+  background: $bg-light;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: all $transition-fast;
+  border: 2px solid transparent;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-sm;
+  }
+
+  &.active {
+    border-color: $primary;
+    background: rgba(102, 126, 234, 0.1);
+  }
+}
+
+.thumbnailNumber {
+  font-weight: 600;
+  color: $primary;
+  margin-bottom: $spacing-sm;
+}
+
+.thumbnailTitle {
+  font-size: 0.85rem;
+  color: $gray;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

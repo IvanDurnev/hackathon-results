@@ -1,0 +1,26 @@
+{
+  "name": "presentation-generator-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.6.0",
+    "react-dropzone": "^14.2.3",
+    "react-select": "^5.8.0",
+    "react-icons": "^4.12.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "sass": "^1.69.0",
+    "vite": "^4.4.0"
+  }
+}

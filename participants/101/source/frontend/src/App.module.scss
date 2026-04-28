@@ -1,0 +1,35 @@
+@import './styles/variables';
+@import './styles/mixins';
+
+.app {
+  min-height: 100vh;
+}
+
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-xl;
+
+  @include mobile {
+    padding: $spacing-md;
+  }
+}
+
+.errorToast {
+  position: fixed;
+  bottom: $spacing-xl;
+  right: $spacing-xl;
+  background: $danger;
+  color: $white;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $radius-sm;
+  box-shadow: $shadow-lg;
+  z-index: $z-toast;
+  animation: slideIn $transition-normal;
+
+  @include mobile {
+    left: $spacing-md;
+    right: $spacing-md;
+    bottom: $spacing-md;
+  }
+}
