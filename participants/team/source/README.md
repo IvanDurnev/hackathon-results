@@ -1,80 +1,82 @@
-<div align="center">
-  <img src="https://img.shields.io/badge/Hackathon-2026-FF6B6B?style=for-the-badge&logo=github&logoColor=white" alt="Hackathon">
-  <img src="https://img.shields.io/badge/Status-Coding-4ECDC4?style=for-the-badge" alt="Status">
-  <br>
-  <img src="https://img.shields.io/badge/Team-К.И.С.И.-1A535C?style=flat-square" alt="Team">
-  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/Rust-1.70+-000000?logo=rust&logoColor=white" alt="Rust">
-</div>
+# Простая аналитика расходов
 
-<br>
+Локальный MVP для кейса БФТ и Минфина Амурской области. Приложение запускается одной командой, читает CSV из `case/`, держит данные в памяти и отдаёт Vue 3 UI без Vite, npm, PostgreSQL и отдельного ETL-сервиса.
 
-<div align="center">
-  <!-- Здесь будет логотип или баннер проекта -->
-  <!-- Пример: <img src="assets/logo.png" width="200"> -->
-  <h1 align="center"> НАЗВАНИЕ ПРОЕКТА </h1>
-  <p align="center">
-    <strong> описание приложения тута крч краткое </strong>
-  </p>
-  <p align="center">
-    <i>Проект создан в рамках хакатона "Амурский код" — 28-29 Апреля </i>
-  </p>
-</div>
+## Запуск
 
----
+```powershell
+python app.py 8000
+```
 
-## 👥 Команда «К.И.С.И.»
+Открыть в браузере:
 
-| Участник | Роль | Контакты |
-| :--- | :--- | :--- |
-| **Руденко Тимур Иванович** | rust, qt, python dev / ui.ux desiner / mobile dev (kotlin) | [GitHub](https://github.com/Rexilone) • [Telegram](https://t.me/Rexilone) |
-| **Есипчук Никита Анатольевич** | web developer | [GitHub](https://github.com/) • [Telegram](https://t.me/DamnSonic) |
-| **Гончаров Андрей Александрович** | python developer | [GitHub](https://github.com/) • [Telegram](https://t.me/Beradl) |
-| **Беззуб Виолетта Андреевна** | team Lead | [github](https://github.com/) • [Telegram](https://t.me/frewqk) |
-| **Зотов Вадим Сергеевич** | presentation Designer | [GitHub](https://github.com/) • [Telegram](https://t.me/itsVAD) |
+```text
+http://127.0.0.1:8000
+```
 
----
+## Простой режим
 
-## 💡 О проекте
+Первый экран построен вокруг задач, а не фильтров. Пользователь может нажать быстрый сценарий, ввести код или название в единую строку, получить короткий вывод, посмотреть понятную таблицу со статусами и скачать таблицу.
 
-### Проблема 
+## Быстрый старт
 
-### Решение
-*Создание качественных презентаций рутинная и трудоёмкая задача, на которую сотрудники компаний тратят значительное время.
-Типичный процесс включает анализ исходных материалов, структурирование информации, написание текстов для слайдов, подбор визуального оформления и вёрстку. Каждый из этих этапов требует как содержательной работы, так и дизайнерских навыков.*
+Доступны готовые сценарии:
 
-### Ключевые фичи (MVP)
+- Показать СКК.
+- Показать КИК.
+- Показать 2/3.
+- Показать ОКВ.
+- Сравнить СКК.
+- Найти проблемы с исполнением.
 
-- [ ] **Фича 1** — Hybrid LLM Mode: автоматическое переключение на локальную модель при обрыве интернет-соединения.
-- [ ] **Фича 2** — 
+Все сценарии используют существующие `/api/query` и `/api/compare`.
 
----
+## Assistant
 
-## 🛠 Технологический стек
+Endpoint `POST /api/assistant` принимает обычный текст и возвращает intent, объяснение и действие для UI. Без `GROQ_API_KEY` assistant работает по правилам. Если ключ задан, он может использовать Groq как enhancer, но суммы всё равно считает только backend.
 
-**Основные технологии:**
+Опциональные переменные окружения:
 
-<code><img width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg" title="Rust"/></code> RUST
+```env
+GROQ_API_KEY=
+GROQ_MODEL=openai/gpt-oss-120b
+ASSISTANT_ENABLED=auto
+```
 
-<code><img width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" title="Python"/></code> Python
+В Groq не отправляются raw records. Используются только запрос пользователя, список шаблонов, список метрик, доступные даты и короткий RAG-контекст из `docs/rag`.
 
-<code><img width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" title="Docker"/></code> docker
+## API
 
-**Инструменты**: Git, Python, RUST
+- `GET /api/meta`
+- `GET /api/query?q=&code=&budget=&source=&start=&end=&template=&metrics=`
+- `GET /api/compare?base=&target=&q=&code=&budget=&source=&template=&metrics=`
+- `GET /api/quality`
+- `GET /api/trace?id=`
+- `GET /api/catalog/dates`
+- `GET /api/catalog/sources`
+- `GET /api/catalog/budgets`
+- `GET /api/catalog/templates`
+- `GET /api/catalog/metrics`
+- `GET /api/catalog/objects?q=&template=`
+- `GET /api/catalog/quick-actions`
+- `POST /api/assistant`
 
----
+## Тесты
 
-## ⚙️ Установка и запуск (локально)
+```powershell
+python -m unittest discover -s tests -v
+```
 
-> ℹ️ Инструкция для членов жюри и разработчиков.
+В набор входят backend-тесты, безбраузерные проверки Vue-логики через Node VM и Playwright-тесты реальных кликов в Chromium. Для новой машины:
 
-### Требования
-- **Rust** (1.70+) — [установить](https://www.rust-lang.org/tools/install)
-- **Python** (3.10+) — [установить](https://www.python.org/downloads/)
-- **Git**
-- **Docker** (опционально)
+```powershell
+python -m pip install playwright
+python -m playwright install chromium
+```
 
-### Шаг 1: Клонирование репозитория
-```bash
-git clone https://github.com/Rexilone/hackathon2026.git
-cd hackathon2026
+## Ограничения
+
+- Данные хранятся in-memory.
+- Суммы хранятся как `float`, не `Decimal`.
+- Trace показывает источник, файл и порядковую строку записи внутри источника; это не всегда физическая строка CSV.
+- Векторная база не используется. Мини-RAG реализован чтением markdown из `docs/rag`.
