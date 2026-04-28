@@ -1,0 +1,20 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "John Doe",email = "laga.ladislav@yandex.ru"}
+]
+requires-python = ">=3.14"
+dependencies = [
+]
+
+[dependency-groups]
+dev = [
+    "fastapi (>=0.136.1,<0.137.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

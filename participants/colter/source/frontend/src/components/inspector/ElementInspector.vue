@@ -1,35 +1,10 @@
 <template>
   <div>
     <div class="inspector-section">
-      <h4>Геометрия (EMU)</h4>
-      <div class="inspector-row">
-        <label>X</label>
-        <input type="number" :value="el.frame.xEmu" @input="(e) => updateFrame({ xEmu: +e.target.value })" />
-      </div>
-      <div class="inspector-row">
-        <label>Y</label>
-        <input type="number" :value="el.frame.yEmu" @input="(e) => updateFrame({ yEmu: +e.target.value })" />
-      </div>
-      <div class="inspector-row">
-        <label>Ширина</label>
-        <input type="number" :value="el.frame.wEmu" @input="(e) => updateFrame({ wEmu: +e.target.value })" />
-      </div>
-      <div class="inspector-row">
-        <label>Высота</label>
-        <input type="number" :value="el.frame.hEmu" @input="(e) => updateFrame({ hEmu: +e.target.value })" />
-      </div>
-      <div class="inspector-row">
-        <label>Поворот</label>
-        <input type="number" step="1" :value="el.frame.rotate || 0" @input="(e) => updateFrame({ rotate: +e.target.value })" />
-      </div>
-      <div class="inspector-row">
-        <label>z-index</label>
-        <input type="number" :value="el.zIndex" @input="(e) => updateProps({ zIndex: +e.target.value })" />
-      </div>
-    </div>
-
-    <div class="inspector-section">
-      <h4>Поведение</h4>
+      <h4>
+        <span>Элемент</span>
+        <span class="ac-pill" style="padding:2px 8px; font-size:10.5px;">{{ el.type }}</span>
+      </h4>
       <div class="inspector-row">
         <label>Роль</label>
         <select :value="el.role || 'custom'" @change="(e) => updateProps({ role: e.target.value })">
@@ -37,7 +12,7 @@
         </select>
       </div>
       <div class="inspector-row">
-        <label>Тип контента</label>
+        <label>Поведение</label>
         <select :value="el.contentBehavior?.kind || 'manual'" @change="(e) => updateBehavior({ kind: e.target.value })">
           <option value="static">static</option>
           <option value="placeholder">placeholder</option>
@@ -48,14 +23,34 @@
       <div class="inspector-row">
         <label>Readonly</label>
         <input type="checkbox" :checked="!!el.contentBehavior?.readonly" @change="(e) => updateBehavior({ readonly: e.target.checked })" />
-      </div>
-      <div class="inspector-row">
-        <label>Locked</label>
+        <label style="margin-left: 24px;">Locked</label>
         <input type="checkbox" :checked="!!el.locked" @change="(e) => updateProps({ locked: e.target.checked })" />
       </div>
       <div class="inspector-row">
         <label>Видим</label>
         <input type="checkbox" :checked="el.visible !== false" @change="(e) => updateProps({ visible: e.target.checked })" />
+      </div>
+    </div>
+
+    <div class="inspector-section">
+      <h4>Геометрия (EMU)</h4>
+      <div class="inspector-row">
+        <label>X</label>
+        <input type="number" :value="el.frame.xEmu" @input="(e) => updateFrameInput({ xEmu: e.target.value })" />
+        <label style="width:auto;">Y</label>
+        <input type="number" :value="el.frame.yEmu" @input="(e) => updateFrameInput({ yEmu: e.target.value })" />
+      </div>
+      <div class="inspector-row">
+        <label>Ширина</label>
+        <input type="number" :value="el.frame.wEmu" @input="(e) => updateSizeInput('w', e.target.value)" />
+        <label style="width:auto;">Высота</label>
+        <input type="number" :value="el.frame.hEmu" @input="(e) => updateSizeInput('h', e.target.value)" />
+      </div>
+      <div class="inspector-row">
+        <label>Поворот</label>
+        <input type="number" step="1" :value="el.frame.rotate || 0" @input="(e) => updateFrameInput({ rotate: e.target.value })" />
+        <label style="width:auto;">z-index</label>
+        <input type="number" :value="el.zIndex" @input="(e) => updateProps({ zIndex: +e.target.value })" />
       </div>
     </div>
 
@@ -75,44 +70,59 @@
       <h4>Стиль текста</h4>
       <div class="inspector-row">
         <label>Шрифт</label>
-        <input type="text" :value="el.style.fontFamily" @input="(e) => updateStyle({ fontFamily: e.target.value })" />
+        <select :value="el.style.fontFamily" @change="(e) => onFontChange(e.target.value)">
+          <optgroup label="Sans">
+            <option v-for="f in fontsByCategory('sans')" :key="f.name" :value="f.name">{{ f.name }}</option>
+          </optgroup>
+          <optgroup label="Serif">
+            <option v-for="f in fontsByCategory('serif')" :key="f.name" :value="f.name">{{ f.name }}</option>
+          </optgroup>
+          <optgroup label="Mono">
+            <option v-for="f in fontsByCategory('mono')" :key="f.name" :value="f.name">{{ f.name }}</option>
+          </optgroup>
+        </select>
       </div>
       <div class="inspector-row">
         <label>Размер</label>
         <input type="number" min="6" :value="el.style.fontSize" @input="(e) => updateStyle({ fontSize: +e.target.value })" />
+        <span class="num-suffix">pt</span>
       </div>
       <div class="inspector-row">
         <label>Толщина</label>
         <select :value="el.style.fontWeight || 400" @change="(e) => updateStyle({ fontWeight: +e.target.value })">
-          <option value="300">Light</option>
-          <option value="400">Regular</option>
-          <option value="500">Medium</option>
-          <option value="600">Semibold</option>
-          <option value="700">Bold</option>
-          <option value="800">Extra</option>
+          <option v-for="w in availableWeightOptions" :key="w" :value="w">{{ weightLabel(w) }}</option>
         </select>
       </div>
       <div class="inspector-row">
-        <label>Italic</label>
-        <input type="checkbox" :checked="!!el.style.italic" @change="(e) => updateStyle({ italic: e.target.checked })" />
-      </div>
-      <div class="inspector-row">
-        <label>Underline</label>
-        <input type="checkbox" :checked="!!el.style.underline" @change="(e) => updateStyle({ underline: e.target.checked })" />
+        <label>Стиль</label>
+        <div class="btn-group">
+          <button type="button" :class="{ active: !!el.style.italic }" @click="updateStyle({ italic: !el.style.italic })" title="Italic">
+            <em>I</em>
+          </button>
+          <button type="button" :class="{ active: !!el.style.underline }" @click="updateStyle({ underline: !el.style.underline })" title="Underline">
+            <u>U</u>
+          </button>
+        </div>
       </div>
       <div class="inspector-row">
         <label>Цвет</label>
-        <input type="color" :value="el.style.color || '#111111'" @input="(e) => updateStyle({ color: e.target.value.toUpperCase() })" />
-        <input type="text" :value="el.style.color || '#111111'" @input="(e) => updateStyle({ color: e.target.value })" style="max-width:100px;" />
+        <ColorChip :value="el.style.color || '#111111'" @change="(v) => updateStyle({ color: v })" />
       </div>
       <div class="inspector-row">
-        <label>Выравн.</label>
-        <select :value="el.style.align" @change="(e) => updateStyle({ align: e.target.value })">
-          <option value="left">left</option>
-          <option value="center">center</option>
-          <option value="right">right</option>
-          <option value="justify">justify</option>
-        </select>
+        <label>Гориз.</label>
+        <div class="btn-group">
+          <button type="button" v-for="opt in alignOpts" :key="opt.v" :class="{ active: (el.style.align || 'left') === opt.v }" @click="updateStyle({ align: opt.v })" :title="opt.title">
+            <AcIcon :name="opt.icon" :size="13" />
+          </button>
+        </div>
+      </div>
+      <div class="inspector-row">
+        <label>Верт.</label>
+        <div class="btn-group">
+          <button type="button" v-for="opt in valignOpts" :key="opt.v" :class="{ active: (el.style.valign || 'top') === opt.v }" @click="updateStyle({ valign: opt.v })" :title="opt.title">
+            <AcIcon :name="opt.icon" :size="13" />
+          </button>
+        </div>
       </div>
       <div class="inspector-row">
         <label>Line height</label>
@@ -133,12 +143,14 @@
       </div>
       <div class="inspector-row">
         <label>Заливка</label>
-        <input type="color" :value="el.style.fill || '#ffffff'" @input="(e) => updateStyle({ fill: e.target.value.toUpperCase() })" />
-        <input type="text" :value="el.style.fill || ''" @input="(e) => updateStyle({ fill: e.target.value })" style="max-width:100px;" />
+        <ColorChip :value="el.style.fill || '#ffffff'" @change="(v) => updateStyle({ fill: v })" />
       </div>
       <div class="inspector-row">
         <label>Контур</label>
-        <input type="color" :value="el.style.stroke || '#111111'" @input="(e) => updateStyle({ stroke: e.target.value.toUpperCase() })" />
+        <ColorChip :value="el.style.stroke || '#111111'" @change="(v) => updateStyle({ stroke: v })" />
+      </div>
+      <div class="inspector-row">
+        <label>Толщина</label>
         <input type="number" :value="el.style.strokeWidth || 0" @input="(e) => updateStyle({ strokeWidth: +e.target.value })" />
       </div>
       <div v-if="el.shape === 'roundRect'" class="inspector-row">
@@ -151,7 +163,7 @@
       <h4>Линия</h4>
       <div class="inspector-row">
         <label>Цвет</label>
-        <input type="color" :value="el.style.color || '#111111'" @input="(e) => updateStyle({ color: e.target.value.toUpperCase() })" />
+        <ColorChip :value="el.style.color || '#111111'" @change="(v) => updateStyle({ color: v })" />
       </div>
       <div class="inspector-row">
         <label>Ширина (EMU)</label>
@@ -185,6 +197,11 @@
         </select>
       </div>
       <div class="inspector-row">
+        <label>Пропорции</label>
+        <input type="checkbox" :checked="!!el.preserveAspect" @change="(e) => onPreserveAspect(e.target.checked)" />
+        <span style="font-size: 11.5px; color: var(--fg-3); margin-left: 8px;">сохранять при ресайзе</span>
+      </div>
+      <div class="inspector-row">
         <label>Загрузить</label>
         <input type="file" accept="image/*" @change="onUpload" />
       </div>
@@ -213,17 +230,35 @@
     </div>
 
     <div class="inspector-section">
-      <button class="tb-btn danger" style="width:100%;" @click="del">Удалить элемент</button>
+      <button class="tb-btn danger" style="width:100%; justify-content:center;" @click="del">
+        <AcIcon name="trash" :size="13" /> Удалить элемент
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import AcIcon from '../AcIcon.vue';
+import ColorChip from './ColorChip.vue';
 import { useDocumentStore } from '../../stores/document.js';
 import { api } from '../../api/client.js';
+import { FONT_FAMILIES, ensureFont, availableWeights } from '../../core/fonts.js';
+
+const WEIGHT_LABELS = {
+  100: 'Thin',
+  200: 'Extra Light',
+  300: 'Light',
+  400: 'Regular',
+  500: 'Medium',
+  600: 'Semibold',
+  700: 'Bold',
+  800: 'Extra Bold',
+  900: 'Black',
+};
 
 export default {
   name: 'ElementInspector',
+  components: { AcIcon, ColorChip },
   props: {
     element: { type: Object, required: true },
     slide: { type: Object, required: true },
@@ -234,6 +269,17 @@ export default {
         'title', 'subtitle', 'body', 'caption', 'bulletList',
         'image', 'logo', 'footer', 'slideNumber', 'decorative', 'custom',
       ],
+      alignOpts: [
+        { v: 'left', icon: 'alignLeft', title: 'Слева' },
+        { v: 'center', icon: 'alignCenter', title: 'По центру' },
+        { v: 'right', icon: 'alignRight', title: 'Справа' },
+        { v: 'justify', icon: 'alignJustify', title: 'По ширине' },
+      ],
+      valignOpts: [
+        { v: 'top', icon: 'alignTop', title: 'По верху' },
+        { v: 'middle', icon: 'alignMiddle', title: 'По центру' },
+        { v: 'bottom', icon: 'alignBottom', title: 'По низу' },
+      ],
     };
   },
   computed: {
@@ -242,8 +288,77 @@ export default {
     imageAssets() {
       return (this.docStore.doc?.assets || []).filter((a) => a.type === 'image');
     },
+    availableWeightOptions() {
+      const fam = this.el.style?.fontFamily;
+      const w = availableWeights(fam);
+      return w.length ? w : [400];
+    },
+  },
+  watch: {
+    'element.style.fontFamily': {
+      handler(f) { ensureFont(f); },
+      immediate: true,
+    },
   },
   methods: {
+    fontsByCategory(cat) { return FONT_FAMILIES.filter((f) => f.category === cat); },
+    weightLabel(w) { return `${WEIGHT_LABELS[w] || w} (${w})`; },
+    onFontChange(family) {
+      ensureFont(family);
+      const supported = availableWeights(family);
+      const current = this.el.style.fontWeight || 400;
+      const nextWeight = supported.includes(current)
+        ? current
+        : (supported.includes(400) ? 400 : supported[0]);
+      this.updateStyle({ fontFamily: family, fontWeight: nextWeight });
+    },
+    onPreserveAspect(v) {
+      this.updateProps({ preserveAspect: v });
+    },
+    numberFromInput(value) {
+      if (value === '' || value == null) return null;
+      const n = Number(value);
+      return Number.isFinite(n) ? n : null;
+    },
+    updateSizeInput(axis, value) {
+      const n = this.numberFromInput(value);
+      if (n == null) return;
+      const min = axis === 'w' ? 100000 : 50000;
+      this.updateSize(axis, Math.max(min, Math.round(n)));
+    },
+    updateFrameInput(patch) {
+      const next = {};
+      Object.entries(patch).forEach(([key, value]) => {
+        const n = this.numberFromInput(value);
+        if (n == null) return;
+        next[key] = key === 'rotate' ? n : Math.round(n);
+      });
+      if (Object.keys(next).length) this.updateFrame(next);
+    },
+    updateSize(axis, val) {
+      if (!Number.isFinite(val)) return;
+      const f = { ...this.el.frame };
+      if (this.el.type === 'image' && this.el.preserveAspect) {
+        const ratio = (this.el.frame.wEmu || 1) / (this.el.frame.hEmu || 1);
+        if (axis === 'w') {
+          f.wEmu = val;
+          f.hEmu = Math.round(val / ratio);
+        } else {
+          f.hEmu = val;
+          f.wEmu = Math.round(val * ratio);
+        }
+      } else if (axis === 'w') {
+        f.wEmu = val;
+      } else {
+        f.hEmu = val;
+      }
+      this.docStore.run({
+        type: 'element.resize',
+        slideId: this.slide.id,
+        elementId: this.el.id,
+        payload: { frame: f },
+      });
+    },
     updateFrame(patch) {
       this.docStore.run({
         type: 'element.resize',

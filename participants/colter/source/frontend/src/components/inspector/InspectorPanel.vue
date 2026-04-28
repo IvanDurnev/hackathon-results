@@ -1,9 +1,11 @@
 <template>
   <aside class="element-inspector">
-    <div class="inspector-section" style="display:flex; gap:6px;">
-      <button class="tb-btn" :class="{ primary: tab === 'doc' }" @click="tab = 'doc'">Документ</button>
-      <button class="tb-btn" :class="{ primary: tab === 'slide' }" @click="tab = 'slide'">{{ docStore.mode === 'template' ? 'Макет' : 'Слайд' }}</button>
-      <button class="tb-btn" :class="{ primary: tab === 'element' }" :disabled="!selected" @click="tab = 'element'">Элемент</button>
+    <div class="inspector-tabs">
+      <button :class="{ active: tab === 'doc' }" @click="tab = 'doc'">Документ</button>
+      <button :class="{ active: tab === 'slide' }" @click="tab = 'slide'">
+        {{ docStore.mode === 'template' ? 'Макет' : 'Слайд' }}
+      </button>
+      <button :class="{ active: tab === 'element' }" :disabled="!selected" @click="tab = 'element'">Элемент</button>
     </div>
     <DocumentInspector v-if="tab === 'doc'" :doc="docStore.doc" />
     <SlideInspector v-else-if="tab === 'slide' && currentSlide" :slide="currentSlide" />
@@ -12,7 +14,7 @@
       :element="selected"
       :slide="currentSlide"
     />
-    <div v-else class="inspector-section" style="color:var(--muted); font-size:13px;">
+    <div v-else class="inspector-section" style="color: var(--fg-3); font-size: 12.5px;">
       Выберите элемент на слайде, чтобы редактировать его свойства.
     </div>
   </aside>

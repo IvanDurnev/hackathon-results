@@ -1,90 +1,126 @@
 <template>
   <aside class="slide-navigator">
     <div v-if="mode === 'presentation'">
-      <div
-        v-for="(slide, idx) in slides"
-        :key="slide.id"
-        :class="['slide-thumb', { active: slide.id === activeSlideId }]"
-        :style="thumbWrapperStyle"
-        draggable="true"
-        @click="select(slide.id)"
-        @dragstart="onDragStart(idx, $event)"
-        @dragover.prevent="onDragOver(idx)"
-        @drop.prevent="onDrop(idx)"
-      >
-        <span class="thumb-index">{{ idx + 1 }}</span>
-        <SlideThumbnail
-          :slide="slide"
-          :slide-size="doc.slideSize"
-          :assets="doc.assets"
-          :width-px="thumbWidth"
-        />
+      <div class="slide-navigator-head">
+        <span>Слайды · {{ slides.length }}</span>
+        <button class="tb-btn ghost icon" style="width:22px;height:22px;" title="Добавить слайд" @click="openLayoutPicker">
+          <AcIcon name="plus" :size="13" />
+        </button>
       </div>
-      <div class="add-element-bar" style="flex-direction: column; gap: 4px;">
-        <button class="tb-btn primary" @click="openLayoutPicker">+ Слайд</button>
-        <button class="tb-btn" :disabled="!activeSlide" @click="duplicateActive">Дублировать</button>
-        <button class="tb-btn danger" :disabled="!activeSlide || slides.length <= 1" @click="deleteActive">Удалить</button>
+      <div class="slide-navigator-list">
+        <div
+          v-for="(slide, idx) in slides"
+          :key="slide.id"
+          :class="['slide-thumb', { active: slide.id === activeSlideId }]"
+          draggable="true"
+          @click="select(slide.id)"
+          @dragstart="onDragStart(idx, $event)"
+          @dragenter.prevent
+          @dragover.prevent="onDragOver(idx, $event)"
+          @drop.prevent="onDrop(idx, $event)"
+          @dragend="onDragEnd"
+        >
+          <div class="thumb-index">{{ String(idx + 1).padStart(2, '0') }}</div>
+          <div class="thumb-frame">
+            <SlideThumbnail
+              :slide="slide"
+              :slide-size="doc.slideSize"
+              :assets="doc.assets"
+              :width-px="170"
+            />
+          </div>
+        </div>
+        <button class="add-slide-btn" @click="openLayoutPicker">
+          <AcIcon name="plus" :size="13" /> Слайд
+        </button>
+      </div>
+      <div class="nav-actions">
+        <button class="tb-btn" :disabled="!activeSlide" @click="duplicateActive">
+          <AcIcon name="duplicate" :size="13" /> Дублировать
+        </button>
+        <button class="tb-btn danger" :disabled="!activeSlide || slides.length <= 1" @click="deleteActive">
+          <AcIcon name="trash" :size="13" /> Удалить слайд
+        </button>
       </div>
     </div>
 
     <div v-else>
-      <div
-        v-for="(layout, idx) in layouts"
-        :key="layout.id"
-        :class="['slide-thumb', { active: layout.id === activeLayoutId }]"
-        :style="thumbWrapperStyle"
-        @click="selectLayout(layout.id)"
-      >
-        <span class="thumb-index">{{ idx + 1 }}</span>
-        <SlideThumbnail
-          :slide="layout"
-          :slide-size="doc.slideSize"
-          :assets="doc.assets"
-          :width-px="thumbWidth"
-        />
-        <div style="font-size:11px; padding:2px 6px; color:var(--muted);">{{ layout.name }}</div>
+      <div class="slide-navigator-head">
+        <span>Макеты · {{ layouts.length }}</span>
+        <button class="tb-btn ghost icon" style="width:22px;height:22px;" title="Добавить макет" @click="addLayout">
+          <AcIcon name="plus" :size="13" />
+        </button>
       </div>
-      <div class="add-element-bar" style="flex-direction: column; gap: 4px;">
-        <button class="tb-btn primary" @click="addLayout">+ Макет</button>
-        <button class="tb-btn danger" :disabled="!activeLayout || layouts.length <= 1" @click="deleteLayout">Удалить макет</button>
+      <div class="slide-navigator-list">
+        <div
+          v-for="(layout, idx) in layouts"
+          :key="layout.id"
+          :class="['slide-thumb', { active: layout.id === activeLayoutId }]"
+          @click="selectLayout(layout.id)"
+        >
+          <div class="thumb-index">{{ String(idx + 1).padStart(2, '0') }}</div>
+          <div style="flex:1;">
+            <div class="thumb-frame">
+              <SlideThumbnail
+                :slide="layout"
+                :slide-size="doc.slideSize"
+                :assets="doc.assets"
+                :width-px="170"
+              />
+            </div>
+            <div class="thumb-name">{{ layout.name }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="tb-btn danger" :disabled="!activeLayout || layouts.length <= 1" @click="deleteLayout">
+          <AcIcon name="trash" :size="13" /> Удалить макет
+        </button>
       </div>
     </div>
 
-    <Dialog v-model:visible="layoutPickerOpen" header="Выберите макет" modal :style="{ width: '420px' }">
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <button
-          v-for="l in availableLayouts"
-          :key="l.id"
-          class="tb-btn"
-          @click="addSlideFromLayout(l)"
-          style="justify-content:flex-start;"
-        >
-          <i class="pi pi-plus" /> {{ l.name }} <span style="color:var(--muted); margin-left:auto;">{{ l.slideType }}</span>
-        </button>
-        <button class="tb-btn" @click="addBlankSlide" style="justify-content:flex-start;">
-          <i class="pi pi-plus" /> Пустой слайд
-        </button>
+    <div v-if="layoutPickerOpen" class="modal-backdrop" @click.self="layoutPickerOpen = false">
+      <div class="modal" style="width: 460px;">
+        <div class="modal-head">
+          <span>Добавить слайд</span>
+          <button class="tb-btn ghost icon" @click="layoutPickerOpen = false">
+            <AcIcon name="plus" :size="14" :stroke-width="2" style="transform: rotate(45deg);" />
+          </button>
+        </div>
+        <div class="modal-body" style="gap:6px;">
+          <button
+            v-for="l in availableLayouts"
+            :key="l.id"
+            class="tb-btn"
+            style="justify-content: flex-start;"
+            @click="addSlideFromLayout(l)"
+          >
+            <AcIcon name="plus" :size="13" />
+            {{ l.name }}
+            <span style="color: var(--fg-4); margin-left: auto; font-family: var(--font-mono); font-size: 11px;">{{ l.slideType }}</span>
+          </button>
+          <button class="tb-btn" style="justify-content: flex-start;" @click="addBlankSlide">
+            <AcIcon name="plus" :size="13" /> Пустой слайд
+          </button>
+        </div>
       </div>
-    </Dialog>
+    </div>
   </aside>
 </template>
 
 <script>
-import Dialog from 'primevue/dialog';
+import AcIcon from '../AcIcon.vue';
 import SlideThumbnail from './SlideThumbnail.vue';
 import { useDocumentStore } from '../../stores/document.js';
-import { makeSlide, slideFromLayout } from '../../core/factories.js';
+import { makeBackgroundColor, makeSlide, slideFromLayout } from '../../core/factories.js';
 import { uid } from '../../core/ids.js';
 
 export default {
   name: 'SlideNavigator',
-  components: { Dialog, SlideThumbnail },
-  props: {
-    template: { type: Object, default: null }, // optional template doc when editing presentation
-  },
+  components: { AcIcon, SlideThumbnail },
+  props: { template: { type: Object, default: null } },
   data() {
     return {
-      thumbWidth: 180,
       dragFromIndex: null,
       layoutPickerOpen: false,
     };
@@ -102,38 +138,34 @@ export default {
       if (this.mode !== 'template') return null;
       return this.layouts.find((l) => l.id === this.activeLayoutId);
     },
-    thumbWrapperStyle() {
-      const ratio = this.doc.slideSize.heightEmu / this.doc.slideSize.widthEmu;
-      return {
-        width: `${this.thumbWidth + 4}px`,
-        height: `${this.thumbWidth * ratio + 4}px`,
-      };
-    },
     availableLayouts() {
       if (this.template?.layouts?.length) return this.template.layouts;
       return [];
     },
   },
   methods: {
-    select(id) {
-      this.docStore.selectActiveSlide(id);
-    },
-    selectLayout(id) {
-      this.docStore.selectActiveLayout(id);
-    },
+    select(id) { this.docStore.selectActiveSlide(id); },
+    selectLayout(id) { this.docStore.selectActiveLayout(id); },
     onDragStart(idx, e) {
       this.dragFromIndex = idx;
       e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(idx));
     },
-    onDragOver(idx) {
-      // visual feedback handled by browser; nothing to do here
+    onDragOver(idx, e) {
+      if (this.dragFromIndex == null || this.dragFromIndex === idx) return;
+      e.dataTransfer.dropEffect = 'move';
     },
-    onDrop(toIdx) {
-      if (this.dragFromIndex == null || this.dragFromIndex === toIdx) return;
+    onDrop(toIdx, e) {
+      const raw = e.dataTransfer.getData('text/plain');
+      const fromIdx = this.dragFromIndex ?? (raw === '' ? null : Number(raw));
+      if (!Number.isInteger(fromIdx) || fromIdx === toIdx) return;
       this.docStore.run({
         type: 'slide.reorder',
-        payload: { fromIndex: this.dragFromIndex, toIndex: toIdx },
+        payload: { fromIndex: fromIdx, toIndex: toIdx },
       });
+      this.dragFromIndex = null;
+    },
+    onDragEnd() {
       this.dragFromIndex = null;
     },
     openLayoutPicker() {
@@ -144,7 +176,10 @@ export default {
       this.layoutPickerOpen = true;
     },
     addBlankSlide() {
-      const slide = makeSlide({ slideType: 'text' });
+      const slide = makeSlide({
+        slideType: 'text',
+        background: makeBackgroundColor(this.doc?.theme?.colors?.background || '#FFFFFF'),
+      });
       this.docStore.run({ type: 'slide.add', payload: { slide } });
       this.docStore.selectActiveSlide(slide.id);
       this.layoutPickerOpen = false;
@@ -178,11 +213,11 @@ export default {
         id: uid('layout'),
         name: 'Новый макет',
         slideType: 'text',
-        background: { type: 'color', value: '#FFFFFF' },
+        background: makeBackgroundColor(this.doc?.theme?.colors?.background || '#FFFFFF'),
         elements: [],
       };
       this.doc.layouts.push(layout);
-      this.docStore.dirty = true;
+      this.docStore.markDirty();
       this.docStore.selectActiveLayout(layout.id);
     },
     deleteLayout() {
@@ -190,7 +225,7 @@ export default {
       if (!id) return;
       const idx = this.layouts.findIndex((l) => l.id === id);
       this.doc.layouts = this.layouts.filter((l) => l.id !== id);
-      this.docStore.dirty = true;
+      this.docStore.markDirty();
       const next = this.layouts[Math.max(0, idx - 1)];
       this.docStore.selectActiveLayout(next?.id || null);
     },

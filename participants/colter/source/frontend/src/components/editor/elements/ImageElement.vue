@@ -23,10 +23,14 @@ export default {
       const sizeMap = { cover: 'cover', contain: 'contain', stretch: '100% 100%' };
       return this.resolvedUrl
         ? {
+            width: '100%',
+            height: '100%',
             backgroundImage: `url("${this.resolvedUrl}")`,
             backgroundSize: sizeMap[fit] || 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
           }
-        : {};
+        : { width: '100%', height: '100%' };
     },
   },
 };

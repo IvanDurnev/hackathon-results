@@ -14,6 +14,7 @@ export const useDocumentStore = defineStore('document', {
     futureStack: [],
     saving: false,
     dirty: false,
+    revision: 0,
     lastSavedAt: null,
   }),
   getters: {
@@ -47,6 +48,7 @@ export const useDocumentStore = defineStore('document', {
       this.pastStack = [];
       this.futureStack = [];
       this.dirty = false;
+      this.revision = 0;
     },
     loadTemplate(doc) {
       this.doc = doc;
@@ -56,6 +58,7 @@ export const useDocumentStore = defineStore('document', {
       this.pastStack = [];
       this.futureStack = [];
       this.dirty = false;
+      this.revision = 0;
     },
     selectActiveSlide(slideId) {
       this.activeSlideId = slideId;
@@ -89,7 +92,11 @@ export const useDocumentStore = defineStore('document', {
       // For template mode, route element/slide commands to the active layout
       const target = this._documentTargetForCommand(cmd);
       applyCommand(target, cmd);
+      this.markDirty();
+    },
+    markDirty() {
       this.dirty = true;
+      this.revision += 1;
     },
     /** Internal: returns the object that command applier should mutate. */
     _documentTargetForCommand(cmd) {
@@ -129,7 +136,7 @@ export const useDocumentStore = defineStore('document', {
       this.futureStack.push(JSON.stringify(this._snapshot()));
       const snap = JSON.parse(past);
       this._restore(snap);
-      this.dirty = true;
+      this.markDirty();
     },
     redo() {
       if (!this.futureStack.length) return;
@@ -137,7 +144,7 @@ export const useDocumentStore = defineStore('document', {
       this.pastStack.push(JSON.stringify(this._snapshot()));
       const snap = JSON.parse(future);
       this._restore(snap);
-      this.dirty = true;
+      this.markDirty();
     },
     _restore(snap) {
       this.doc = snap.doc;
@@ -146,7 +153,8 @@ export const useDocumentStore = defineStore('document', {
       this.activeLayoutId = snap.activeLayoutId;
       this.selection = snap.selection;
     },
-    markSaved() {
+    markSaved(revision = this.revision) {
+      if (revision !== this.revision) return;
       this.dirty = false;
       this.lastSavedAt = new Date();
     },
@@ -155,7 +163,7 @@ export const useDocumentStore = defineStore('document', {
       if (!this.doc.assets) this.doc.assets = [];
       if (!this.doc.assets.find((a) => a.id === asset.id)) {
         this.doc.assets.push(asset);
-        this.dirty = true;
+        this.markDirty();
       }
     },
   },

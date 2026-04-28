@@ -1,54 +1,69 @@
 <template>
   <div class="editor-toolbar">
-    <button class="tb-btn" @click="$router.push('/')"><i class="pi pi-home" /> На главную</button>
+    <button class="tb-btn ghost icon" title="На главную" @click="$router.push('/')">
+      <AcIcon name="home" :size="15" />
+    </button>
     <div class="toolbar-divider" />
+
     <input
-      class="title"
+      class="title-input"
       :value="docStore.doc.name"
       @input="(e) => updateName(e.target.value)"
-      style="border:1px solid transparent; padding:4px 6px; border-radius:4px; min-width:240px;"
-      @focus="(e) => e.target.style.border = '1px solid var(--panel-border)'"
-      @blur="(e) => e.target.style.border = '1px solid transparent'"
     />
-    <span style="color:var(--muted); font-size:12px;">{{ docStore.dirty ? '· не сохранено' : (docStore.lastSavedAt ? '✓ сохранено' : '') }}</span>
+    <span class="save-status" :class="{ dirty: docStore.dirty }">
+      <span class="dot"></span>
+      <span>{{ docStore.dirty ? 'не сохранено' : (docStore.lastSavedAt ? 'сохранено' : '') }}</span>
+    </span>
 
     <div class="toolbar-divider" />
 
-    <button class="tb-btn" :disabled="!docStore.canUndo" @click="docStore.undo()" title="Undo (Ctrl/Cmd+Z)">
-      <i class="pi pi-undo" />
+    <button class="tb-btn ghost icon" :disabled="!docStore.canUndo" @click="docStore.undo()" title="Undo (⌘Z)">
+      <AcIcon name="undo" :size="15" />
     </button>
-    <button class="tb-btn" :disabled="!docStore.canRedo" @click="docStore.redo()" title="Redo (Ctrl/Cmd+Shift+Z)">
-      <i class="pi pi-refresh" />
+    <button class="tb-btn ghost icon" :disabled="!docStore.canRedo" @click="docStore.redo()" title="Redo (⌘⇧Z)">
+      <AcIcon name="redo" :size="15" />
     </button>
 
     <div class="toolbar-divider" />
 
-    <button class="tb-btn" @click="addText"><i class="pi pi-pencil" /> Текст</button>
-    <button class="tb-btn" @click="addImage"><i class="pi pi-image" /> Картинка</button>
-    <button class="tb-btn" @click="addRect"><i class="pi pi-stop" /> Фигура</button>
-    <button class="tb-btn" @click="addLine"><i class="pi pi-minus" /> Линия</button>
+    <button class="tb-btn ghost" @click="addText"><AcIcon name="text" :size="14" /> Текст</button>
+    <button class="tb-btn ghost" @click="addImage"><AcIcon name="image" :size="14" /> Картинка</button>
+    <button class="tb-btn ghost" @click="addRect"><AcIcon name="shape" :size="14" /> Фигура</button>
+    <button class="tb-btn ghost" @click="addLine"><AcIcon name="line" :size="14" /> Линия</button>
 
     <div class="spacer" />
 
-    <div class="zoom-controls">
-      <button class="tb-btn" @click="zoomOut">−</button>
-      <span style="font-size:12px; min-width:50px; text-align:center;">{{ zoomPercent }}%</span>
-      <button class="tb-btn" @click="zoomIn">+</button>
-      <button class="tb-btn" @click="editorStore.enableAutoFit()">Fit</button>
+    <button class="tb-btn amber-soft" title="Скоро: AI помощник" @click="askAmurHint">
+      <AcIcon name="sparkle" :size="13" /> Спросить Amur
+      <span class="ac-kbd" style="background: rgba(255,181,71,0.10); border-color: rgba(255,181,71,0.25); color: var(--amber-200);">⌘K</span>
+    </button>
+
+    <div class="zoom-group">
+      <button class="tb-btn icon" @click="zoomOut"><AcIcon name="zoomOut" :size="13" /></button>
+      <span class="zoom-label">{{ zoomLabel }}</span>
+      <button class="tb-btn icon" @click="zoomIn"><AcIcon name="zoomIn" :size="13" /></button>
+      <button class="tb-btn icon" :title="editorStore.autoFit ? 'Уже Fit' : 'Fit'" @click="editorStore.enableAutoFit()" :class="{ 'amber-soft': editorStore.autoFit }">F</button>
     </div>
 
-    <button class="tb-btn" :class="{ primary: editorStore.snap }" @click="editorStore.toggleSnap()">Snap</button>
+    <button class="tb-btn" :class="{ 'amber-soft': editorStore.snap }" :title="editorStore.snap ? 'Snap включён' : 'Snap выключен'" @click="editorStore.toggleSnap()">
+      <AcIcon name="grid" :size="13" /> Snap
+    </button>
 
     <div class="toolbar-divider" />
 
-    <button class="tb-btn primary" :disabled="docStore.saving" @click="$emit('save')"><i class="pi pi-save" /> Сохранить</button>
-    <button v-if="docStore.mode === 'presentation'" class="tb-btn" @click="$emit('export-pptx')"><i class="pi pi-download" /> PPTX</button>
+    <button class="tb-btn primary" :disabled="docStore.saving" @click="$emit('save')">
+      <AcIcon name="save" :size="13" /> Сохранить
+    </button>
+    <button v-if="docStore.mode === 'presentation'" class="tb-btn" @click="$emit('export-pptx')">
+      <AcIcon name="download" :size="13" /> PPTX
+    </button>
 
     <input ref="upload" type="file" accept="image/*" style="display:none" @change="onUpload" />
   </div>
 </template>
 
 <script>
+import AcIcon from '../AcIcon.vue';
 import { useDocumentStore } from '../../stores/document.js';
 import { useEditorStore } from '../../stores/editor.js';
 import { api } from '../../api/client.js';
@@ -61,13 +76,14 @@ import {
 
 export default {
   name: 'EditorToolbar',
+  components: { AcIcon },
   emits: ['save', 'export-pptx'],
   computed: {
     docStore() { return useDocumentStore(); },
     editorStore() { return useEditorStore(); },
-    zoomPercent() {
+    zoomLabel() {
       if (this.editorStore.autoFit) return 'fit';
-      return Math.round(this.editorStore.zoom * 100);
+      return `${Math.round(this.editorStore.zoom * 100)}%`;
     },
   },
   methods: {
@@ -84,7 +100,20 @@ export default {
       });
       this.docStore.setSelection(el.id);
     },
-    addText() { this.addElement(makeTextElement()); },
+    addText() {
+      const theme = this.docStore.doc?.theme;
+      this.addElement(makeTextElement({
+        style: {
+          fontFamily: theme?.fonts?.body || 'Inter',
+          fontSize: 24,
+          fontWeight: 400,
+          color: theme?.colors?.text || '#111827',
+          align: 'left',
+          valign: 'top',
+          lineHeight: 1.4,
+        },
+      }));
+    },
     addRect() { this.addElement(makeShapeElement('rect')); },
     addLine() { this.addElement(makeLineElement()); },
     addImage() { this.$refs.upload.click(); },
@@ -103,6 +132,9 @@ export default {
     zoomOut() {
       const cur = this.editorStore.autoFit ? 1 : this.editorStore.zoom;
       this.editorStore.setZoom(cur - 0.1);
+    },
+    askAmurHint() {
+      // Placeholder while AI panel is wired up — keeps the button responsive.
     },
   },
 };

@@ -1,11 +1,9 @@
 <template>
   <div class="canvas-area" ref="area" @click="onAreaClick">
-    <div
-      class="slide-canvas-wrapper"
-      :style="wrapperStyle"
-    >
+    <div class="slide-canvas-wrapper" :style="wrapperStyle">
       <div
         class="slide-canvas"
+        ref="canvas"
         :style="canvasStyle"
         @mousedown.self="onBackgroundMouseDown"
       >
@@ -23,7 +21,18 @@
           @start-edit="onStartEdit(el.id)"
           @commit-text="(p) => onCommitText(el.id, p)"
         />
+        <div
+          v-if="marquee"
+          class="marquee"
+          :class="{ intersect: marquee.intersect }"
+          :style="marqueeStyle"
+        />
+        <div v-if="slideNumberLabel" class="slide-number-badge">{{ slideNumberLabel }}</div>
       </div>
+    </div>
+    <div class="canvas-meta">
+      <span>{{ slideSize.ratio }}</span>
+      <span>{{ slideSize.widthEmu.toLocaleString('ru-RU') }} × {{ slideSize.heightEmu.toLocaleString('ru-RU') }} EMU</span>
     </div>
   </div>
 </template>
@@ -34,6 +43,16 @@ import { useDocumentStore } from '../../stores/document.js';
 import { useEditorStore } from '../../stores/editor.js';
 import { fitScale } from '../../core/emu.js';
 
+function rectsIntersect(a, b) {
+  return !(a.x + a.w < b.x || b.x + b.w < a.x || a.y + a.h < b.y || b.y + b.h < a.y);
+}
+function rectContains(outer, inner) {
+  return inner.x >= outer.x
+    && inner.y >= outer.y
+    && inner.x + inner.w <= outer.x + outer.w
+    && inner.y + inner.h <= outer.y + outer.h;
+}
+
 export default {
   name: 'SlideCanvas',
   components: { ElementFrame },
@@ -43,6 +62,7 @@ export default {
       ro: null,
       drag: null,
       resize: null,
+      marquee: null, // { startX, startY, x, y, w, h, intersect }
     };
   },
   computed: {
@@ -52,14 +72,14 @@ export default {
     slide() { return this.docStore.activeSlide; },
     selection() { return this.docStore.selection; },
     editingId() { return this.editorStore.editingElementId; },
-    slideSize() { return this.doc?.slideSize || { widthEmu: 12192000, heightEmu: 6858000 }; },
+    slideSize() { return this.doc?.slideSize || { widthEmu: 12192000, heightEmu: 6858000, ratio: '16:9' }; },
     fitScaleVal() {
       return fitScale(
         this.areaSize.w,
         this.areaSize.h,
         this.slideSize.widthEmu,
         this.slideSize.heightEmu,
-        32
+        32,
       ) || 0.0000001;
     },
     scale() {
@@ -67,35 +87,61 @@ export default {
       return this.editorStore.autoFit ? this.fitScaleVal : this.fitScaleVal * z;
     },
     canvasStyle() {
-      return {
+      const bg = this.slide?.background;
+      const style = {
         width: `${this.slideSize.widthEmu * this.scale}px`,
         height: `${this.slideSize.heightEmu * this.scale}px`,
-        background: this.slideBackgroundCss,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
       };
+      if (!bg || bg.type === 'color') {
+        style.background = bg?.value || '#FFFFFF';
+      } else if (bg.type === 'gradient') {
+        style.background = `linear-gradient(${bg.angle || 0}deg, ${bg.from}, ${bg.to})`;
+      } else if (bg.type === 'image') {
+        const a = (this.doc.assets || []).find((x) => x.id === bg.assetId);
+        if (a?.url) {
+          const fit = bg.fit || 'cover';
+          const sizeMap = { cover: 'cover', contain: 'contain', stretch: '100% 100%' };
+          style.backgroundImage = `url("${a.url}")`;
+          style.backgroundSize = sizeMap[fit] || 'cover';
+          style.backgroundPosition = 'center';
+          style.backgroundRepeat = 'no-repeat';
+          style.backgroundColor = '#fff';
+        } else {
+          style.background = '#fff';
+        }
+      }
+      return style;
     },
     wrapperStyle() { return { borderRadius: '6px' }; },
-    slideBackgroundCss() {
-      const bg = this.slide?.background;
-      if (!bg) return '#fff';
-      if (bg.type === 'color') return bg.value;
-      if (bg.type === 'image') {
-        const a = (this.doc.assets || []).find((x) => x.id === bg.assetId);
-        return a?.url ? `url("${a.url}")` : '#fff';
-      }
-      if (bg.type === 'gradient') {
-        return `linear-gradient(${bg.angle || 0}deg, ${bg.from}, ${bg.to})`;
-      }
-      return '#fff';
-    },
     sortedElements() {
       if (!this.slide) return [];
       return [...this.slide.elements].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
     },
-  },
-  watch: {
-    'editorStore.zoom'() {},
+    marqueeStyle() {
+      if (!this.marquee) return {};
+      return {
+        left: `${this.marquee.x}px`,
+        top: `${this.marquee.y}px`,
+        width: `${this.marquee.w}px`,
+        height: `${this.marquee.h}px`,
+      };
+    },
+    slideNumberLabel() {
+      if (this.docStore.mode !== 'presentation') return '';
+      const cfg = this.doc?.slideNumbering;
+      if (!cfg?.enabled) return '';
+      const slides = this.doc.slides || [];
+      const idx = slides.findIndex((s) => s.id === this.slide?.id);
+      if (idx < 0) return '';
+      const slide = slides[idx];
+      if (cfg.hideOnTitle !== false && slide?.slideType === 'title') return '';
+      if (slide?.hideSlideNumber) return '';
+      const n = idx + 1;
+      const total = slides.length;
+      if (cfg.format === 'number') return `${n}`;
+      if (cfg.format === 'page') return `Слайд ${n}`;
+      return `${n} / ${total}`;
+    },
   },
   mounted() {
     this.ro = new ResizeObserver(() => this.measure());
@@ -116,23 +162,74 @@ export default {
       this.editorStore.setCanvasContainer(rect.width, rect.height);
     },
     onAreaClick(e) {
-      // clicks on background clear selection
       if (e.target === this.$refs.area || e.target.classList.contains('slide-canvas-wrapper')) {
         this.docStore.clearSelection();
         this.editorStore.stopEditing();
       }
     },
-    onBackgroundMouseDown() {
+    onBackgroundMouseDown(e) {
       this.docStore.clearSelection();
       this.editorStore.stopEditing();
+      if (e.button !== 0) return;
+      const canvas = this.$refs.canvas;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const startX = e.clientX - rect.left;
+      const startY = e.clientY - rect.top;
+      this.marquee = {
+        startX,
+        startY,
+        x: startX,
+        y: startY,
+        w: 0,
+        h: 0,
+        intersect: false,
+        moved: false,
+      };
+      window.addEventListener('mousemove', this.onMarqueeMove);
+      window.addEventListener('mouseup', this.onMarqueeEnd, { once: true });
+      e.preventDefault();
+    },
+    onMarqueeMove(e) {
+      if (!this.marquee) return;
+      const canvas = this.$refs.canvas;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const cx = e.clientX - rect.left;
+      const cy = e.clientY - rect.top;
+      const dx = cx - this.marquee.startX;
+      const dy = cy - this.marquee.startY;
+      this.marquee.x = Math.min(this.marquee.startX, cx);
+      this.marquee.y = Math.min(this.marquee.startY, cy);
+      this.marquee.w = Math.abs(dx);
+      this.marquee.h = Math.abs(dy);
+      this.marquee.intersect = dx < 0;
+      this.marquee.moved = this.marquee.w > 3 || this.marquee.h > 3;
+    },
+    onMarqueeEnd() {
+      window.removeEventListener('mousemove', this.onMarqueeMove);
+      const m = this.marquee;
+      this.marquee = null;
+      if (!m || !m.moved || !this.slide) return;
+      const sel = { x: m.x, y: m.y, w: m.w, h: m.h };
+      const ids = [];
+      this.slide.elements.forEach((el) => {
+        if (el.visible === false) return;
+        const r = {
+          x: el.frame.xEmu * this.scale,
+          y: el.frame.yEmu * this.scale,
+          w: el.frame.wEmu * this.scale,
+          h: el.frame.hEmu * this.scale,
+        };
+        const hit = m.intersect ? rectsIntersect(sel, r) : rectContains(sel, r);
+        if (hit) ids.push(el.id);
+      });
+      this.docStore.setSelection(ids);
     },
     onElementSelect(id, e) {
       const slide = this.slide;
       const el = slide.elements.find((x) => x.id === id);
-      if (el?.contentBehavior?.readonly && this.docStore.mode === 'presentation') {
-        // readonly placeholder elements shouldn't be selected/edited from presentation mode
-        return;
-      }
+      if (el?.contentBehavior?.readonly && this.docStore.mode === 'presentation') return;
       if (e?.shiftKey) {
         this.docStore.addToSelection(id);
       } else {
@@ -207,10 +304,13 @@ export default {
         clientY: event.clientY,
         frame: { ...el.frame },
         handle,
+        preserveAspect: el.type === 'image' && !!el.preserveAspect,
+        ratio: el.frame.wEmu / Math.max(1, el.frame.hEmu),
       };
       this.resize = { id, start, moved: false };
       window.addEventListener('mousemove', this.onResizeMove);
       window.addEventListener('mouseup', this.onResizeEnd, { once: true });
+      event.stopPropagation();
       event.preventDefault();
     },
     onResizeMove(e) {
@@ -225,12 +325,26 @@ export default {
       if (h.includes('r')) { f.wEmu = this.resize.start.frame.wEmu + dx; }
       if (h.includes('t')) { f.yEmu = this.resize.start.frame.yEmu + dy; f.hEmu = this.resize.start.frame.hEmu - dy; }
       if (h.includes('b')) { f.hEmu = this.resize.start.frame.hEmu + dy; }
-      // 'm' middles: lock the cross axis (already excluded above by absence)
       if (h === 'tm' || h === 'bm') { f.xEmu = this.resize.start.frame.xEmu; f.wEmu = this.resize.start.frame.wEmu; }
       if (h === 'lm' || h === 'rm') { f.yEmu = this.resize.start.frame.yEmu; f.hEmu = this.resize.start.frame.hEmu; }
 
       f.wEmu = Math.max(minW, Math.round(f.wEmu));
       f.hEmu = Math.max(minH, Math.round(f.hEmu));
+
+      if (this.resize.start.preserveAspect) {
+        const ratio = this.resize.start.ratio;
+        const cornerHandles = ['tl', 'tr', 'bl', 'br'];
+        if (cornerHandles.includes(h)) {
+          // Keep ratio by using width as the driver, then re-derive height
+          const newW = f.wEmu;
+          const newH = Math.max(minH, Math.round(newW / ratio));
+          if (h.includes('t')) {
+            f.yEmu = this.resize.start.frame.yEmu + (this.resize.start.frame.hEmu - newH);
+          }
+          f.hEmu = newH;
+        }
+      }
+
       f.xEmu = Math.round(f.xEmu);
       f.yEmu = Math.round(f.yEmu);
       if (this.editorStore.snap) {
@@ -256,22 +370,40 @@ export default {
       window.removeEventListener('mousemove', this.onResizeMove);
     },
     onKey(e) {
+      // Ignore shortcuts when focus is in an editable field — fixes Backspace
+      // deleting elements while editing inspector inputs or contenteditable text.
+      const t = e.target;
+      const tag = t?.tagName;
+      const isField =
+        tag === 'INPUT' ||
+        tag === 'TEXTAREA' ||
+        tag === 'SELECT' ||
+        t?.isContentEditable;
+
       const isEditing = !!this.editingId;
-      if (isEditing) return;
       const slide = this.slide;
       if (!slide) return;
       const sel = this.docStore.selection;
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+
+      // Undo/redo always available unless typing inside an input where the browser owns Z.
+      const key = e.key.toLowerCase();
+      const code = e.code;
+      const isUndo = code === 'KeyZ' || key === 'z';
+      const isRedo = code === 'KeyY' || key === 'y';
+
+      if (!isField && (e.metaKey || e.ctrlKey) && isUndo && !e.shiftKey) {
         e.preventDefault();
         this.docStore.undo();
         return;
       }
-      if ((e.metaKey || e.ctrlKey) && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) {
+      if (!isField && (e.metaKey || e.ctrlKey) && (isRedo || (isUndo && e.shiftKey))) {
         e.preventDefault();
         this.docStore.redo();
         return;
       }
+      if (isField || isEditing) return;
       if (!sel.length) return;
+
       if (e.key === 'Delete' || e.key === 'Backspace') {
         e.preventDefault();
         sel.forEach((id) => this.docStore.run({ type: 'element.delete', slideId: slide.id, elementId: id }));

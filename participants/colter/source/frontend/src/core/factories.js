@@ -46,6 +46,7 @@ export function makeTextElement(overrides = {}) {
       fontWeight: 400,
       color: '#111827',
       align: 'left',
+      valign: 'top',
       lineHeight: 1.4,
     },
     constraints: overrides.constraints,

@@ -5,6 +5,7 @@
     :data-readonly="String(!!element.contentBehavior?.readonly)"
     :style="frameStyle"
     @mousedown="onFrameMouseDown"
+    @dragstart.prevent
   >
     <ElementRenderer
       :element="element"
@@ -66,10 +67,13 @@ export default {
   methods: {
     onFrameMouseDown(e) {
       // Ignore handle clicks (handled separately)
+      if (e.button !== 0) return;
       if (e.target.dataset.handle) return;
       this.$emit('drag-start', { id: this.element.id, event: e });
     },
     onHandleDown(handle, e) {
+      e.preventDefault();
+      e.stopPropagation();
       this.$emit('resize-start', { id: this.element.id, handle, event: e });
     },
     onSelect(e) {

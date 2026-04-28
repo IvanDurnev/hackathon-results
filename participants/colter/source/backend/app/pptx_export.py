@@ -14,6 +14,8 @@ from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN
+from pptx.oxml import parse_xml
+from pptx.oxml.ns import nsdecls, qn
 from pptx.util import Emu, Pt
 
 from .models import PresentationDocument, SlideDocument, SlideElement
@@ -33,11 +35,31 @@ SHAPE_MAP = {
     "triangle": MSO_SHAPE.ISOSCELES_TRIANGLE,
 }
 
+FILL_TAGS = {
+    qn("a:noFill"),
+    qn("a:solidFill"),
+    qn("a:gradFill"),
+    qn("a:blipFill"),
+    qn("a:pattFill"),
+    qn("a:grpFill"),
+}
 
-def _hex_to_rgb(value: str) -> RGBColor:
-    v = value.lstrip("#")
+
+def _hex_value(value: str | None, fallback: str = "FFFFFF") -> str:
+    v = (value or "").strip().lstrip("#")
     if len(v) == 3:
         v = "".join(ch * 2 for ch in v)
+    if len(v) != 6:
+        return fallback
+    try:
+        int(v, 16)
+    except ValueError:
+        return fallback
+    return v.upper()
+
+
+def _hex_to_rgb(value: str) -> RGBColor:
+    v = _hex_value(value)
     return RGBColor(int(v[0:2], 16), int(v[2:4], 16), int(v[4:6], 16))
 
 
@@ -61,12 +83,71 @@ def _apply_background(slide, bg, doc: PresentationDocument) -> None:
         fill = slide.background.fill
         fill.solid()
         fill.fore_color.rgb = _hex_to_rgb(bg.value)
+    elif bg.type == "gradient":
+        _add_gradient_rect(
+            slide,
+            doc,
+            getattr(bg, "from_", "#FFFFFF"),
+            bg.to,
+            bg.angle,
+        )
     elif bg.type == "image":
         path = _resolve_asset_path(bg.assetId, doc)
         if path is not None:
             slide.shapes.add_picture(
                 str(path), 0, 0, width=Emu(doc.slideSize.widthEmu), height=Emu(doc.slideSize.heightEmu)
             )
+
+
+def _set_shape_gradient_fill(shape, from_color: str, to_color: str, angle: float) -> None:
+    sp_pr = shape._element.spPr
+    for child in list(sp_pr):
+        if child.tag in FILL_TAGS:
+            sp_pr.remove(child)
+
+    from_hex = _hex_value(from_color)
+    to_hex = _hex_value(to_color, "111827")
+    angle_units = int((angle % 360) * 60000)
+    grad_fill = parse_xml(
+        f"""
+        <a:gradFill {nsdecls("a")} flip="none" rotWithShape="1">
+          <a:gsLst>
+            <a:gs pos="0">
+              <a:srgbClr val="{from_hex}"/>
+            </a:gs>
+            <a:gs pos="100000">
+              <a:srgbClr val="{to_hex}"/>
+            </a:gs>
+          </a:gsLst>
+          <a:lin ang="{angle_units}" scaled="1"/>
+        </a:gradFill>
+        """
+    )
+
+    insert_at = len(sp_pr)
+    for idx, child in enumerate(sp_pr):
+        if child.tag == qn("a:ln"):
+            insert_at = idx
+            break
+    sp_pr.insert(insert_at, grad_fill)
+
+
+def _add_gradient_rect(
+    slide,
+    doc: PresentationDocument,
+    from_color: str,
+    to_color: str,
+    angle: float,
+) -> None:
+    bg = slide.shapes.add_shape(
+        MSO_SHAPE.RECTANGLE,
+        0,
+        0,
+        Emu(doc.slideSize.widthEmu),
+        Emu(doc.slideSize.heightEmu),
+    )
+    _set_shape_gradient_fill(bg, from_color, to_color, angle)
+    bg.line.fill.background()
 
 
 def _add_text(slide, el, theme_text_color: str) -> None:
