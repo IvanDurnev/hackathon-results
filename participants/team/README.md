@@ -1,7 +1,7 @@
-# Кумыс
+# Спартак
 
-- Repository: https://github.com/timur337228/amur-hakaton-2026
+- Repository: https://github.com/Xaze-debug/Xakaton
 - Video: n/a
 - Description: n/a
-- Updated at: 2026-04-28T08:39:43+00:00
+- Updated at: 2026-04-28T08:39:50+00:00
 - Repository accessible: yes
