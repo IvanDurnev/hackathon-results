@@ -1,7 +1,7 @@
-# Спартак
+# КПН
 
-- Repository: https://github.com/Xaze-debug/218Projecta
+- Repository: https://github.com/ArtemChik103/amurcode
 - Video: n/a
 - Description: n/a
-- Updated at: 2026-04-27T14:01:52+00:00
-- Repository accessible: no
+- Updated at: 2026-04-28T03:14:40+00:00
+- Repository accessible: yes
