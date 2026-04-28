@@ -1,0 +1,486 @@
+{
+  "schemaVersion": "1.0.0",
+  "documentType": "template",
+  "id": "template_business_01",
+  "name": "Business Minimal",
+  "slideSize": {
+    "widthEmu": 12192000,
+    "heightEmu": 6858000,
+    "ratio": "16:9"
+  },
+  "theme": {
+    "fonts": {
+      "heading": "Inter",
+      "body": "Inter"
+    },
+    "colors": {
+      "background": "#FFFFFF",
+      "text": "#111827",
+      "primary": "#2563EB",
+      "secondary": "#64748B",
+      "accent": "#F97316"
+    }
+  },
+  "layouts": [
+    {
+      "id": "layout_title_01",
+      "name": "Title",
+      "slideType": "title",
+      "background": {
+        "type": "color",
+        "value": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "title_placeholder",
+          "name": "Title",
+          "role": "title",
+          "contentBehavior": {
+            "kind": "placeholder",
+            "readonly": false,
+            "fillRole": "title"
+          },
+          "sourcePlaceholderId": null,
+          "frame": {
+            "xEmu": 914400,
+            "yEmu": 2400000,
+            "wEmu": 10363200,
+            "hEmu": 1100000,
+            "rotate": 0.0
+          },
+          "zIndex": 10,
+          "locked": false,
+          "visible": true,
+          "opacity": null,
+          "constraints": {
+            "minWEmu": null,
+            "minHEmu": null,
+            "maxWEmu": null,
+            "maxHEmu": null,
+            "preserveAspectRatio": null,
+            "maxChars": 80,
+            "maxLines": 2,
+            "overflow": "shrink",
+            "minFontSize": 40,
+            "splitStrategy": "none"
+          },
+          "meta": null,
+          "type": "text",
+          "text": "",
+          "placeholder": "Название презентации",
+          "style": {
+            "fontFamily": "Inter",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "italic": null,
+            "underline": null,
+            "color": "#111827",
+            "align": "left",
+            "lineHeight": 1.1,
+            "letterSpacing": null,
+            "padding": null
+          }
+        },
+        {
+          "id": "subtitle_placeholder",
+          "name": "Subtitle",
+          "role": "subtitle",
+          "contentBehavior": {
+            "kind": "placeholder",
+            "readonly": false,
+            "fillRole": "subtitle"
+          },
+          "sourcePlaceholderId": null,
+          "frame": {
+            "xEmu": 914400,
+            "yEmu": 3700000,
+            "wEmu": 10363200,
+            "hEmu": 700000,
+            "rotate": 0.0
+          },
+          "zIndex": 11,
+          "locked": false,
+          "visible": true,
+          "opacity": null,
+          "constraints": {
+            "minWEmu": null,
+            "minHEmu": null,
+            "maxWEmu": null,
+            "maxHEmu": null,
+            "preserveAspectRatio": null,
+            "maxChars": 120,
+            "maxLines": 2,
+            "overflow": "shrink",
+            "minFontSize": 18,
+            "splitStrategy": null
+          },
+          "meta": null,
+          "type": "text",
+          "text": "",
+          "placeholder": "Подзаголовок",
+          "style": {
+            "fontFamily": "Inter",
+            "fontSize": 28,
+            "fontWeight": 400,
+            "italic": null,
+            "underline": null,
+            "color": "#64748B",
+            "align": "left",
+            "lineHeight": 1.2,
+            "letterSpacing": null,
+            "padding": null
+          }
+        }
+      ],
+      "meta": null
+    },
+    {
+      "id": "layout_text_01",
+      "name": "Text",
+      "slideType": "text",
+      "background": {
+        "type": "color",
+        "value": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "heading_placeholder",
+          "name": "Heading",
+          "role": "title",
+          "contentBehavior": {
+            "kind": "placeholder",
+            "readonly": false,
+            "fillRole": "title"
+          },
+          "sourcePlaceholderId": null,
+          "frame": {
+            "xEmu": 914400,
+            "yEmu": 700000,
+            "wEmu": 10363200,
+            "hEmu": 800000,
+            "rotate": 0.0
+          },
+          "zIndex": 10,
+          "locked": false,
+          "visible": true,
+          "opacity": null,
+          "constraints": {
+            "minWEmu": null,
+            "minHEmu": null,
+            "maxWEmu": null,
+            "maxHEmu": null,
+            "preserveAspectRatio": null,
+            "maxChars": 80,
+            "maxLines": 2,
+            "overflow": "shrink",
+            "minFontSize": 28,
+            "splitStrategy": null
+          },
+          "meta": null,
+          "type": "text",
+          "text": "",
+          "placeholder": "Заголовок раздела",
+          "style": {
+            "fontFamily": "Inter",
+            "fontSize": 40,
+            "fontWeight": 700,
+            "italic": null,
+            "underline": null,
+            "color": "#111827",
+            "align": "left",
+            "lineHeight": null,
+            "letterSpacing": null,
+            "padding": null
+          }
+        },
+        {
+          "id": "body_placeholder",
+          "name": "Body",
+          "role": "body",
+          "contentBehavior": {
+            "kind": "placeholder",
+            "readonly": false,
+            "fillRole": "body"
+          },
+          "sourcePlaceholderId": null,
+          "frame": {
+            "xEmu": 914400,
+            "yEmu": 1700000,
+            "wEmu": 10363200,
+            "hEmu": 4400000,
+            "rotate": 0.0
+          },
+          "zIndex": 11,
+          "locked": false,
+          "visible": true,
+          "opacity": null,
+          "constraints": {
+            "minWEmu": null,
+            "minHEmu": null,
+            "maxWEmu": null,
+            "maxHEmu": null,
+            "preserveAspectRatio": null,
+            "maxChars": 800,
+            "maxLines": 12,
+            "overflow": "shrink",
+            "minFontSize": 14,
+            "splitStrategy": null
+          },
+          "meta": null,
+          "type": "text",
+          "text": "",
+          "placeholder": "Текст слайда",
+          "style": {
+            "fontFamily": "Inter",
+            "fontSize": 22,
+            "fontWeight": 400,
+            "italic": null,
+            "underline": null,
+            "color": "#111827",
+            "align": "left",
+            "lineHeight": 1.5,
+            "letterSpacing": null,
+            "padding": null
+          }
+        }
+      ],
+      "meta": null
+    },
+    {
+      "id": "layout_bullets_01",
+      "name": "Bullets",
+      "slideType": "bullets",
+      "background": {
+        "type": "color",
+        "value": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "heading_placeholder",
+          "name": "Heading",
+          "role": "title",
+          "contentBehavior": {
+            "kind": "placeholder",
+            "readonly": false,
+            "fillRole": "title"
+          },
+          "sourcePlaceholderId": null,
+          "frame": {
+            "xEmu": 914400,
+            "yEmu": 700000,
+            "wEmu": 10363200,
+            "hEmu": 800000,
+            "rotate": 0.0
+          },
+          "zIndex": 10,
+          "locked": false,
+          "visible": true,
+          "opacity": null,
+          "constraints": null,
+          "meta": null,
+          "type": "text",
+          "text": "",
+          "placeholder": "Заголовок",
+          "style": {
+            "fontFamily": "Inter",
+            "fontSize": 40,
+            "fontWeight": 700,
+            "italic": null,
+            "underline": null,
+            "color": "#111827",
+            "align": "left",
+            "lineHeight": null,
+            "letterSpacing": null,
+            "padding": null
+          }
+        },
+        {
+          "id": "bullets_placeholder",
+          "name": "Bullets",
+          "role": "bulletList",
+          "contentBehavior": {
+            "kind": "placeholder",
+            "readonly": false,
+            "fillRole": "bulletList"
+          },
+          "sourcePlaceholderId": null,
+          "frame": {
+            "xEmu": 914400,
+            "yEmu": 1700000,
+            "wEmu": 10363200,
+            "hEmu": 4400000,
+            "rotate": 0.0
+          },
+          "zIndex": 11,
+          "locked": false,
+          "visible": true,
+          "opacity": null,
+          "constraints": {
+            "minWEmu": null,
+            "minHEmu": null,
+            "maxWEmu": null,
+            "maxHEmu": null,
+            "preserveAspectRatio": null,
+            "maxChars": null,
+            "maxLines": 8,
+            "overflow": "shrink",
+            "minFontSize": 16,
+            "splitStrategy": null
+          },
+          "meta": null,
+          "type": "text",
+          "text": "",
+          "placeholder": "• Пункт 1\n• Пункт 2\n• Пункт 3",
+          "style": {
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fontWeight": 400,
+            "italic": null,
+            "underline": null,
+            "color": "#111827",
+            "align": "left",
+            "lineHeight": 1.6,
+            "letterSpacing": null,
+            "padding": null
+          }
+        }
+      ],
+      "meta": null
+    },
+    {
+      "id": "layout_image_01",
+      "name": "Image",
+      "slideType": "image",
+      "background": {
+        "type": "color",
+        "value": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "heading_placeholder",
+          "name": "Heading",
+          "role": "title",
+          "contentBehavior": {
+            "kind": "placeholder",
+            "readonly": false,
+            "fillRole": "title"
+          },
+          "sourcePlaceholderId": null,
+          "frame": {
+            "xEmu": 914400,
+            "yEmu": 700000,
+            "wEmu": 10363200,
+            "hEmu": 700000,
+            "rotate": 0.0
+          },
+          "zIndex": 10,
+          "locked": false,
+          "visible": true,
+          "opacity": null,
+          "constraints": null,
+          "meta": null,
+          "type": "text",
+          "text": "",
+          "placeholder": "Заголовок",
+          "style": {
+            "fontFamily": "Inter",
+            "fontSize": 36,
+            "fontWeight": 700,
+            "italic": null,
+            "underline": null,
+            "color": "#111827",
+            "align": "left",
+            "lineHeight": null,
+            "letterSpacing": null,
+            "padding": null
+          }
+        },
+        {
+          "id": "image_placeholder",
+          "name": "Image",
+          "role": "image",
+          "contentBehavior": {
+            "kind": "placeholder",
+            "readonly": false,
+            "fillRole": "image"
+          },
+          "sourcePlaceholderId": null,
+          "frame": {
+            "xEmu": 914400,
+            "yEmu": 1600000,
+            "wEmu": 10363200,
+            "hEmu": 4500000,
+            "rotate": 0.0
+          },
+          "zIndex": 11,
+          "locked": false,
+          "visible": true,
+          "opacity": null,
+          "constraints": null,
+          "meta": null,
+          "type": "image",
+          "assetId": null,
+          "placeholder": null,
+          "fit": "cover",
+          "crop": null,
+          "alt": null,
+          "generation": null
+        }
+      ],
+      "meta": null
+    },
+    {
+      "id": "layout_conclusion_01",
+      "name": "Conclusion",
+      "slideType": "conclusion",
+      "background": {
+        "type": "color",
+        "value": "#111827"
+      },
+      "elements": [
+        {
+          "id": "heading_placeholder",
+          "name": "Heading",
+          "role": "title",
+          "contentBehavior": {
+            "kind": "placeholder",
+            "readonly": false,
+            "fillRole": "title"
+          },
+          "sourcePlaceholderId": null,
+          "frame": {
+            "xEmu": 914400,
+            "yEmu": 2700000,
+            "wEmu": 10363200,
+            "hEmu": 1100000,
+            "rotate": 0.0
+          },
+          "zIndex": 10,
+          "locked": false,
+          "visible": true,
+          "opacity": null,
+          "constraints": null,
+          "meta": null,
+          "type": "text",
+          "text": "",
+          "placeholder": "Спасибо за внимание",
+          "style": {
+            "fontFamily": "Inter",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "italic": null,
+            "underline": null,
+            "color": "#FFFFFF",
+            "align": "center",
+            "lineHeight": null,
+            "letterSpacing": null,
+            "padding": null
+          }
+        }
+      ],
+      "meta": null
+    }
+  ],
+  "assets": [],
+  "meta": null
+}
