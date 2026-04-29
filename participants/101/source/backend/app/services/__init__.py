@@ -1,3 +1,3 @@
-from .llm_service import LLMService
-from .image_service import ImageService
-from .pptx_generator import PPTXGenerator
+from .llm_service import generate_structure
+from .image_service import generate_image
+from .pptx_generator import generate_presentation

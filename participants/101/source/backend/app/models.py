@@ -14,10 +14,10 @@ class Tone(str, Enum):
 
 class PresentationRequest(BaseModel):
     prompt: str
-    num_slides: int = 10
-    style: Style = Style.CORPORATE
-    tone: Tone = Tone.PROFESSIONAL
-    include_images: bool = True
+    num_slides: int
+    style: Style
+    tone: Tone
+    include_images: bool
 
 class SlideContent(BaseModel):
     title: str

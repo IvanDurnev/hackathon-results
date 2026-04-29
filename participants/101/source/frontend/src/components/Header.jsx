@@ -9,14 +9,12 @@ const Header = () => {
         <div className={styles.logo}>
           <FaRobot className={styles.logoIcon} />
           <div>
-            <h1>AI Presentation Generator</h1>
+            <h1>Генератор презентаций</h1>
             <p>Автоматическая генерация презентаций с помощью нейросетей</p>
           </div>
         </div>
         <div className={styles.badges}>
-          <span className={styles.badge}>Ростелеком</span>
-          <span className={styles.badge}>Leopold LLM</span>
-          <span className={styles.badge}>Yandex ART</span>
+          <a className={styles.badge} href='https://amur.rt.ru/'>Ростелеком</a>
         </div>
       </div>
     </header>

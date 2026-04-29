@@ -1,183 +1,191 @@
+import os
 import json
-import aiohttp
 import uuid
-from typing import List, Dict, Optional
-from backend.app.models import PresentationRequest, SlideContent
+from typing import Any, Optional
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_TOKEN = os.getenv("ROSTELECOM_API_TOKEN")
+API_URL = "https://ai.rt.ru/api/1.0/llama/chat"
 
 
-class LLMService:
-    def __init__(self, api_key: str, api_url: str = "https://ai.rt.ru/api/1.0/llama/chat"):
-        self.api_key = api_key
-        self.api_url = api_url
+def get_style_prompt(style: str, tone: str) -> str:
+    """Генерирует промпт для LLM на основе выбранного стиля"""
 
-    async def generate_presentation_structure(
-            self,
-            request: PresentationRequest,
-            document_content: str = ""
-    ) -> List[SlideContent]:
-        """Generate presentation structure using LLM (Leopold)"""
+    style_guidelines = {
+        "corporate": """
+СТИЛЬ: Корпоративный
+- Используй профессиональную, деловую лексику
+- Структурируй информацию с помощью списков и подзаголовков
+- Акцент на фактах, цифрах, KPI
+- Тон: уверенный, экспертный
+- Примеры формулировок: "Наша стратегия включает...", "Ключевые показатели эффективности..."
+""",
+        "creative": """
+СТИЛЬ: Креативный
+- Используй яркие метафоры и образные выражения
+- Применяй нестандартные формулировки и риторические вопросы
+- Добавляй элементы сторителлинга
+- Тон: вдохновляющий, энергичный
+- Примеры формулировок: "Представьте мир, где...", "Что если мы взглянем с другой стороны..."
+""",
+        "minimal": """
+СТИЛЬ: Минималистичный
+- Используй короткие, ёмкие фразы
+- Избегай воды и лишних деталей
+- Каждое предложение должно нести максимум смысла
+- Тон: лаконичный, точный
+- Примеры формулировок: "Вот факты.", "Результат: +35%", "Три шага к успеху."
+"""
+    }
 
-        prompt = self._build_prompt(request, document_content)
+    tone_guidelines = {
+        "professional": "Используй официально-деловой стиль, избегай разговорных выражений",
+        "friendly": "Будь дружелюбным и доступным, используй местоимение 'мы'",
+        "academic": "Будь наставником, объясняй сложные вещи простым языком"
+    }
 
-        # Generate UUID for request
-        request_uuid = str(uuid.uuid4())
+    style_text = style_guidelines.get(style, style_guidelines["corporate"])
+    tone_text = tone_guidelines.get(tone, "Будь профессиональным и убедительным")
 
-        async with aiohttp.ClientSession() as session:
-            headers = {
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json"
-            }
+    return f"""
+{style_text}
 
-            payload = {
-                "uuid": request_uuid,
-                "chat": {
-                    "model": "Qwen/Qwen2.5-72B-Instruct",
-                    "user_message": prompt,
-                    "contents": [],
-                    "message_template": "<s>{role}\n{content}</s>",
-                    "response_template": "<s>bot\n",
-                    "system_prompt": """Ты - профессиональный дизайнер презентаций и эксперт по структурированию информации. 
-                    Твоя задача - создавать четкие, логичные презентации на русском языке.
-                    Отвечай только в формате JSON.""",
-                    "max_new_tokens": 4096,
-                    "no_repeat_ngram_size": 15,
-                    "repetition_penalty": 1.1,
-                    "temperature": 0.3,
-                    "top_k": 40,
-                    "top_p": 0.9,
-                    "chat_history": []
-                }
-            }
+ДОПОЛНИТЕЛЬНЫЕ ТРЕБОВАНИЯ К ТОНУ: {tone_text}
 
-            try:
-                async with session.post(self.api_url, json=payload, headers=headers) as response:
-                    if response.status == 200:
-                        result = await response.json()
-                        # Parse response from Leopold
-                        if result and len(result) > 0:
-                            content = result[0].get("message", {}).get("content", "")
-                            # Extract JSON from response
-                            slides_data = self._extract_json(content)
-
-                            slides = []
-                            for slide in slides_data.get("slides", []):
-                                slides.append(SlideContent(
-                                    title=slide.get("title", "Без названия"),
-                                    content=slide.get("content", ""),
-                                    image_prompt=slide.get("image_prompt", "")
-                                ))
-
-                            return slides
-                    else:
-                        print(f"LLM API error: {response.status}")
-                        return self._get_fallback_structure(request)
-
-            except Exception as e:
-                print(f"LLM service error: {e}")
-                return self._get_fallback_structure(request)
-
-        return self._get_fallback_structure(request)
-
-    def _extract_json(self, content: str) -> dict:
-        """Extract JSON from LLM response"""
-        try:
-            # Try to find JSON in response
-            start = content.find('{')
-            end = content.rfind('}') + 1
-            if start != -1 and end != 0:
-                json_str = content[start:end]
-                return json.loads(json_str)
-        except:
-            pass
-
-        # Return default structure
-        return {
-            "slides": [
-                {"title": "Презентация", "content": "Содержание презентации", "image_prompt": ""}
-            ]
-        }
-
-    def _build_prompt(self, request: PresentationRequest, document_content: str) -> str:
-        prompt = f"""Создай презентацию на {request.num_slides} слайдов.
-
-Тема: {request.prompt}
-
-Стиль оформления: {request.style.value}
-Тон повествования: {request.tone.value}
+ВАЖНО:
+1. Для креативного стиля: добавляй по 1-2 риторических вопроса на слайд
+2. Для минималистичного: каждый слайд должен быть не более 50 слов
+3. Для корпоративного: используй подзаголовки и маркированные списки
 """
 
-        if document_content:
-            prompt += f"\n\nСодержание документа для анализа:\n{document_content[:6000]}\n"
 
-        prompt += """
+def generate_structure(
+        prompt: str,
+        doc_text: str,
+        num_slides: int,
+        style: str,
+        tone: str
+) -> Optional[list[Any]]:
+    """
+    Генерация структуры презентации через LLM API Ростелекома
+    """
 
-Ответ должен быть в строгом формате JSON:
-{
-    "slides": [
-        {
-            "title": "Заголовок слайда",
-            "content": "Основное содержание слайда (используй \\n для переноса строк, маркированные списки)",
-            "image_prompt": "Описание для генерации изображения на русском языке"
+    # Получаем промпт для стиля
+    style_prompt = get_style_prompt(style, tone)
+
+    # Формируем контекст с учётом документа
+    if doc_text and len(doc_text) > 0:
+        prompt_with_context = (
+            f"Тема презентации: {prompt}\n\n"
+            f"Используй этот документ как источник информации:\n{doc_text[:1500]}"
+        )
+    else:
+        prompt_with_context = f"Тема презентации: {prompt}"
+
+    # Используем f-string без .format(), чтобы избежать конфликта с фигурными скобками JSON
+    system_prompt = f"""Ты — профессиональный автор презентаций с 10-летним опытом.
+Твоя задача — написать текст презентации в виде JSON структуры на тему {prompt}
+
+{style_prompt}
+
+ФОРМАТ ОТВЕТА:
+Верни ТОЛЬКО валидный JSON-массив слайдов. Без markdown, без дополнительного текста.
+
+ФОРМАТ КАЖДОГО СЛАЙДА:
+{{
+  "title": "Заголовок слайда (5-8 слов)",
+  "content": "Основной текст слайда. Может содержать переносы строк. Для корпоративного стиля используй маркированные списки через \\n- пункт. Для креативного - добавляй вопросы. Для минималистичного - короткие фразы.",
+  "image_prompt": "Запрос для генерации изображения (на русском или английском)"
+}}
+
+Создай ровно {num_slides} слайдов.
+Слайды должны логически вытекать один из другого, создавая цельную историю."""
+
+    headers = {
+        "Authorization": f"Bearer {API_TOKEN}",
+        "Content-Type": "application/json"
+    }
+
+
+    payload = {
+        "uuid": str(uuid.uuid4()),
+        "chat": {
+            "model": "Qwen/Qwen2.5-72B-Instruct",
+            "user_message": prompt_with_context,
+            "contents": [
+                {
+                    "type": "text",
+                    "text": system_prompt,
+                    "isUrl": False,
+                    "isAudioAsUrl": False,
+                    "idFile": 0,
+                    "fileName": "",
+                    "image_url": None,
+                    "audio_url": None,
+                    "input_audio": None
+                }
+            ],
+            "message_template": "<s>{{role}}\n{{content}}</s>",
+            "response_template": "<s>bot\n",
+            "system_prompt": "Ты - эксперт по созданию презентаций. Строго следуй инструкциям пользователя.",
+            "max_new_tokens": 4000,
+            "no_repeat_ngram_size": 15,
+            "repetition_penalty": 1.1,
+            "temperature": 0.4,
+            "top_k": 40,
+            "top_p": 0.9,
+            "chat_history": []
         }
-    ]
-}
+    }
 
-Требования:
-1. Первый слайд - титульный
-2. Каждый слайд должен содержать ключевую мысль
-3. Используй маркированные списки для улучшения читаемости
-4. Image prompt должен быть детальным описанием на русском языке
-5. Общий объем: примерно 2-3 предложения на слайд
+    try:
+        print(f"⚡ Отправка запроса к LLM (стиль: {style}, тон: {tone})...")
+        print(f"📝 Тема: {prompt[:100]}...")
 
-Создай презентацию в указанном JSON формате:"""
+        response = requests.post(API_URL, headers=headers, json=payload, timeout=180)
+        response.raise_for_status()
 
-        return prompt
+        data = response.json()
 
-    def _get_fallback_structure(self, request: PresentationRequest) -> List[SlideContent]:
-        """Return fallback structure if API fails"""
-        slides = []
+        # Безопасный парсинг ответа
+        if isinstance(data, list):
+            raw_text = data[0].get("message", {}).get("content", "")
+        else:
+            raw_text = data.get("message", {}).get("content", "")
 
-        # Title slide
-        slides.append(SlideContent(
-            title=request.prompt,
-            content="Презентация",
-            image_prompt="Профессиональный фон для презентации"
-        ))
+        if not raw_text:
+            raise ValueError("Пустой ответ от модели")
 
-        # Content slides
-        for i in range(request.num_slides - 1):
-            slides.append(SlideContent(
-                title=f"Ключевой аспект {i + 1}",
-                content="• Важный пункт\n• Второй важный пункт\n• Третий пункт",
-                image_prompt="Иллюстрация к теме презентации"
-            ))
+        # Очистка от markdown
+        raw_text = (
+            raw_text
+            .replace("```json", "")
+            .replace("```", "")
+            .strip()
+        )
 
-        return slides
+        print(f"📄 Получен ответ от LLM (первые 200 символов):\n{raw_text[:200]}...")
 
-    async def process_document(self, file_content: bytes, filename: str) -> str:
-        """Extract text from uploaded document"""
-        if filename.lower().endswith('.pdf'):
-            from PyPDF2 import PdfReader
-            import io
-            try:
-                reader = PdfReader(io.BytesIO(file_content))
-                text = ""
-                for page in reader.pages:
-                    text += page.extract_text()
-                return text[:10000]  # Limit length
-            except Exception as e:
-                print(f"PDF processing error: {e}")
-                return ""
+        structure = json.loads(raw_text)
 
-        elif filename.lower().endswith('.docx'):
-            from docx import Document
-            import io
-            try:
-                doc = Document(io.BytesIO(file_content))
-                text = "\n".join([para.text for para in doc.paragraphs])
-                return text[:10000]
-            except Exception as e:
-                print(f"DOCX processing error: {e}")
-                return ""
+        if not isinstance(structure, list):
+            raise ValueError("LLM вернул не список")
 
-        return ""
+        print(f"✅ Успешно сгенерировано {len(structure)} слайдов в стиле {style}")
+
+        return structure[:num_slides]
+
+    except json.JSONDecodeError as e:
+        print(f"❌ Ошибка JSON парсинга: {e}")
+        print(f"Ответ модели (первые 500 символов):\n{raw_text[:500] if 'raw_text' in locals() else 'Нет ответа'}")
+        return None
+
+    except Exception as e:
+        print(f"❌ Ошибка API: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"Статус: {e.response.status_code}")
+            print(f"Ответ сервера: {e.response.text[:500]}")
+        return None

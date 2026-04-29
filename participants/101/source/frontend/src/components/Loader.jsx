@@ -15,7 +15,7 @@ const Loader = ({ message = 'Генерация презентации...' }) =>
         <div className={styles.spinner}></div>
         <div className={styles.text}>
           <h3>{message}</h3>
-          <p>Это может занять несколько секунд</p>
+          <p>Это может занять несколько минут</p>
         </div>
         <div className={styles.steps}>
           {steps.map((step, index) => (
