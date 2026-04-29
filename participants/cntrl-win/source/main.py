@@ -6,6 +6,13 @@ from llm_service import generate_presentation_content
 from ppt_generator import create_pptx
 
 app = FastAPI()
+@app.get("/")
+def root():
+    return {
+        "status": "ok",
+        "message": "API is running"
+    }
+
 
 
 @app.post("/generate-presentation")
