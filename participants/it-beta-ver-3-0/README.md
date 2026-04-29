@@ -3,5 +3,5 @@
 - Repository: https://github.com/M0ri6/bpk-it.git
 - Video: https://disk.yandex.ru/d/2MxGMfHzzusW8Q
 - Description: n/a
-- Updated at: 2026-04-29T03:47:49+00:00
+- Updated at: 2026-04-29T04:00:04+00:00
 - Repository accessible: yes
