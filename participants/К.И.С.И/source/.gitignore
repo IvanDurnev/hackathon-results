@@ -1,0 +1,295 @@
+# ============================================
+# AI Генератор Презентаций - .gitignore
+# ============================================
+
+# ============================================
+# Environment Variables & Secrets
+# ============================================
+.env
+.env.local
+.env.production
+.env.*.local
+*.pem
+*.key
+secrets/
+
+# ============================================
+# Dependencies
+# ============================================
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.npm
+.yarn/
+
+# Python
+venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ============================================
+# Build & Distribution
+# ============================================
+
+# Frontend
+dist/
+dist-ssr/
+build/
+.next/
+out/
+
+# Backend
+*.egg
+*.egg-info/
+dist-python/
+build-python/
+wheels/
+*.whl
+
+# ============================================
+# IDE & Editors
+# ============================================
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ============================================
+# Operating System Files
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# Logs & Databases
+# ============================================
+
+# Logs
+logs/
+*.log
+log/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+
+# ============================================
+# Testing & Coverage
+# ============================================
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output/
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Test reports
+test-results/
+junit.xml
+
+# ============================================
+# Temporary Files
+# ============================================
+
+# General
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+*.orig
+
+# Uploads & Generated files
+uploads/
+output/
+generated/
+/tmp/
+.tmp/
+
+# ============================================
+# Package Manager Locks (optional)
+# ============================================
+
+# Uncomment if you want to ignore lock files
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+# poetry.lock
+
+# ============================================
+# Docker
+# ============================================
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# ============================================
+# Cloud & Deployment
+# ============================================
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Serverless
+.serverless/
+
+# Vercel
+.vercel
+
+# ============================================
+# AI & ML
+# ============================================
+
+# Model weights
+*.h5
+*.pb
+*.onnx
+*.pth
+*.pt
+checkpoints/
+models/
+
+# Datasets
+data/
+datasets/
+*.csv
+*.parquet
+
+# ============================================
+# Jupyter Notebooks
+# ============================================
+
+.ipynb_checkpoints/
+*.ipynb
+
+# ============================================
+# Project Specific
+# ============================================
+
+# Generated presentations
+*.pptx
+presentations/
+
+# Cached API responses
+.cache/
+api-cache/
+
+# Local configuration
+local.config.js
+local.settings.json
+
+# Documentation builds
+docs/_build/
+site/
+
+# ============================================
+# Nix
+# ============================================
+
+# Direnv
+.direnv/
+.envrc.cache
+
+# Nix
+result
+result-*
+
+# ============================================
+# Misc
+# ============================================
+
+# Backup files
+*.backup
+*.old
+
+# Archive files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Lock files for IDEs
+.~lock.*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
