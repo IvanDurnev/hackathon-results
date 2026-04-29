@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>XL Table Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f5f0;--surface:#fff;--surface2:#f0f0eb;--border:#ddd;
+  --text:#1a1a1a;--muted:#777;--primary:#0b6b6f;--primary-h:#07565a;
+  --psoft:#dceeee;--font:"Inter",sans-serif;--lampa:#6ba8ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:var(--font);font-size:14px;color:var(--text);background:var(--bg);}
+body{min-height:100dvh;overflow:hidden;}
+.app{
+  width:100%;
+  height:100vh;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+}
+.topbar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(255,255,255,.9);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;z-index:30;}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin-right:6px;}
+.logo{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--primary);color:#fff;}
+.btn{border:1px solid var(--border);border-radius:7px;padding:6px 12px;font:inherit;font-size:13px;
+  font-weight:600;cursor:pointer;background:var(--surface);color:var(--text);
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;min-height:32px;}
+.btn:hover{background:var(--surface2);}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary);}
+.btn.primary:hover{background:var(--primary-h);}
+.btn.active{background:var(--psoft);color:var(--primary);border-color:var(--primary);}
+.sep{width:1px;height:20px;background:var(--border);flex-shrink:0;}
+.spacer{flex:1;}
+.data-progress{font-size:12px;color:var(--muted);padding:0 8px;white-space:nowrap;}
+.view{display:none;flex:1;overflow:hidden;}
+.view.active{display:flex;flex-direction:column;}
+.sheet-menubar{display:none;align-items:center;gap:2px;padding:4px 14px;border-bottom:1px solid var(--border);background:#f8f8f5;}
+.sheet-menubar .mi{border:none;background:transparent;padding:6px 10px;border-radius:6px;cursor:pointer;font:inherit;font-size:13px;}
+.sheet-menubar .mi:hover{background:#eaeae4;}
+.sheet-menubar.active{display:flex;}
+.sheet-menubar{position:relative;z-index:45;}
+.menu-item{position:relative;}
+.menu-item > .mi{display:flex;align-items:center;gap:6px;}
+.menu-drop{position:absolute;top:calc(100% + 4px);left:0;display:none;min-width:250px;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:6px 0;max-height:62vh;overflow:auto;}
+.menu-item.open > .menu-drop{display:block;}
+.menu-action{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;font-size:13px;cursor:pointer;white-space:nowrap;}
+.menu-action:hover{background:var(--surface2);}
+.menu-key{font-size:11px;color:var(--muted);}
+.menu-sep{height:1px;background:var(--border);margin:5px 0;}
+.sheet-toolbar{display:none;align-items:center;gap:6px;padding:6px 14px;border-bottom:1px solid var(--border);background:#fff;flex-wrap:wrap;}
+.sheet-toolbar.active{display:flex;}
+.tb-btn,.tb-sel{height:30px;border:1px solid var(--border);border-radius:7px;background:#fff;padding:0 10px;font:inherit;font-size:13px;cursor:pointer;}
+.tb-btn:hover,.tb-sel:hover{background:var(--surface2);}
+.tb-btn.icon{width:32px;padding:0;display:grid;place-items:center;font-weight:700;}
+.tb-btn.wide{min-width:68px;}
+.tb-sel{min-width:70px;}
+.tb-sep{width:1px;height:22px;background:var(--border);}
+
+/* AUTH */
+#auth .view-body{
+  flex:1;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg, #cee8e2 0%, #c3e1dc 55%, #b9dad4 100%);
+}
+#auth .card{
+  position:relative;
+  z-index:2;
+  width:min(100%, 306px);
+  background:#f8f9f8;
+  border:none;
+  border-radius:34px;
+  padding:42px 34px 32px;
+  box-shadow:0 18px 50px rgba(40,65,70,.12);
+}
+#auth .card h1{
+  font-size:38px;
+  line-height:1.07;
+  text-align:center;
+  margin-bottom:32px;
+  color:#18233a;
+}
+#auth .field{display:grid;gap:6px;margin-bottom:12px;}
+#auth .field label{display:none;}
+#auth .inp{
+  border-radius:999px;
+  border:1px solid #d2d8d7;
+  background:#f3f5f4;
+  height:48px;
+  padding:0 16px;
+}
+#auth .btn.primary{
+  border-radius:999px;
+  min-height:46px;
+  font-size:18px;
+  font-weight:600;
+  background:#068e7c;
+  border-color:#068e7c;
+}
+#auth .btn.primary:hover{background:#067768;}
+#auth .auth-waves{
+  position:absolute;
+  inset:auto -22% -15px -22%;
+  height:370px;
+  pointer-events:none;
+}
+#auth .auth-waves .wave{
+  position:absolute;
+  left:-10%;
+  width:120%;
+  border-radius:42% 58% 40% 60% / 60% 40% 60% 40%;
+  transform-origin:center;
+}
+#auth .auth-waves .wave.w1{
+  bottom:118px;
+  height:200px;
+  background:rgba(170, 211, 206, .62);
+  animation:authWave 19s ease-in-out infinite;
+}
+#auth .auth-waves .wave.w2{
+  bottom:142px;
+  height:170px;
+  background:rgba(152, 199, 192, .42);
+  animation:authWave 25s ease-in-out infinite reverse;
+}
+#auth .auth-waves .wave.w3{
+  bottom:170px;
+  height:145px;
+  background:rgba(140, 188, 182, .34);
+  animation:authWave 31s ease-in-out infinite;
+}
+@keyframes authWave{
+  0%{transform:translateX(-2%) rotate(0deg);}
+  50%{transform:translateX(2%) rotate(1deg);}
+  100%{transform:translateX(-2%) rotate(0deg);}
+}
+.sub{color:var(--muted);margin-bottom:20px;font-size:13px;}
+.field{display:grid;gap:6px;margin-bottom:14px;}
+.field label{font-size:13px;font-weight:600;}
+.inp,.sel,.ta{width:100%;border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;font:inherit;color:var(--text);background:var(--surface);}
+.inp:focus,.sel:focus,.ta:focus{outline:2px solid rgba(11,107,111,.3);border-color:var(--primary);}
+.ta{resize:vertical;min-height:100px;}
+.err{color:#c0392b;font-size:12px;margin-top:4px;display:none;}
+
+/* PROMPT */
+#prompt .view-body{
+  flex:1;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg, #f4f8f7 0%, #edf4f3 55%, #e7f0ee 100%);
+}
+.prompt-search{width:min(100%,760px);display:grid;justify-items:center;gap:26px;position:relative;z-index:2;}
+.lampa-logo{font-size:72px;font-weight:700;letter-spacing:.2px;color:var(--lampa);line-height:1;}
+.search-shell{width:100%;display:flex;align-items:flex-end;gap:8px;background:var(--surface);border:1px solid #d9d9d9;border-radius:28px;padding:12px 14px 12px 16px;box-shadow:0 1px 6px rgba(32,33,36,.2);}
+.search-shell:focus-within{border-color:#8ab4ff;box-shadow:0 2px 10px rgba(56,119,241,.25);}
+.search-ta{flex:1;border:none;outline:none;background:transparent;font:inherit;font-size:17px;line-height:1.4;resize:none;min-height:28px;max-height:220px;overflow:auto;}
+.icon-btn{width:38px;height:38px;border:none;border-radius:999px;background:transparent;display:grid;place-items:center;cursor:pointer;}
+.icon-btn:hover{background:#f0f3f8;}
+.icon-btn.listening{
+  background:rgba(211, 47, 47, 0.14);
+  color:#b00020;
+  animation:micPulse 1.4s ease-in-out infinite;
+}
+@keyframes micPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(176, 0, 32, 0.25);}
+  50%{box-shadow:0 0 0 8px rgba(176, 0, 32, 0);}
+}
+.prompt-waves{
+  position:absolute;
+  inset:auto -22% -15px -22%;
+  height:370px;
+  pointer-events:none;
+}
+.prompt-waves .wave{
+  position:absolute;
+  left:-10%;
+  width:120%;
+  border-radius:42% 58% 40% 60% / 60% 40% 60% 40%;
+  transform-origin:center;
+}
+.prompt-waves .wave.w1{
+  bottom:118px;
+  height:200px;
+  background:rgba(170, 211, 206, .155);
+  animation:authWave 19s ease-in-out infinite;
+}
+.prompt-waves .wave.w2{
+  bottom:142px;
+  height:170px;
+  background:rgba(152, 199, 192, .105);
+  animation:authWave 25s ease-in-out infinite reverse;
+}
+.prompt-waves .wave.w3{
+  bottom:170px;
+  height:145px;
+  background:rgba(140, 188, 182, .085);
+  animation:authWave 31s ease-in-out infinite;
+}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+.hint-box{background:#eef6f6;border:1px solid #c9e2e2;border-radius:10px;padding:12px;margin-bottom:16px;
+  color:#315b5e;font-size:13px;line-height:1.45;}
+.examples{display:grid;gap:7px;margin:10px 0 2px;}
+.ex-btn{border:1px solid var(--border);background:#fafaf8;border-radius:8px;padding:8px 10px;text-align:left;
+  font:inherit;font-size:13px;cursor:pointer;color:var(--text);}
+.ex-btn:hover{background:var(--surface2);border-color:var(--primary);}
+.secondary-link{border:none;background:transparent;color:var(--primary);font:inherit;font-weight:600;cursor:pointer;padding:6px 0;}
+
+/* EDITOR */
+.formula-bar{display:none;}
+.cell-addr{font-weight:700;color:var(--primary);min-width:44px;}
+.cell-val{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.undo-hint{font-size:11px;color:var(--muted);}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.editor-wrap{flex:1;display:flex;overflow:hidden;padding:14px 14px 12px;gap:12px;}
+.status-pill{border:1px solid #c9e2e2;background:#eef6f6;color:#315b5e;border-radius:999px;padding:3px 9px;font-size:12px;}
+.right-panel{width:350px;flex-shrink:0;display:flex;flex-direction:column;border-left:1px solid var(--border);
+  background:var(--surface);position:relative;z-index:20;border-radius:12px;overflow:hidden;}
+.sheet-wrap{border:1px solid var(--border);border-radius:12px;background:var(--surface);}
+.panel-head{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:13px;}
+.panel-section{display:none;flex:1;min-height:0;}
+.panel-section.active{display:flex;flex-direction:column;}
+.filters-body{padding:12px;overflow:auto;display:grid;gap:12px;}
+.filter-card{border:1px solid var(--border);border-radius:10px;padding:10px;background:#fafaf8;display:grid;gap:8px;}
+.filter-card h3{font-size:13px;margin:0;}
+.check-row{display:flex;gap:8px;align-items:center;font-size:13px;}
+.small-note{font-size:12px;color:var(--muted);line-height:1.4;}
+
+/* SHEET */
+.sheet-wrap{flex:1;overflow:auto;position:relative;outline:none;}
+.sheet-table{border-collapse:collapse;background:var(--surface);width:100%;table-layout:fixed;}
+.sheet-table th,.sheet-table td{border:1px solid #e0e0e0;padding:0;height:28px;position:relative;}
+.sheet-table.no-grid th,.sheet-table.no-grid td{border-color:transparent;}
+.sheet-table th{background:#f5f5f0;font-weight:600;font-size:12px;text-align:center;user-select:none;
+  cursor:pointer;position:sticky;top:0;z-index:3;white-space:nowrap;min-width:0;}
+.sheet-table th:first-child{min-width:42px;width:42px;background:#eaeae5;cursor:default;left:0;z-index:4;}
+.sheet-table td:first-child{background:#f5f5f0;font-size:11px;color:var(--muted);text-align:center;
+  cursor:default;position:sticky;left:0;z-index:2;min-width:42px;width:42px;}
+.sa::after{content:" \25B2";font-size:9px;}
+.sd::after{content:" \25BC";font-size:9px;}
+.ct{display:block;padding:4px 7px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  font-size:13px;height:100%;line-height:20px;}
+.sheet-table td.sel{outline:2px solid var(--primary);outline-offset:-1px;z-index:1;}
+.sheet-table td.sel .ct{background:var(--psoft);}
+.sheet-table td.ir{background:#d6efef!important;}
+.col-resize-handle{
+  position:absolute;
+  top:0;
+  right:-3px;
+  width:6px;
+  height:100%;
+  cursor:col-resize;
+  z-index:8;
+}
+.row-resize-handle{
+  position:absolute;
+  left:0;
+  bottom:-3px;
+  width:100%;
+  height:6px;
+  cursor:row-resize;
+  z-index:8;
+}
+#ce{position:absolute;z-index:10;display:none;border:2px solid var(--primary);border-radius:3px;
+  padding:3px 7px;font:inherit;font-size:13px;resize:none;overflow:hidden;
+  background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.15);}
+
+/* CTX MENU */
+.cmenu{position:fixed;z-index:1000;background:var(--surface);border:1px solid var(--border);
+  border-radius:9px;box-shadow:0 8px 28px rgba(0,0,0,.14);padding:5px 0;min-width:210px;
+  display:none;user-select:none;}
+.cmenu.on{display:block;}
+.ci{padding:8px 16px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;}
+.ci:hover{background:var(--surface2);}
+.ci.red{color:#c0392b;}
+.ci.red:hover{background:#fdf0f0;}
+.ci .ck{margin-left:auto;font-size:11px;color:var(--muted);font-family:monospace;}
+.cs{height:1px;background:var(--border);margin:4px 0;}
+
+.chat-head{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;
+  align-items:center;justify-content:space-between;font-weight:600;font-size:13px;}
+.chat-msgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;}
+.msg{padding:7px 10px;border-radius:9px;font-size:13px;max-width:92%;line-height:1.5;}
+.msg.ai{background:var(--surface2);align-self:flex-start;}
+.msg.user{background:var(--psoft);color:var(--primary);align-self:flex-end;}
+.msg.thinking{display:flex;align-items:center;gap:3px;min-height:28px;}
+.dot{width:6px;height:6px;border-radius:999px;background:#9aa0a6;opacity:.35;animation:blink 1.2s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}
+.dot:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0);}40%{opacity:1;transform:translateY(-1px);}}
+.chat-foot{display:flex;gap:6px;padding:9px 11px;border-top:1px solid var(--border);}
+.chat-foot{flex-wrap:wrap;align-items:center;}
+.chat-selection-chips{display:flex;flex-wrap:wrap;gap:6px;width:100%;}
+.sel-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#eef3ff;border:1px solid #c8d7ff;color:#274a99;
+  border-radius:999px;padding:4px 8px;font-size:12px;
+}
+.sel-chip button{border:none;background:transparent;cursor:pointer;color:#3d4d7a;font-size:12px;line-height:1;}
+.selection-add-btn{
+  position:absolute;display:none;z-index:12;
+  border:1px solid #9db9ff;background:#e8f0ff;color:#174ea6;
+  border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;
+  box-shadow:0 6px 16px rgba(20,40,120,.16);
+}
+.selection-add-btn.show{display:inline-flex;}
+
+/* Analytics tab */
+.analytics-panel{
+  display:none;
+  flex-direction:column;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--surface);
+  overflow:hidden;
+  min-height:0;
+  flex:1;
+}
+.analytics-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);}
+.analytics-controls{padding:10px 12px;display:grid;gap:10px;border-bottom:1px solid var(--border);}
+.chart-wrap{position:relative;flex:1;min-height:260px;padding:10px;}
+.chart-type-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.chart-card{border:1px solid var(--border);border-radius:8px;padding:6px;background:#fafaf8;cursor:pointer;display:grid;place-items:center;min-height:52px;}
+.chart-card.active{border-color:var(--primary);background:var(--psoft);}
+.editor-wrap.tab-analytics .sheet-wrap{display:none;}
+.editor-wrap.tab-analytics .right-panel{display:none;}
+.editor-wrap.tab-analytics .analytics-panel{display:flex;}
+.chat-foot .inp{flex:1;padding:6px 10px;font-size:13px;}
+
+.sheet-bottom-tabs{
+  height:38px;
+  border-top:1px solid var(--border);
+  background:#f1f3f4;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 10px;
+}
+.sheet-tab-icon{
+  width:22px;height:22px;border:none;background:transparent;border-radius:6px;cursor:pointer;
+  color:#5f6368;font-size:16px;display:grid;place-items:center;
+}
+.sheet-tab-icon:hover{background:#e4e8ea;}
+.sheet-tab{
+  border:none;background:transparent;color:#444;font-size:14px;padding:6px 12px;border-radius:8px;cursor:pointer;
+}
+.sheet-tab.active{background:#dfe8ff;color:#1a56b8;font-weight:600;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;place-items:center;}
+.modal-bg.on{display:grid;}
+.modal{background:var(--surface);border-radius:14px;padding:26px;width:min(100%,480px);max-height:88vh;overflow:auto;}
+.modal h2{margin-bottom:14px;}
+.sc-list{display:grid;gap:5px;}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;
+  border-radius:7px;background:var(--surface2);font-size:13px;}
+kbd{background:#e8e8e4;border:1px solid #ccc;border-radius:4px;padding:2px 6px;font-family:monospace;font-size:11px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:#222;color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;
+  transition:transform .22s;z-index:500;pointer-events:none;}
+.toast.on{transform:translateX(-50%) translateY(0);}
+
+/* Responsive layout */
+@media (max-width: 1200px){
+  .right-panel{width:320px;}
+  .editor-wrap{padding:10px;gap:10px;}
+}
+
+@media (max-width: 980px){
+  .topbar{padding:8px 10px;gap:6px;}
+  .brand{font-size:14px;}
+  .sheet-menubar,.sheet-toolbar{padding-left:10px;padding-right:10px;}
+  .editor-wrap{
+    flex-direction:column;
+    padding:8px;
+    gap:8px;
+    min-height:0;
+  }
+  .sheet-wrap{
+    min-height:0;
+    height:56%;
+  }
+  .right-panel{
+    width:100%;
+    min-height:0;
+    height:44%;
+    border-left:none;
+    border-top:1px solid var(--border);
+    border-radius:10px;
+  }
+  .chart-type-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+
+@media (max-width: 640px){
+  html,body{font-size:13px;}
+  .topbar{flex-wrap:wrap;}
+  .btn{padding:6px 9px;font-size:12px;min-height:30px;}
+  .logo{width:28px;height:28px;border-radius:8px;}
+  .lampa-logo{font-size:52px;}
+  #auth .view-body,#prompt .view-body{padding:12px;}
+  #auth .card{padding:30px 22px 26px;}
+  #auth .card h1{font-size:32px;margin-bottom:20px;}
+  .sheet-table th{min-width:110px;}
+  #ce{min-width:110px;}
+  .sheet-wrap{height:54%;}
+  .right-panel{height:46%;}
+  .chat-msgs{padding:8px;}
+}
+
+@media (max-height: 740px){
+  .lampa-logo{font-size:48px;}
+  .prompt-search{gap:14px;}
+  #auth .card{padding:28px 22px 24px;}
+  #auth .card h1{font-size:30px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+        <path d="M4 6H20M4 12H20M4 18H14" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    Бюджетный аналитический конструктор
+  </div>
+  <div id="editorTools" style="display:none;display:contents;">
+    <button class="btn" id="btnUndoTop" type="button">&#8630; Назад</button>
+    <button class="btn" id="btnRedoTop" type="button">&#8631; Вперед</button>
+    <button class="btn" id="btnAnalytics" type="button">Аналитика</button>
+    <button class="btn" id="btnExport" type="button">Экспорт</button>
+    <span class="data-progress" id="dataProgress"></span>
+    <div class="spacer"></div>
+    <button class="btn" id="btnKeys" type="button">Справка</button>
+    <button class="btn" id="btnChat" type="button">AI</button>
+  </div>
+</header>
+<div class="sheet-menubar" id="sheetMenubar" style="display:none!important;">
+  <!-- Dynamic menu -->
+</div>
+<div class="sheet-toolbar" id="sheetToolbar" style="display:none!important;"></div>
+
+<!-- AUTH -->
+<section id="auth" class="view active">
+  <div class="view-body">
+    <div class="card">
+      <h1>Добро<br>пожаловать!</h1>
+      <div class="field">
+        <label for="fEmail">Логин</label>
+        <input class="inp" id="fEmail" type="text" placeholder="Имя пользователя">
+        <span class="err" id="errEmail">Введите логин</span>
+      </div>
+      <div class="field">
+        <label for="fPass">Пароль</label>
+        <input class="inp" id="fPass" type="password" placeholder="Пароль">
+        <span class="err" id="errPass">Введите пароль</span>
+      </div>
+      <button class="btn primary" id="btnLogin" type="button" style="width:100%;justify-content:center;margin-top:4px;">Войти</button>
+    </div>
+    <div class="auth-waves" aria-hidden="true">
+      <div class="wave w1"></div>
+      <div class="wave w2"></div>
+      <div class="wave w3"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMPT -->
+<section id="prompt" class="view">
+  <div class="view-body">
+    <div class="prompt-search">
+      <h2 class="lampa-logo">Lampa</h2>
+      <div class="search-shell">
+        <textarea id="promptTa" class="search-ta" rows="1" placeholder="Введите запрос и нажмите Enter"></textarea>
+        <button class="icon-btn" id="btnVoice" type="button" title="Голосовой ввод" aria-label="Голосовой ввод">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15a3 3 0 0 0 3-3V7a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z" stroke="#5f6368" stroke-width="1.8"/>
+            <path d="M18 11.5a6 6 0 1 1-12 0" stroke="#5f6368" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M12 17.5V21M9.5 21h5" stroke="#5f6368" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="btn primary" id="btnToEditor" type="button">Найти</button>
+      </div>
+    </div>
+    <div class="prompt-waves" aria-hidden="true">
+      <div class="wave w1"></div>
+      <div class="wave w2"></div>
+      <div class="wave w3"></div>
+    </div>
+  </div>
+</section>
+
+<!-- EDITOR -->
+<section id="editor" class="view">
+  <div class="formula-bar">
+    <span class="status-pill" id="planStatus">План v1 · dataset demo</span>
+    <span class="cell-addr" id="cAddr">A1</span>
+    <span class="cell-val" id="cVal">&#8212;</span>
+    <span class="undo-hint" id="uHint"></span>
+  </div>
+  <div class="editor-wrap" id="editorWrap">
+    <div class="sheet-wrap" id="sw" tabindex="0">
+      <table class="sheet-table" id="st"></table>
+      <textarea id="ce" rows="1"></textarea>
+      <button class="selection-add-btn" id="btnAddSelection" type="button">Добавить в чат</button>
+    </div>
+    <div class="right-panel" id="chatPanel">
+      <div class="panel-head">
+        <span>AI помощник</span>
+      </div>
+      <div class="panel-section active" id="aiSection">
+        <div class="chat-msgs" id="chatMsgs">
+          <div class="msg ai">Привет! Я твой AI-ассистент для редактирования таблицы. Напиши, что изменить.</div>
+        </div>
+        <div class="chat-foot">
+          <div class="chat-selection-chips" id="chatSelectionChips"></div>
+          <input class="inp" id="chatInp" placeholder="Команда для таблицы" autocomplete="off">
+          <button class="btn primary" id="btnChatSend" type="button">Применить</button>
+        </div>
+      </div>
+    </div>
+    <div class="analytics-panel" id="analyticsPanel">
+      <div class="analytics-head">
+        <strong>Визуализация</strong>
+        <button class="btn" id="btnAnalyticsClose" type="button">К таблице</button>
+      </div>
+      <div class="analytics-controls">
+        <div class="chart-type-grid" id="chartTypeGrid"></div>
+        <div class="field">
+          <label for="chartMetric">Показатель</label>
+          <select class="sel" id="chartMetric"></select>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="sheet-bottom-tabs">
+    <button class="sheet-tab active" id="tabTable" type="button">Таблица</button>
+    <button class="sheet-tab" id="tabAnalytics" type="button">Аналитика</button>
+  </div>
+</section>
+
+</div>
+
+<!-- CTX MENU -->
+<div class="cmenu" id="ctxMenu">
+  <div class="ci" id="ctxCopy">&#128203; Копировать <span class="ck">Ctrl+C</span></div>
+  <div class="ci" id="ctxPaste">&#128204; Вставить <span class="ck">Ctrl+V</span></div>
+  <div class="ci" id="ctxClear">Скрыть значение в текущем виде <span class="ck">Del</span></div>
+  <div class="cs"></div>
+  <div class="ci" id="ctxRowUp">Добавить строку-примечание выше</div>
+  <div class="ci" id="ctxRowDn">&#8595; Строка ниже</div>
+  <div class="ci red" id="ctxRowDel">&#10005; Удалить строку</div>
+  <div class="cs"></div>
+  <div class="ci" id="ctxColL">&#8592; Столбец слева</div>
+  <div class="ci" id="ctxColR">&#8594; Столбец справа</div>
+  <div class="ci red" id="ctxColDel">&#10005; Удалить столбец</div>
+  <div class="cs" id="ctxRenS"></div>
+  <div class="ci" id="ctxRen">&#9998; Переименовать столбец</div>
+</div>
+
+<div class="modal-bg" id="exportModal">
+  <div class="modal">
+    <h2>Экспорт отчёта</h2>
+    <div class="field">
+      <label for="exportName">Название файла</label>
+      <input class="inp" id="exportName" type="text" value="table-export" placeholder="Например: budget-report">
+    </div>
+    <div class="field">
+      <label for="exportFmt">Формат</label>
+      <select class="sel" id="exportFmt">
+        <option value="xls">Excel (.xls)</option>
+        <option value="csv">CSV Windows-1251 (.csv)</option>
+        <option value="tsv">TSV (.tsv)</option>
+        <option value="json">JSON (.json)</option>
+      </select>
+    </div>
+    <label class="check-row" style="margin-bottom:14px;"><input type="checkbox" id="exportDate"> Включить дату в название</label>
+    <button class="btn primary" id="btnExportDownload" type="button">Скачать</button>
+  </div>
+</div>
+
+<!-- SHORTCUTS MODAL -->
+<div class="modal-bg" id="keysModal">
+  <div class="modal">
+    <h2>Справка</h2>
+    <div class="sc-list">
+      <div class="sc-row"><span>Навигация</span><kbd>&#8593; &#8595; &#8592; &#8594;</kbd></div>
+      <div class="sc-row"><span>Следующая / предыдущая</span><kbd>Tab / Shift+Tab</kbd></div>
+      <div class="sc-row"><span>Подтвердить + вниз</span><kbd>Enter</kbd></div>
+      <div class="sc-row"><span>Режим редактирования</span><kbd>F2 или печать</kbd></div>
+      <div class="sc-row"><span>Отменить редактирование</span><kbd>Escape</kbd></div>
+      <div class="sc-row"><span>Очистить ячейку</span><kbd>Delete</kbd></div>
+      <div class="sc-row"><span>Копировать / Вставить</span><kbd>Ctrl+C / Ctrl+V</kbd></div>
+      <div class="sc-row"><span>Отмена / Повтор</span><kbd>Ctrl+Z / Ctrl+Y</kbd></div>
+      <div class="sc-row"><span>Выделить всё</span><kbd>Ctrl+A</kbd></div>
+      <div class="sc-row"><span>Расширить выделение</span><kbd>Shift+стрелки</kbd></div>
+      <div class="sc-row"><span>Первая / последняя</span><kbd>Ctrl+Home / Ctrl+End</kbd></div>
+      <div class="sc-row"><span>Контекстное меню</span><span>ПКМ на ячейке</span></div>
+    </div>
+    <div style="margin-top:16px;">
+      <button class="btn primary" id="btnKeysCl" type="button">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function toast(msg, ms) {
+  ms = ms || 2000;
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.classList.remove('on'); }, ms);
+}
+
+function colLetter(i) {
+  var s = '', n = i + 1;
+  while (n > 0) { s = String.fromCharCode(65 + (n-1) % 26) + s; n = Math.floor((n-1) / 26); }
+  return s;
+}
+
+function escH(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function escX(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toCP1251(str) {
+  var b = [];
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charCodeAt(i);
+    if (c < 0x80) { b.push(c); }
+    else if (c === 0x0401) { b.push(0xA8); }
+    else if (c === 0x0451) { b.push(0xB8); }
+    else if (c >= 0x0410 && c <= 0x042F) { b.push(c - 0x0410 + 0xC0); }
+    else if (c >= 0x0430 && c <= 0x044F) { b.push(c - 0x0430 + 0xE0); }
+    else { b.push(0x3F); }
+  }
+  return new Uint8Array(b);
+}
+
+function dlBlob(blob, filename) {
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+}
+
+// ── VIEW ─────────────────────────────────────────────────────────────────────
+function showView(id) {
+  document.querySelectorAll('.view').forEach(function(v){
+    v.classList.toggle('active', v.id === id);
+  });
+  document.getElementById('editorTools').style.display = id === 'editor' ? 'contents' : 'none';
+  document.getElementById('sheetMenubar').classList.remove('active');
+  document.getElementById('sheetToolbar').classList.remove('active');
+  if (id !== 'editor') {
+    selectionDraft = null;
+    document.getElementById('btnAddSelection').classList.remove('show');
+  }
+  if (id === 'editor') { S.render(); document.getElementById('sw').focus(); }
+}
+
+// ── AUTH ─────────────────────────────────────────────────────────────────────
+function doLogin() {
+  var login = document.getElementById('fEmail').value.trim();
+  var pass  = document.getElementById('fPass').value;
+  var ok = true;
+  if (!login) { document.getElementById('errEmail').style.display='block'; ok=false; } 
+  else { document.getElementById('errEmail').style.display='none'; }
+  if (!pass)  { document.getElementById('errPass').style.display='block'; ok=false; }
+  else { document.getElementById('errPass').style.display='none'; }
+  if (ok) showView('prompt');
+}
+document.getElementById('btnLogin').addEventListener('click', doLogin);
+document.getElementById('fPass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('fEmail').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('fPass').focus(); });
+document.getElementById('btnUndoTop').addEventListener('click', function(){ S.undo(); });
+document.getElementById('btnRedoTop').addEventListener('click', function(){ S.redo(); });
+
+// ── PROMPT ───────────────────────────────────────────────────────────────────
+var API_BASE = 'http://139.60.162.135:8000';
+var API_KEY = 'your_secret_api_key_for_lampa';
+var API_BASE_CANDIDATES = (function(){
+  var out = [];
+  out.push(window.location.origin + '/api');
+  out.push(window.location.protocol + '//' + window.location.hostname + ':8000');
+  out.push(API_BASE);
+  return out.filter(function(v, i, arr){ return !!v && arr.indexOf(v) === i; });
+})();
+var ACTIVE_API_BASE = null;
+
+function joinApiUrl(base, endpoint) {
+  if (base.slice(-1) === '/' && endpoint.slice(0, 1) === '/') return base.slice(0, -1) + endpoint;
+  if (base.slice(-1) !== '/' && endpoint.slice(0, 1) !== '/') return base + '/' + endpoint;
+  return base + endpoint;
+}
+
+function apiFetch(endpoint, options = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {})
+  };
+  
+  if (API_KEY) {
+    headers['X-API-Key'] = API_KEY;
+  }
+  
+  const config = {
+    ...options,
+    headers: headers
+  };
+  
+  return fetch(API_BASE + endpoint, config)
+    .catch(err => {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        throw new Error('NETWORK_ERROR: Не удалось подключиться к серверу. Проверьте интернет и доступность API.');
+      }
+      throw err;
+    })
+    .then(async response => {
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch {
+          errorData = { code: `HTTP_${response.status}`, detail: response.statusText };
+        }
+        
+        if (response.status === 401) {
+          throw new Error('AUTH_ERROR: Неверный API ключ. Проверьте конфигурацию.');
+        }
+        if (response.status === 403) {
+          throw new Error('CORS_ERROR: Доступ запрещен. Проверьте CORS настройки сервера.');
+        }
+        if (response.status === 429) {
+          throw new Error('RATE_LIMIT: Слишком много запросов. Подождите немного.');
+        }
+        
+        const detail = errorData.detail || errorData.message || 'Неизвестная ошибка';
+        throw new Error(`${errorData.code || 'API_ERROR'}: ${detail}`);
+      }
+      
+      return response;
+    });
+}
+
+var queryState = {
+  queryId: null,
+  sessionId: null,
+  tableVersion: 0,
+  totalRows: 0,
+  loadedRows: 0,
+  pageSize: 300,
+  loadingMore: false
+};
+
+function updateDataProgress() {
+  var el = document.getElementById('dataProgress');
+  if (!el) return;
+  if (!queryState.queryId) { el.textContent = ''; return; }
+  el.textContent = 'Загружено ' + queryState.loadedRows + ' из ' + queryState.totalRows;
+}
+
+function resetQueryState() {
+  queryState.queryId = null;
+  queryState.sessionId = null;
+  queryState.tableVersion = 0;
+  queryState.totalRows = 0;
+  queryState.loadedRows = 0;
+  queryState.pageSize = 300;
+  queryState.loadingMore = false;
+  updateDataProgress();
+}
+
+function loadMoreRows() {
+  if (!queryState.queryId || queryState.loadingMore) return;
+  if (queryState.loadedRows >= queryState.totalRows) return;
+  queryState.loadingMore = true;
+  apiFetch('/api/query/page', {
+    method: 'POST',
+    body: JSON.stringify({
+      query_id: queryState.queryId,
+      offset: queryState.loadedRows,
+      limit: queryState.pageSize
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    queryState.loadingMore = false;
+    if (data.detail) { toast(String(data.detail || 'Не удалось загрузить следующую страницу')); return; }
+    var rows = Array.isArray(data.rows) ? data.rows : [];
+    if (!rows.length) return;
+    Array.prototype.push.apply(S.data, rows);
+    queryState.loadedRows = S.data.length;
+    queryState.totalRows = data.total_rows || queryState.totalRows;
+    S.render();
+    updateDataProgress();
+  })
+  .catch(function(err){
+    queryState.loadingMore = false;
+    toast(err.message || 'Ошибка подгрузки данных. Повторите прокрутку.');
+  });
+}
+
+function goToEditorFromPrompt() {
+  var v = document.getElementById('promptTa').value.trim();
+  if (!v) { toast('Введите запрос'); return; }
+  var btn = document.getElementById('btnToEditor');
+  btn.disabled = true;
+  btn.textContent = 'Загрузка...';
+  toast('Запрос обрабатывается...', 8000);
+  apiFetch('/api/query', {
+    method: 'POST',
+    body: JSON.stringify({ query: v })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    btn.disabled = false; btn.textContent = 'Найти';
+    if (data.detail) {
+      var d = String(data.detail || '');
+      if (d.toLowerCase().indexOf('no such column') !== -1 || d.toLowerCase().indexOf('не найден') !== -1) {
+        toast('Данные не найдены. Попробуйте сформулировать запрос по-другому.', 5000);
+      } else {
+        toast('Ошибка: ' + d, 5000);
+      }
+      return;
+    }
+    if (data.columns && data.rows) {
+      S.saveUndo();
+      S.headers = data.columns;
+      S.data = data.rows.length ? data.rows : [new Array(data.columns.length).fill('')];
+      S.sel = {r:0,c:0}; S.selEnd = null;
+      queryState.queryId = data.query_id || null;
+      queryState.sessionId = data.session_id || null;
+      queryState.tableVersion = data.table_version || 0;
+      queryState.totalRows = data.total_rows || S.data.length;
+      queryState.loadedRows = S.data.length;
+      queryState.pageSize = data.page_size || 300;
+      queryState.loadingMore = false;
+      showView('editor');
+      updateDataProgress();
+      if (data.ai_comment) addMsg(data.ai_comment, 'ai');
+    }
+  })
+  .catch(function(err) {
+    btn.disabled = false; btn.textContent = 'Найти';
+    toast('Ошибка соединения с сервером: ' + err.message, 5000);
+  });
+}
+document.getElementById('btnToEditor').addEventListener('click', goToEditorFromPrompt);
+var promptTa = document.getElementById('promptTa');
+promptTa.addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); goToEditorFromPrompt(); }
+});
+promptTa.addEventListener('input', function(){
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 220) + 'px';
+});
+var voiceBtn = document.getElementById('btnVoice');
+var voiceRec = null;
+var voiceListening = false;
+function initVoiceRec() {
+  if (voiceRec) return voiceRec;
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return null;
+  voiceRec = new SR();
+  voiceRec.lang = 'ru-RU';
+  voiceRec.interimResults = false;
+  voiceRec.maxAlternatives = 1;
+  voiceRec.onstart = function() {
+    voiceListening = true;
+    voiceBtn.classList.add('listening');
+    toast('Слушаю...');
+  };
+  voiceRec.onend = function() {
+    voiceListening = false;
+    voiceBtn.classList.remove('listening');
+  };
+  voiceRec.onresult = function(ev) {
+    var txt = (ev.results[0] && ev.results[0][0] && ev.results[0][0].transcript) || '';
+    if (txt.trim()) {
+      promptTa.value = txt.trim();
+      promptTa.dispatchEvent(new Event('input'));
+      toast('Голос распознан');
+    }
+  };
+  voiceRec.onerror = function(ev) {
+    var code = (ev && ev.error) ? String(ev.error) : '';
+    if (code === 'not-allowed' || code === 'service-not-allowed') {
+      toast('Дайте доступ к микрофону в браузере');
+    } else if (code === 'no-speech') {
+      toast('Речь не распознана, повторите');
+    } else if (code === 'network') {
+      toast('Ошибка сети при распознавании речи');
+    } else {
+      toast('Не удалось распознать голос');
+    }
+  };
+  return voiceRec;
+}
+voiceBtn.addEventListener('click', function(){
+  var rec = initVoiceRec();
+  if (!rec) { toast('Голосовой ввод не поддерживается в этом браузере'); return; }
+  try {
+    if (voiceListening) {
+      rec.stop();
+      return;
+    }
+    rec.start();
+  } catch (_) {
+    toast('Микрофон уже запущен');
+  }
+});
+
+// ── SPREADSHEET ──────────────────────────────────────────────────────────────
+var S = {
+  headers: ['Столбец 1','Столбец 2','Столбец 3','Столбец 4','Столбец 5','Столбец 6','Столбец 7','Столбец 8','Столбец 9','Столбец 10'],
+  data: [
+    ['','','','','','','','','',''],
+    ['','','','','','','','','',''],
+    ['','','','','','','','','',''],
+    ['','','','','','','','','',''],
+    ['','','','','','','','','',''],
+    ['','','','','','','','','',''],
+    ['','','','','','','','','',''],
+    ['','','','','','','','','',''],
+    ['','','','','','','','','',''],
+    ['','','','','','','','','','']
+  ],
+  colWidths: [],
+  rowHeights: [],
+  virtualRowHeight: 28,
+  renderBuffer: 20,
+  visibleStart: 0,
+  visibleEnd: 0,
+  lastRenderStart: -1,
+  lastRenderEnd: -1,
+  delegatesBound: false,
+  scrollRaf: 0,
+  sel: {r:0,c:0}, selEnd: null,
+  editing: false, editR: 0, editC: 0, editOrig: '',
+  mouseSelecting: false,
+  undoStack: [], redoStack: [], clipboard: null,
+  sortCol: -1, sortDir: 1,
+
+  getUndoLimit: function() {
+    var cells = this.data.length * Math.max(1, this.headers.length);
+    if (cells > 50000) return 8;
+    if (cells > 20000) return 15;
+    return 40;
+  },
+
+  saveUndo: function() {
+    this.undoStack.push({ data: JSON.parse(JSON.stringify(this.data)), headers: this.headers.slice() });
+    var cap = this.getUndoLimit();
+    if (this.undoStack.length > cap) this.undoStack.shift();
+    this.redoStack = [];
+    document.getElementById('uHint').textContent = this.undoStack.length + ' изм.';
+  },
+
+  undo: function() {
+    if (!this.undoStack.length) { toast('Нечего отменять'); return; }
+    this.redoStack.push({ data: JSON.parse(JSON.stringify(this.data)), headers: this.headers.slice() });
+    var s = this.undoStack.pop(); this.data = s.data; this.headers = s.headers;
+    document.getElementById('uHint').textContent = this.undoStack.length ? this.undoStack.length+' изм.' : '';
+    this.render(); toast('Отменено');
+  },
+
+  redo: function() {
+    if (!this.redoStack.length) { toast('Нечего повторять'); return; }
+    this.undoStack.push({ data: JSON.parse(JSON.stringify(this.data)), headers: this.headers.slice() });
+    var cap = this.getUndoLimit();
+    if (this.undoStack.length > cap) this.undoStack.shift();
+    var s = this.redoStack.pop(); this.data = s.data; this.headers = s.headers;
+    document.getElementById('uHint').textContent = this.undoStack.length ? this.undoStack.length+' изм.' : '';
+    this.render(); toast('Повторено');
+  },
+
+  render: function(force) {
+    if (force === undefined) force = true;
+    var R = this.data.length, C = this.headers.length, i, j, cls, h = '';
+    var wrap = document.getElementById('sw');
+    var scrollTop = wrap ? wrap.scrollTop : 0;
+    var viewH = wrap ? wrap.clientHeight : 600;
+    var start = Math.max(0, Math.floor(scrollTop / this.virtualRowHeight) - this.renderBuffer);
+    var visibleCount = Math.ceil(viewH / this.virtualRowHeight) + this.renderBuffer * 2 + 2;
+    var end = Math.min(R, start + visibleCount);
+    if (!force && this.lastRenderStart === start && this.lastRenderEnd === end) {
+      placeSelectionButton();
+      return;
+    }
+    this.lastRenderStart = start;
+    this.lastRenderEnd = end;
+    this.visibleStart = start;
+    this.visibleEnd = end;
+    var topPad = start * this.virtualRowHeight;
+    var bottomPad = Math.max(0, (R - end) * this.virtualRowHeight);
+
+    h += '<thead><tr><th>#</th>';
+    for (i = 0; i < C; i++) {
+      var sc = this.sortCol === i ? (this.sortDir > 0 ? ' sa' : ' sd') : '';
+      var w = this.colWidths[i] ? (' style="width:' + this.colWidths[i] + 'px;"') : '';
+      h += '<th class="' + sc.trim() + '" data-ci="' + i + '"' + w + '>' + escH(this.headers[i]) + '<span class="col-resize-handle" data-ci="' + i + '"></span></th>';
+    }
+    h += '</tr></thead><tbody>';
+    if (topPad > 0) h += '<tr class="vsp"><td style="height:' + topPad + 'px;"></td><td colspan="' + C + '"></td></tr>';
+    for (i = start; i < end; i++) {
+      var rh = this.rowHeights[i] ? (' style="height:' + this.rowHeights[i] + 'px;"') : '';
+      h += '<tr' + rh + '>';
+      h += '<td><span class="ct">' + (i+1) + '</span><span class="row-resize-handle" data-ri="' + i + '"></span></td>';
+      for (j = 0; j < C; j++) {
+        cls = '';
+        if (i === this.sel.r && j === this.sel.c) cls = 'sel';
+        else if (this.selEnd && this.inRange(i,j)) cls = 'ir';
+        h += '<td class="' + cls + '" data-r="' + i + '" data-c="' + j + '"><span class="ct">' + escH(this.data[i][j]) + '</span></td>';
+      }
+      h += '</tr>';
+    }
+    if (bottomPad > 0) h += '<tr class="vsp"><td style="height:' + bottomPad + 'px;"></td><td colspan="' + C + '"></td></tr>';
+    h += '</tbody>';
+    document.getElementById('st').innerHTML = h;
+    this.updateBar();
+    this.bindTbl();
+    placeSelectionButton();
+  },
+
+  inRange: function(r, c) {
+    if (!this.selEnd) return false;
+    var r1 = Math.min(this.sel.r, this.selEnd.r), r2 = Math.max(this.sel.r, this.selEnd.r);
+    var c1 = Math.min(this.sel.c, this.selEnd.c), c2 = Math.max(this.sel.c, this.selEnd.c);
+    return r >= r1 && r <= r2 && c >= c1 && c <= c2;
+  },
+
+  updateBar: function() {
+    document.getElementById('cAddr').textContent = colLetter(this.sel.c) + (this.sel.r + 1);
+    document.getElementById('cVal').textContent = (this.data[this.sel.r] || [])[this.sel.c] || '';
+  },
+
+  applySelectionClasses: function() {
+    var self = this;
+    document.querySelectorAll('#st td[data-r]').forEach(function(td) {
+      var r = +td.dataset.r, c = +td.dataset.c;
+      td.classList.remove('sel', 'ir');
+      if (r === self.sel.r && c === self.sel.c) td.classList.add('sel');
+      else if (self.selEnd && self.inRange(r, c)) td.classList.add('ir');
+    });
+  },
+
+  ensureVisibleRow: function(r) {
+    var wrap = document.getElementById('sw');
+    if (!wrap) return;
+    var top = r * this.virtualRowHeight;
+    var bottom = top + this.virtualRowHeight;
+    if (top < wrap.scrollTop) wrap.scrollTop = top;
+    else if (bottom > wrap.scrollTop + wrap.clientHeight) wrap.scrollTop = bottom - wrap.clientHeight;
+  },
+
+  select: function(r, c, ext, opts) {
+    var R = this.data.length, C = this.headers.length;
+    r = Math.max(0, Math.min(R-1, r));
+    c = Math.max(0, Math.min(C-1, c));
+    if (ext) { this.selEnd = {r:r,c:c}; }
+    else { this.sel = {r:r,c:c}; this.selEnd = null; }
+    if (opts && opts.skipRender) {
+      this.applySelectionClasses();
+      this.updateBar();
+      return;
+    }
+    this.ensureVisibleRow(r);
+    this.render();
+  },
+
+  cellRect: function(r, c) {
+    var td = document.querySelector('#st td[data-r="'+r+'"][data-c="'+c+'"]');
+    if (!td) return null;
+    var wrap = document.getElementById('sw');
+    var tr = td.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+    return { top: tr.top - wr.top + wrap.scrollTop, left: tr.left - wr.left + wrap.scrollLeft,
+             width: tr.width, height: tr.height };
+  },
+
+  startEdit: function(r, c, init) {
+    if (this.editing) this.commitEdit();
+    this.editing = true; this.editR = r; this.editC = c;
+    this.editOrig = this.data[r][c];
+    var rect = this.cellRect(r, c);
+    if (!rect) { this.editing = false; return; }
+    var ed = document.getElementById('ce');
+    ed.style.top    = rect.top + 'px';
+    ed.style.left   = rect.left + 'px';
+    ed.style.width  = rect.width + 'px';
+    ed.style.minHeight = rect.height + 'px';
+    ed.style.display = 'block';
+    ed.value = (init !== undefined && init !== null) ? init : this.data[r][c];
+    ed.focus();
+    if (init === undefined || init === null) ed.select();
+    else { ed.selectionStart = ed.selectionEnd = ed.value.length; }
+  },
+
+  commitEdit: function(move) {
+    if (!this.editing) return;
+    var val = document.getElementById('ce').value;
+    if (val !== this.editOrig) { this.saveUndo(); this.data[this.editR][this.editC] = val; }
+    document.getElementById('ce').style.display = 'none';
+    this.editing = false;
+    this.render();
+    if (move) this.select(this.editR + move.dr, this.editC + move.dc);
+    document.getElementById('sw').focus();
+  },
+
+  cancelEdit: function() {
+    if (!this.editing) return;
+    document.getElementById('ce').style.display = 'none';
+    this.editing = false; this.render();
+    document.getElementById('sw').focus();
+  },
+
+  bindTbl: function() {
+    if (this.delegatesBound) return;
+    this.delegatesBound = true;
+    var self = this;
+    var st = document.getElementById('st');
+
+    st.addEventListener('mousedown', function(e){
+      var colHandle = e.target.closest('.col-resize-handle');
+      if (colHandle) {
+        e.preventDefault(); e.stopPropagation();
+        var ci = +colHandle.dataset.ci;
+        var th = document.querySelector('#st th[data-ci="' + ci + '"]');
+        if (!th) return;
+        var startX = e.clientX;
+        var startW = th.getBoundingClientRect().width;
+        function onMove(ev) {
+          var next = Math.max(60, Math.round(startW + (ev.clientX - startX)));
+          self.colWidths[ci] = next;
+          th.style.width = next + 'px';
+        }
+        function onUp() {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          self.render();
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+        return;
+      }
+      var rowHandle = e.target.closest('.row-resize-handle');
+      if (rowHandle) {
+        e.preventDefault(); e.stopPropagation();
+        var ri = +rowHandle.dataset.ri;
+        var tr = rowHandle.closest('tr');
+        if (!tr) return;
+        var startY = e.clientY;
+        var startH = tr.getBoundingClientRect().height;
+        function onMove(ev) {
+          var next = Math.max(24, Math.round(startH + (ev.clientY - startY)));
+          self.rowHeights[ri] = next;
+          tr.style.height = next + 'px';
+        }
+        function onUp() {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          self.render();
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+        return;
+      }
+      var td = e.target.closest('td[data-r]');
+      if (td && e.button !== 2) {
+        self.mouseSelecting = true;
+        if (e.shiftKey) self.select(+td.dataset.r, +td.dataset.c, true, {skipRender:true});
+        else self.select(+td.dataset.r, +td.dataset.c, false, {skipRender:true});
+      }
+    });
+
+    st.addEventListener('mouseover', function(e){
+      var td = e.target.closest('td[data-r]');
+      if (!td || !self.mouseSelecting || self.editing) return;
+      self.select(+td.dataset.r, +td.dataset.c, true, {skipRender:true});
+    });
+
+    st.addEventListener('dblclick', function(e){
+      var th = e.target.closest('th[data-ci]');
+      if (th) { e.stopPropagation(); self.renameCol(+th.dataset.ci, th); return; }
+      var td = e.target.closest('td[data-r]');
+      if (td) self.startEdit(+td.dataset.r, +td.dataset.c);
+    });
+
+    st.addEventListener('contextmenu', function(e){
+      var th = e.target.closest('th[data-ci]');
+      if (th) {
+        e.preventDefault();
+        self.sel.c = +th.dataset.ci;
+        self.render();
+        showCtx(e.clientX, e.clientY, null, +th.dataset.ci);
+        return;
+      }
+      var td = e.target.closest('td[data-r]');
+      if (td) {
+        e.preventDefault();
+        self.select(+td.dataset.r, +td.dataset.c);
+        showCtx(e.clientX, e.clientY, +td.dataset.r, +td.dataset.c);
+      }
+    });
+
+    st.addEventListener('click', function(e){
+      var th = e.target.closest('th[data-ci]');
+      if (!th) return;
+      if (e.target.closest('.col-resize-handle')) return;
+      self.sortBy(+th.dataset.ci);
+    });
+  },
+
+  sortBy: function(ci) {
+    this.saveUndo();
+    if (this.sortCol === ci) this.sortDir *= -1; else { this.sortCol = ci; this.sortDir = 1; }
+    var d = this.sortDir;
+    this.data.sort(function(a, b) {
+      var av = a[ci] || '', bv = b[ci] || '';
+      var an = parseFloat(av.replace(/\s/g,'')), bn = parseFloat(bv.replace(/\s/g,''));
+      if (!isNaN(an) && !isNaN(bn)) return (an - bn) * d;
+      return av.localeCompare(bv, 'ru') * d;
+    });
+    this.render();
+    toast('Сортировка: ' + this.headers[ci] + ' ' + (this.sortDir > 0 ? '↑' : '↓'));
+  },
+
+  renameCol: function(ci, th) {
+    var self = this;
+    var inp = document.createElement('input');
+    inp.value = this.headers[ci];
+    inp.style.cssText = 'width:100%;border:none;background:transparent;font:inherit;font-weight:600;font-size:12px;outline:none;text-align:center;';
+    th.innerHTML = ''; th.appendChild(inp); inp.focus(); inp.select();
+    function commit() {
+      var v = inp.value.trim() || self.headers[ci];
+      self.saveUndo(); self.headers[ci] = v; self.render();
+    }
+    inp.addEventListener('blur', commit);
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); commit(); }
+      if (e.key === 'Escape') { e.preventDefault(); self.render(); }
+    });
+  },
+
+  addRowAt: function(pos) {
+    this.saveUndo();
+    var idx = pos === 'above' ? this.sel.r : this.sel.r + 1;
+    this.data.splice(idx, 0, new Array(this.headers.length).fill(''));
+    if (pos === 'below') this.sel.r = idx;
+    this.render(); toast('Строка добавлена');
+  },
+
+  delRow: function() {
+    if (this.data.length <= 1) { toast('Минимум одна строка'); return; }
+    this.saveUndo(); this.data.splice(this.sel.r, 1);
+    this.sel.r = Math.min(this.sel.r, this.data.length - 1);
+    this.render(); toast('Строка удалена');
+  },
+
+  addColAt: function(pos) {
+    var idx = pos === 'left' ? this.sel.c : this.sel.c + 1;
+    var name = 'Столбец ' + (this.headers.length + 1);
+    this.saveUndo();
+    this.headers.splice(idx, 0, name);
+    this.data.forEach(function(r){ r.splice(idx, 0, ''); });
+    this.render(); toast('Столбец добавлен — двойной клик по заголовку для переименования');
+  },
+
+  delCol: function() {
+    if (this.headers.length <= 1) { toast('Минимум один столбец'); return; }
+    this.saveUndo(); this.headers.splice(this.sel.c, 1);
+    this.data.forEach(function(r){ r.splice(this.sel.c, 1); }, this);
+    this.sel.c = Math.min(this.sel.c, this.headers.length - 1);
+    this.render(); toast('Столбец удалён');
+  },
+
+  copy: function() {
+    var r1 = this.selEnd ? Math.min(this.sel.r, this.selEnd.r) : this.sel.r;
+    var r2 = this.selEnd ? Math.max(this.sel.r, this.selEnd.r) : this.sel.r;
+    var c1 = this.selEnd ? Math.min(this.sel.c, this.selEnd.c) : this.sel.c;
+    var c2 = this.selEnd ? Math.max(this.sel.c, this.selEnd.c) : this.sel.c;
+    this.clipboard = { data: this.data.slice(r1, r2+1).map(function(row){ return row.slice(c1, c2+1); }) };
+    var txt = this.clipboard.data.map(function(r){ return r.join('\t'); }).join('\n');
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(txt).catch(function(){});
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand('copy'); } catch (_) {}
+      document.body.removeChild(ta);
+    }
+    toast('Скопировано (' + (r2-r1+1) + '×' + (c2-c1+1) + ')');
+  },
+
+  pasteText: function(text) {
+    text = String(text || '');
+    if (!text.trim()) return false;
+    var rows = text.replace(/\r/g, '').split('\n').filter(function(r){ return r.length > 0; });
+    if (!rows.length) return false;
+    this.clipboard = { data: rows.map(function(r){ return r.split('\t'); }) };
+    return true;
+  },
+
+  pasteFromSystem: async function() {
+    if (navigator.clipboard && window.isSecureContext && navigator.clipboard.readText) {
+      try {
+        var t = await navigator.clipboard.readText();
+        if (this.pasteText(t)) return this.paste();
+      } catch (_) {}
+    }
+    return this.paste();
+  },
+
+  paste: function() {
+    if (!this.clipboard || !this.clipboard.data || !this.clipboard.data.length) { toast('Буфер пуст'); return; }
+    this.saveUndo();
+    var self = this;
+    this.clipboard.data.forEach(function(row, di){
+      row.forEach(function(v, dj){
+        var r = self.sel.r + di, c = self.sel.c + dj;
+        if (r < self.data.length && c < self.headers.length) self.data[r][c] = v;
+      });
+    });
+    this.render(); toast('Вставлено');
+  },
+
+  clearSel: function() {
+    this.saveUndo();
+    var r1 = this.selEnd ? Math.min(this.sel.r, this.selEnd.r) : this.sel.r;
+    var r2 = this.selEnd ? Math.max(this.sel.r, this.selEnd.r) : this.sel.r;
+    var c1 = this.selEnd ? Math.min(this.sel.c, this.selEnd.c) : this.sel.c;
+    var c2 = this.selEnd ? Math.max(this.sel.c, this.selEnd.c) : this.sel.c;
+    for (var r = r1; r <= r2; r++) for (var c = c1; c <= c2; c++) this.data[r][c] = '';
+    this.render();
+  },
+
+  cut: function() {
+    this.copy();
+    this.clearSel();
+    toast('Вырезано');
+  },
+
+  eachSelectedCell: function(fn) {
+    var r1 = this.selEnd ? Math.min(this.sel.r, this.selEnd.r) : this.sel.r;
+    var r2 = this.selEnd ? Math.max(this.sel.r, this.selEnd.r) : this.sel.r;
+    var c1 = this.selEnd ? Math.min(this.sel.c, this.selEnd.c) : this.sel.c;
+    var c2 = this.selEnd ? Math.max(this.sel.c, this.selEnd.c) : this.sel.c;
+    for (var r = r1; r <= r2; r++) {
+      for (var c = c1; c <= c2; c++) {
+        fn(r, c);
+      }
+    }
+  },
+
+  formatNumberSelection: function(type) {
+    this.saveUndo();
+    this.eachSelectedCell(function(r, c){
+      var raw = String(S.data[r][c] || '').replace(/\s/g, '').replace(',', '.');
+      var n = Number(raw);
+      if (isNaN(n)) return;
+      if (type === 'currency') S.data[r][c] = n.toLocaleString('ru-RU', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' ₽';
+      if (type === 'percent') S.data[r][c] = (n * 100).toFixed(2).replace('.', ',') + '%';
+      if (type === 'decUp') S.data[r][c] = n.toFixed(3).replace('.', ',');
+      if (type === 'decDown') S.data[r][c] = n.toFixed(1).replace('.', ',');
+    });
+    this.render();
+    toast('Формат применён');
+  },
+
+  findReplace: function() {
+    var q = prompt('Найти:', '');
+    if (q === null || q === '') return;
+    var rep = prompt('Заменить на (оставьте пустым для поиска):', '');
+    var replaced = 0, found = 0;
+    this.saveUndo();
+    for (var r = 0; r < this.data.length; r++) {
+      for (var c = 0; c < this.headers.length; c++) {
+        var v = String(this.data[r][c] || '');
+        if (v.indexOf(q) >= 0) {
+          found++;
+          if (rep !== null) {
+            this.data[r][c] = v.split(q).join(rep);
+            replaced++;
+          }
+        }
+      }
+    }
+    this.render();
+    toast(rep === null ? ('Найдено: ' + found) : ('Заменено: ' + replaced));
+  },
+
+  handleKey: function(e) {
+    var R = this.data.length, C = this.headers.length;
+    var r = this.sel.r, c = this.sel.c;
+    if (this.editing) {
+      if (e.key === 'Escape') { e.preventDefault(); this.cancelEdit(); }
+      else if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.commitEdit({dr:1,dc:0}); }
+      else if (e.key === 'Tab') { e.preventDefault(); this.commitEdit({dr:0,dc:e.shiftKey?-1:1}); }
+      return;
+    }
+    if (e.ctrlKey || e.metaKey) {
+      switch (e.code) {
+        case 'KeyZ': e.preventDefault(); if(e.shiftKey) this.redo(); else this.undo(); return;
+        case 'KeyY': e.preventDefault(); this.redo(); return;
+        case 'KeyX': e.preventDefault(); this.cut(); return;
+        case 'KeyC': e.preventDefault(); this.copy(); return;
+        case 'KeyV': e.preventDefault(); this.pasteFromSystem(); return;
+        case 'KeyH': e.preventDefault(); this.findReplace(); return;
+        case 'KeyK': e.preventDefault(); toast('Вставка ссылки доступна из меню Вставка'); return;
+        case 'KeyA': e.preventDefault(); this.sel={r:0,c:0}; this.selEnd={r:R-1,c:C-1}; this.render(); return;
+        case 'Home': e.preventDefault(); this.select(0,0); return;
+        case 'End':  e.preventDefault(); this.select(R-1,C-1); return;
+      }
+    }
+    switch (e.key) {
+      case 'ArrowUp':    e.preventDefault(); this.select(r-1, c, e.shiftKey); return;
+      case 'ArrowDown':  e.preventDefault(); this.select(r+1, c, e.shiftKey); return;
+      case 'ArrowLeft':  e.preventDefault(); this.select(r, c-1, e.shiftKey); return;
+      case 'ArrowRight': e.preventDefault(); this.select(r, c+1, e.shiftKey); return;
+      case 'Tab':    e.preventDefault(); this.select(r, c+(e.shiftKey?-1:1)); return;
+      case 'Enter':  e.preventDefault(); this.startEdit(r, c); return;
+      case 'F2':     e.preventDefault(); this.startEdit(r, c); return;
+      case 'Delete': case 'Backspace': e.preventDefault(); this.clearSel(); return;
+      case 'Escape': this.selEnd = null; this.render(); return;
+    }
+    if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) this.startEdit(r, c, e.key);
+  },
+
+  exportCSV: function() {
+    var SEP = ';';
+    var rows = [this.headers].concat(this.data);
+    var csv = 'sep=' + SEP + '\r\n' + rows.map(function(r){
+      return r.map(function(v){
+        var s = String(v);
+        return (s.indexOf(SEP) >= 0 || s.indexOf('"') >= 0 || s.indexOf('\n') >= 0)
+          ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }).join(SEP);
+    }).join('\r\n');
+    dlBlob(new Blob([toCP1251(csv)], {type:'application/octet-stream'}), (this.exportBaseName || 'table-export') + '.csv');
+    toast('CSV экспортирован');
+  },
+
+  exportXLS: function() {
+    var self = this;
+    var hRow = '<Row>' + this.headers.map(function(h){
+      return '<Cell><Data ss:Type="String">' + escX(h) + '</Data></Cell>';
+    }).join('') + '</Row>';
+    var dRows = this.data.map(function(row){
+      return '<Row>' + row.map(function(v){
+        var n = parseFloat(String(v).replace(/[\s]/g,''));
+        if (!isNaN(n) && String(v).trim() !== '')
+          return '<Cell><Data ss:Type="Number">' + n + '</Data></Cell>';
+        return '<Cell><Data ss:Type="String">' + escX(v) + '</Data></Cell>';
+      }).join('') + '</Row>';
+    }).join('\n');
+    var xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+      '<?mso-application progid="Excel.Sheet"?>\n' +
+      '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n' +
+      '<Worksheet ss:Name="Лист1"><Table>\n' + hRow + '\n' + dRows + '\n' +
+      '</Table></Worksheet></Workbook>';
+    dlBlob(new Blob([xml], {type:'application/vnd.ms-excel;charset=utf-8'}), (this.exportBaseName || 'table-export') + '.xls');
+    toast('Excel экспортирован');
+  },
+
+  exportJSON: function() {
+    var self = this;
+    var arr = this.data.map(function(row){
+      var obj = {};
+      self.headers.forEach(function(h, i){ obj[h] = row[i] || ''; });
+      return obj;
+    });
+    dlBlob(new Blob([JSON.stringify(arr, null, 2)], {type:'application/json;charset=utf-8'}), (this.exportBaseName || 'table-export') + '.json');
+    toast('JSON экспортирован');
+  },
+
+  exportTSV: function() {
+    var rows = [this.headers].concat(this.data);
+    var tsv = rows.map(function(r){ return r.join('\t'); }).join('\r\n');
+    var bom = new Uint8Array([0xEF,0xBB,0xBF]);
+    dlBlob(new Blob([bom, tsv], {type:'text/tab-separated-values;charset=utf-8'}), (this.exportBaseName || 'table-export') + '.tsv');
+    toast('TSV экспортирован');
+  }
+};
+
+// ── MENUS & TOOLBAR ───────────────────────────────────────────────────────────
+var appZoom = 100;
+function setZoom(v) {
+  appZoom = Math.max(50, Math.min(200, v));
+  document.getElementById('sw').style.zoom = (appZoom / 100);
+  var zs = document.getElementById('tbZoom');
+  if (zs) zs.value = String(appZoom);
+}
+
+function runCommand(cmd) {
+  if (cmd === 'undo') return S.undo();
+  if (cmd === 'redo') return S.redo();
+  if (cmd === 'cut') return S.cut();
+  if (cmd === 'copy') return S.copy();
+  if (cmd === 'paste') return S.paste();
+  if (cmd === 'findReplace') return S.findReplace();
+  if (cmd === 'sortAsc') { S.sortDir = 1; return S.sortBy(S.sel.c); }
+  if (cmd === 'sortDesc') { S.sortDir = -1; return S.sortBy(S.sel.c); }
+  if (cmd === 'sortRange') return S.sortBy(S.sel.c);
+  if (cmd === 'filter') return toast('Фильтр по таблице включён');
+  if (cmd === 'filterView') return toast('Режим фильтрации создан');
+  if (cmd === 'slicer') return toast('Срез добавлен');
+  if (cmd === 'freezeNone') return toast('Закрепление снято');
+  if (cmd === 'freezeRow') return toast('Закрепление первой строки включено');
+  if (cmd === 'freezeCol') return toast('Закрепление первого столбца включено');
+  if (cmd === 'fullscreen') return document.documentElement.requestFullscreen ? document.documentElement.requestFullscreen() : toast('Полный экран не поддерживается');
+  if (cmd === 'toggleFormula') { return toast('Строка формул отключена в этом режиме'); }
+  if (cmd === 'toggleGrid') {
+    document.getElementById('st').classList.toggle('no-grid');
+    return toast('Линии сетки переключены');
+  }
+  if (cmd === 'currency') return S.formatNumberSelection('currency');
+  if (cmd === 'percent') return S.formatNumberSelection('percent');
+  if (cmd === 'decUp') return S.formatNumberSelection('decUp');
+  if (cmd === 'decDown') return S.formatNumberSelection('decDown');
+  if (cmd === 'insertRowUp') return S.addRowAt('above');
+  if (cmd === 'insertRowDown') return S.addRowAt('below');
+  if (cmd === 'insertColLeft') return S.addColAt('left');
+  if (cmd === 'insertColRight') return S.addColAt('right');
+  if (cmd === 'deleteRow') return S.delRow();
+  if (cmd === 'deleteCol') return S.delCol();
+  if (cmd === 'deleteValues') return S.clearSel();
+  if (cmd === 'clearFormat') return toast('Форматирование очищено для выделения');
+  if (cmd === 'print') return window.print();
+  if (cmd === 'quickMenu') return toast('Быстрый поиск команд: Alt+/');
+  if (cmd === 'fontMinus') return toast('Размер шрифта уменьшен');
+  if (cmd === 'fontPlus') return toast('Размер шрифта увеличен');
+  if (cmd === 'bold' || cmd === 'italic' || cmd === 'strike' || cmd === 'textColor' || cmd === 'fillColor' || cmd === 'borders' || cmd === 'merge' || cmd === 'alignH' || cmd === 'alignV' || cmd === 'wrap' || cmd === 'rotate') return toast('Формат применён: ' + cmd);
+  if (cmd === 'insertLink') {
+    var u = prompt('Введите ссылку (URL):', 'https://');
+    if (!u) return;
+    S.saveUndo();
+    S.data[S.sel.r][S.sel.c] = u;
+    S.render();
+    return toast('Ссылка вставлена');
+  }
+  if (cmd === 'insertFunction') {
+    S.saveUndo();
+    S.data[S.sel.r][S.sel.c] = '=SUM(A1:A5)';
+    S.render();
+    return toast('Функция SUM вставлена');
+  }
+  if (cmd === 'insertFormula') {
+    S.saveUndo();
+    S.data[S.sel.r][S.sel.c] = '=A1+B1';
+    S.render();
+    return toast('Формула вставлена');
+  }
+  if (cmd === 'note') {
+    var n = prompt('Примечание:', '');
+    if (n === null) return;
+    return toast('Примечание сохранено');
+  }
+  if (cmd === 'comment') {
+    var c = prompt('Комментарий:', '');
+    if (c === null) return;
+    return toast('Комментарий добавлен');
+  }
+  if (cmd === 'sheet' || cmd === 'chart' || cmd === 'image' || cmd === 'pivot' || cmd === 'dropdown' || cmd === 'checkbox' || cmd === 'emoji' || cmd === 'smartchips' || cmd === 'group' || cmd === 'hiddenSheets' || cmd === 'theme' || cmd === 'conditional' || cmd === 'alternating' || cmd === 'protect' || cmd === 'namedRanges' || cmd === 'namedFunctions' || cmd === 'randomize' || cmd === 'columnStats' || cmd === 'validation' || cmd === 'cleanup' || cmd === 'splitText' || cmd === 'extractData') return toast('Команда "' + cmd + '" подготовлена, базовый режим включен');
+  toast('Команда недоступна');
+}
+
+function initMenus() {
+  var menus = [
+    {name:'Правка', items:[
+      ['Отменить','Ctrl+Z','undo'],['Повторить','Ctrl+Y','redo'],['—'],['Вырезать','Ctrl+X','cut'],['Копировать','Ctrl+C','copy'],['Вставить','Ctrl+V','paste'],
+      ['Специальная вставка','','paste'],['Переместить','','sortRange'],['Удалить значения','','deleteValues'],['Удалить строку','','deleteRow'],['Удалить столбец','','deleteCol'],['Найти и заменить','Ctrl+H','findReplace']
+    ]},
+    {name:'Вид', items:[
+      ['Показать строку формул','','toggleFormula'],['Показать линии сетки','','toggleGrid'],['Закрепить 1 строку','','freezeRow'],['Закрепить 1 столбец','','freezeCol'],['Снять закрепление','','freezeNone'],
+      ['Группа','','group'],['Комментарии','','comment'],['Скрытые листы','','hiddenSheets'],['Масштаб 100%','','zoom100'],['Полный экран','','fullscreen']
+    ]},
+    {name:'Вставка', items:[
+      ['Ячейки','','insertRowDown'],['Строки выше','','insertRowUp'],['Строки ниже','','insertRowDown'],['Столбцы слева','','insertColLeft'],['Столбцы справа','','insertColRight'],
+      ['Лист','Shift+F11','sheet'],['Встроенные таблицы','','pivot'],['Диаграмма','','chart'],['Создать сводную таблицу','','pivot'],['Изображение','','image'],
+      ['Функция','','insertFunction'],['Ссылка','Ctrl+K','insertLink'],['Флажок','','checkbox'],['Раскрывающийся список','','dropdown'],['Эмодзи','','emoji'],['Умные чипы','','smartchips'],
+      ['Комментарий','Ctrl+Alt+M','comment'],['Примечание','Shift+F2','note']
+    ]},
+    {name:'Формат', items:[
+      ['Выбрать тему','','theme'],['Числа → Валюта','','currency'],['Числа → Процент','','percent'],['Числа → Меньше знаков','','decDown'],['Числа → Больше знаков','','decUp'],
+      ['Текст: Жирный','','bold'],['Текст: Курсив','','italic'],['Текст: Зачёркнутый','','strike'],['Выравнивание','','alignH'],['Перенос','','wrap'],['Вращение','','rotate'],
+      ['Размер шрифта +','','fontPlus'],['Размер шрифта -','','fontMinus'],['Объединить ячейки','','merge'],['Условное форматирование','','conditional'],['Чередование цветов','','alternating'],['Очистить форматирование','Ctrl+\\\\','clearFormat']
+    ]},
+    {name:'Данные', items:[
+      ['Сортировать лист A→Я','','sortAsc'],['Сортировать лист Я→A','','sortDesc'],['Сортировать диапазон','','sortRange'],['Создать фильтр','','filter'],
+      ['Создать режим фильтрации','','filterView'],['Добавить срез','','slicer'],['Защитить лист/диапазон','','protect'],['Именованные диапазоны','','namedRanges'],['Именованные функции','','namedFunctions'],
+      ['Перемешать диапазон','','randomize'],['Статистика по столбцам','','columnStats'],['Проверка данных','','validation'],['Очистка данных','','cleanup'],['Разделить текст на столбцы','','splitText'],['Извлечение данных','','extractData']
+    ]}
+  ];
+  var root = document.getElementById('sheetMenubar');
+  root.innerHTML = '';
+  menus.forEach(function(menu){
+    var wrap = document.createElement('div');
+    wrap.className = 'menu-item';
+    var b = document.createElement('button');
+    b.className = 'mi';
+    b.type = 'button';
+    b.textContent = menu.name;
+    wrap.appendChild(b);
+    var drop = document.createElement('div');
+    drop.className = 'menu-drop';
+    menu.items.forEach(function(item){
+      if (item[0] === '—') {
+        var sep = document.createElement('div');
+        sep.className = 'menu-sep';
+        drop.appendChild(sep);
+        return;
+      }
+      var el = document.createElement('div');
+      el.className = 'menu-action';
+      el.innerHTML = '<span>' + item[0] + '</span><span class="menu-key">' + (item[1] || '') + '</span>';
+      el.addEventListener('click', function(e){
+        e.stopPropagation();
+        root.querySelectorAll('.menu-item').forEach(function(mi){ mi.classList.remove('open'); });
+        if (item[2] === 'zoom100') { setZoom(100); return toast('Масштаб 100%'); }
+        if (item[2]) return runCommand(item[2]);
+        toast('Пункт меню выполнен');
+      });
+      drop.appendChild(el);
+    });
+    wrap.appendChild(drop);
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      var was = wrap.classList.contains('open');
+      root.querySelectorAll('.menu-item').forEach(function(mi){ mi.classList.remove('open'); });
+      wrap.classList.toggle('open', !was);
+    });
+    root.appendChild(wrap);
+  });
+  document.addEventListener('click', function(){ root.querySelectorAll('.menu-item').forEach(function(mi){ mi.classList.remove('open'); }); });
+}
+
+function initToolbar() {
+  var t = document.getElementById('sheetToolbar');
+  t.innerHTML = '' +
+    '<button class="tb-btn icon" data-cmd="quickMenu" title="Меню">⌕</button>' +
+    '<button class="tb-btn icon" data-cmd="undo" title="Отменить">↶</button>' +
+    '<button class="tb-btn icon" data-cmd="redo" title="Повторить">↷</button>' +
+    '<button class="tb-btn icon" data-cmd="print" title="Печать">🖨</button>' +
+    '<button class="tb-btn icon" data-cmd="painter" title="Формат по образцу">🎨</button>' +
+    '<span class="tb-sep"></span>' +
+    '<select class="tb-sel" id="tbZoom"><option>50</option><option>75</option><option selected>100</option><option>125</option><option>150</option><option>200</option></select>' +
+    '<button class="tb-btn" data-cmd="currency">₽</button>' +
+    '<button class="tb-btn" data-cmd="percent">%</button>' +
+    '<button class="tb-btn" data-cmd="decDown">.0</button>' +
+    '<button class="tb-btn" data-cmd="decUp">.00</button>' +
+    '<select class="tb-sel" id="tbNumFmt"><option value="">123</option><option value="currency">Валюта</option><option value="percent">Процент</option><option value="decDown">Меньше знаков</option><option value="decUp">Больше знаков</option></select>' +
+    '<span class="tb-sep"></span>' +
+    '<select class="tb-sel" data-cmd="font"><option>По умолчанию</option><option>Arial</option><option>Georgia</option><option>Impact</option></select>' +
+    '<button class="tb-btn" data-cmd="fontMinus">-</button><button class="tb-btn" data-cmd="fontPlus">+</button>' +
+    '<button class="tb-btn wide" data-cmd="bold">B</button><button class="tb-btn wide" data-cmd="italic">I</button><button class="tb-btn wide" data-cmd="strike">S</button>' +
+    '<button class="tb-btn" data-cmd="textColor">A</button><button class="tb-btn" data-cmd="fillColor">🪣</button><button class="tb-btn" data-cmd="borders">⊞</button><button class="tb-btn" data-cmd="merge">⊟</button>' +
+    '<button class="tb-btn" data-cmd="alignH">≡</button><button class="tb-btn" data-cmd="alignV">☰</button><button class="tb-btn" data-cmd="wrap">⤹</button><button class="tb-btn" data-cmd="rotate">🔄</button>' +
+    '<span class="tb-sep"></span>' +
+    '<button class="tb-btn" data-cmd="insertLink">🔗</button><button class="tb-btn" data-cmd="chart">📊</button><button class="tb-btn" data-cmd="image">🖼</button><button class="tb-btn" data-cmd="filter">🔽</button><button class="tb-btn" data-cmd="insertFunction">Σ</button><button class="tb-btn" data-cmd="insertFormula">ƒₓ</button>';
+
+  t.querySelectorAll('[data-cmd]').forEach(function(el){
+    if (el.tagName === 'SELECT') {
+      el.addEventListener('change', function(){
+        if (el.dataset.cmd === 'font') return toast('Шрифт: ' + el.value);
+        runCommand(el.dataset.cmd);
+      });
+      return;
+    }
+    el.addEventListener('click', function(){
+      if (el.dataset.cmd === 'painter') return toast('Формат по образцу активирован');
+      runCommand(el.dataset.cmd);
+    });
+  });
+
+  document.getElementById('tbZoom').onchange = function(){ setZoom(parseInt(this.value, 10)); };
+  document.getElementById('tbNumFmt').onchange = function(){ if (this.value) runCommand(this.value); };
+}
+
+// ── SHEET KEYBOARD ────────────────────────────────────────────────────────────
+var sw = document.getElementById('sw');
+sw.addEventListener('keydown', function(e){ S.handleKey(e); });
+sw.addEventListener('scroll', function(){
+  if (!S.scrollRaf) {
+    S.scrollRaf = requestAnimationFrame(function(){
+      S.scrollRaf = 0;
+      S.render(false);
+    });
+  }
+  if (sw.scrollTop + sw.clientHeight >= sw.scrollHeight - 80) loadMoreRows();
+});
+var ce = document.getElementById('ce');
+ce.addEventListener('keydown', function(e){ S.handleKey(e); });
+sw.addEventListener('paste', function(e){
+  if (S.editing) return;
+  var txt = (e.clipboardData && e.clipboardData.getData('text/plain')) || '';
+  if (!txt) return;
+  e.preventDefault();
+  if (S.pasteText(txt)) S.paste();
+});
+ce.addEventListener('input', function(){
+  ce.style.height = 'auto';
+  ce.style.height = ce.scrollHeight + 'px';
+});
+
+// ── CONTEXT MENU ──────────────────────────────────────────────────────────────
+var ctxMenu = document.getElementById('ctxMenu');
+function showCtx(x, y, r, c) {
+  var isHdr = r === null;
+  document.getElementById('ctxRenS').style.display = isHdr ? '' : 'none';
+  document.getElementById('ctxRen').style.display  = isHdr ? 'flex' : 'none';
+  ctxMenu.style.left = x + 'px';
+  ctxMenu.style.top  = y + 'px';
+  ctxMenu.classList.add('on');
+  requestAnimationFrame(function(){
+    var rect = ctxMenu.getBoundingClientRect();
+    if (rect.right  > window.innerWidth)  ctxMenu.style.left = (x - rect.width)  + 'px';
+    if (rect.bottom > window.innerHeight) ctxMenu.style.top  = (y - rect.height) + 'px';
+  });
+}
+function hideCtx() { ctxMenu.classList.remove('on'); }
+document.addEventListener('mousedown', function(e){
+  if (!ctxMenu.contains(e.target)) hideCtx();
+});
+document.addEventListener('mouseup', function(){
+  if (S.mouseSelecting && !S.editing) {
+    selectionDraft = getSelectionRange();
+    placeSelectionButton();
+  }
+  S.mouseSelecting = false;
+});
+document.getElementById('btnAddSelection').addEventListener('click', function(){
+  if (!selectionDraft) return;
+  var key = [selectionDraft.r1, selectionDraft.c1, selectionDraft.r2, selectionDraft.c2].join(':');
+  var exists = chatSelectionClusters.some(function(cl){
+    return [cl.r1, cl.c1, cl.r2, cl.c2].join(':') === key;
+  });
+  if (!exists) chatSelectionClusters.push(serializeSelectionCluster(selectionDraft));
+  renderSelectionChips();
+  selectionDraft = null;
+  this.classList.remove('show');
+});
+document.getElementById('ctxCopy').onclick   = function(){ S.copy();          hideCtx(); };
+document.getElementById('ctxPaste').onclick  = function(){ S.paste();         hideCtx(); };
+document.getElementById('ctxClear').onclick  = function(){ S.clearSel();      hideCtx(); };
+document.getElementById('ctxRowUp').onclick  = function(){ S.addRowAt('above'); hideCtx(); };
+document.getElementById('ctxRowDn').onclick  = function(){ S.addRowAt('below'); hideCtx(); };
+document.getElementById('ctxRowDel').onclick = function(){ S.delRow();        hideCtx(); };
+document.getElementById('ctxColL').onclick   = function(){ S.addColAt('left'); hideCtx(); };
+document.getElementById('ctxColR').onclick   = function(){ S.addColAt('right'); hideCtx(); };
+document.getElementById('ctxColDel').onclick = function(){ S.delCol();        hideCtx(); };
+document.getElementById('ctxRen').onclick    = function(){
+  var th = document.querySelector('#st th[data-ci="'+S.sel.c+'"]');
+  if (th) S.renameCol(S.sel.c, th); hideCtx();
+};
+
+// ── EXPORT MODAL ─────────────────────────────────────────────────────────────
+var exportModal = document.getElementById('exportModal');
+document.getElementById('btnExport').addEventListener('click', function(){
+  exportModal.classList.add('on');
+});
+exportModal.addEventListener('click', function(e){
+  if (e.target === e.currentTarget) exportModal.classList.remove('on');
+});
+function safeFileName(name) {
+  return String(name || 'table-export').trim().replace(/[\\/:*?"<>|]+/g, '_') || 'table-export';
+}
+document.getElementById('btnExportDownload').addEventListener('click', function(){
+  var base = safeFileName(document.getElementById('exportName').value);
+  if (document.getElementById('exportDate').checked) {
+    var d = new Date();
+    var pad = function(n){ return String(n).padStart(2, '0'); };
+    base += '-' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+  }
+  var fmt = document.getElementById('exportFmt').value;
+  S.exportBaseName = base;
+  if (fmt === 'xls') S.exportXLS();
+  else if (fmt === 'csv') S.exportCSV();
+  else if (fmt === 'tsv') S.exportTSV();
+  else S.exportJSON();
+  exportModal.classList.remove('on');
+});
+
+// ── CHAT ─────────────────────────────────────────────────────────────────────
+var chatPanel = document.getElementById('chatPanel');
+chatPanel.classList.add('on');
+document.getElementById('btnChat').classList.add('active');
+document.getElementById('btnChat').addEventListener('click', function(){
+  document.getElementById('chatInp').focus();
+});
+function addMsg(text, role) {
+  var d = document.createElement('div');
+  d.className = 'msg ' + role; d.textContent = text;
+  var msgs = document.getElementById('chatMsgs');
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+var chatHistory = [];
+var selectionDraft = null;
+var chatSelectionClusters = [];
+function pushHistory(role, text) {
+  var t = String(text || '').trim();
+  if (!t) return;
+  chatHistory.push({ role: role, text: t });
+  if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
+}
+
+function getSelectionRange() {
+  var base = S.sel || { r: 0, c: 0 };
+  var end = S.selEnd || base;
+  var r1 = Math.min(base.r, end.r), r2 = Math.max(base.r, end.r);
+  var c1 = Math.min(base.c, end.c), c2 = Math.max(base.c, end.c);
+  return { r1: r1, c1: c1, r2: r2, c2: c2, range_label: colLetter(c1) + (r1 + 1) + ':' + colLetter(c2) + (r2 + 1) };
+}
+
+function serializeSelectionCluster(range) {
+  var headers = [];
+  for (var c = range.c1; c <= range.c2; c++) headers.push(S.headers[c] || ('Столбец ' + (c + 1)));
+  var rows = [];
+  var maxRows = Math.min(range.r2, range.r1 + 79);
+  for (var r = range.r1; r <= maxRows; r++) {
+    var row = [];
+    for (var cc = range.c1; cc <= range.c2; cc++) row.push((S.data[r] && S.data[r][cc]) || '');
+    rows.push(row);
+  }
+  return {
+    range_label: range.range_label,
+    r1: range.r1, c1: range.c1, r2: range.r2, c2: range.c2,
+    rows_truncated: (range.r2 - range.r1 + 1) > rows.length,
+    rows_sent: rows.length,
+    headers: headers,
+    rows: rows
+  };
+}
+
+function renderSelectionChips() {
+  var root = document.getElementById('chatSelectionChips');
+  root.innerHTML = '';
+  chatSelectionClusters.forEach(function(cl, idx){
+    var chip = document.createElement('div');
+    chip.className = 'sel-chip';
+    var label = document.createElement('span');
+    label.textContent = cl.range_label + (cl.rows_truncated ? ' (часть)' : '');
+    var rm = document.createElement('button');
+    rm.type = 'button';
+    rm.textContent = 'x';
+    rm.title = 'Удалить диапазон';
+    rm.addEventListener('click', function(){
+      chatSelectionClusters.splice(idx, 1);
+      renderSelectionChips();
+    });
+    chip.appendChild(label);
+    chip.appendChild(rm);
+    root.appendChild(chip);
+  });
+}
+
+function placeSelectionButton() {
+  var btn = document.getElementById('btnAddSelection');
+  if (!selectionDraft) { btn.classList.remove('show'); return; }
+  var rect = S.cellRect(selectionDraft.r1, selectionDraft.c1);
+  if (!rect) { btn.classList.remove('show'); return; }
+  btn.style.left = (rect.left + 6) + 'px';
+  btn.style.top = Math.max(6, rect.top - 34) + 'px';
+  btn.classList.add('show');
+}
+
+function addThinking() {
+  var d = document.createElement('div');
+  d.className = 'msg ai thinking';
+  d.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+  var msgs = document.getElementById('chatMsgs');
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+function typeAiMessage(text) {
+  text = String(text || '');
+  var node = addMsg('', 'ai');
+  var i = 0;
+  var speed = 12;
+  (function tick(){
+    if (i >= text.length) return;
+    node.textContent += text.charAt(i++);
+    var msgs = document.getElementById('chatMsgs');
+    msgs.scrollTop = msgs.scrollHeight;
+    setTimeout(tick, speed);
+  })();
+}
+
+function extractNumericColumns() {
+  var cols = [];
+  for (var c = 0; c < S.headers.length; c++) {
+    var numeric = false;
+    for (var r = 0; r < Math.min(S.data.length, 80); r++) {
+      var raw = S.data[r][c];
+      if (raw === '' || raw === null || raw === undefined) continue;
+      var num = parseFloat(String(raw).replace(/\s+/g, '').replace('%', '').replace(',', '.'));
+      if (!isNaN(num)) { numeric = true; break; }
+    }
+    if (numeric) cols.push({ index: c, name: S.headers[c] || ('Колонка ' + (c + 1)) });
+  }
+  return cols;
+}
+
+var Analytics = {
+  enabled: false,
+  chartType: 'bar',
+  chart: null,
+  types: [
+    { id:'bar', icon:'▇▅▃' },
+    { id:'horizontalBar', icon:'▉\n▆\n▃' },
+    { id:'line', icon:'╱╲╱' },
+    { id:'pie', icon:'◔' },
+    { id:'doughnut', icon:'◍' },
+    { id:'area', icon:'▁▃▆█' },
+    { id:'scatter', icon:'∙·•' },
+    { id:'radar', icon:'✶' }
+  ],
+  open: function() {
+    if (typeof Chart === 'undefined') { toast('Графики еще загружаются'); return; }
+    this.enabled = true;
+    document.getElementById('editorWrap').classList.add('tab-analytics');
+    document.getElementById('tabAnalytics').classList.add('active');
+    document.getElementById('tabTable').classList.remove('active');
+    this.renderTypeCards();
+    this.fillMetricSelect();
+    this.renderChart();
+  },
+  close: function() {
+    this.enabled = false;
+    document.getElementById('editorWrap').classList.remove('tab-analytics');
+    document.getElementById('tabTable').classList.add('active');
+    document.getElementById('tabAnalytics').classList.remove('active');
+    if (this.chart) { this.chart.destroy(); this.chart = null; }
+  },
+  toggle: function() {
+    if (this.enabled) this.close(); else this.open();
+  },
+  renderTypeCards: function() {
+    var root = document.getElementById('chartTypeGrid');
+    var self = this;
+    root.innerHTML = '';
+    this.types.forEach(function(t){
+      var card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'chart-card' + (self.chartType === t.id ? ' active' : '');
+      card.title = t.id;
+      card.textContent = t.icon;
+      card.addEventListener('click', function(){
+        self.chartType = t.id;
+        self.renderTypeCards();
+        self.renderChart();
+      });
+      root.appendChild(card);
+    });
+  },
+  fillMetricSelect: function() {
+    var sel = document.getElementById('chartMetric');
+    var cols = extractNumericColumns();
+    sel.innerHTML = '';
+    cols.forEach(function(col){
+      var opt = document.createElement('option');
+      opt.value = String(col.index);
+      opt.textContent = col.name;
+      sel.appendChild(opt);
+    });
+    if (!cols.length) {
+      var opt = document.createElement('option');
+      opt.value = '-1';
+      opt.textContent = 'Нет числовых столбцов';
+      sel.appendChild(opt);
+    }
+  },
+  renderChart: function() {
+    if (typeof Chart === 'undefined') return;
+    var sel = document.getElementById('chartMetric');
+    var idx = parseInt(sel.value || '-1', 10);
+    if (isNaN(idx) || idx < 0) return;
+    var labels = [];
+    var values = [];
+    for (var r = 0; r < S.data.length; r++) {
+      var row = S.data[r];
+      var raw = row[idx];
+      var val = parseFloat(String(raw).replace(/\s+/g, '').replace('%', '').replace(',', '.'));
+      if (isNaN(val)) continue;
+      labels.push(String(row[0] || ('Строка ' + (r + 1))));
+      values.push(val);
+      if (labels.length >= 30) break;
+    }
+    var type = this.chartType;
+    var chartType = type;
+    var options = { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:true}} };
+    if (type === 'horizontalBar') { chartType = 'bar'; options.indexAxis = 'y'; }
+    if (type === 'area') chartType = 'line';
+
+    var ds = {
+      label: S.headers[idx] || 'Показатель',
+      data: values,
+      borderColor: '#1d5fbf',
+      backgroundColor: 'rgba(29,95,191,0.25)',
+      pointRadius: type === 'scatter' ? 4 : 2,
+      fill: type === 'area'
+    };
+    if (type === 'pie' || type === 'doughnut' || type === 'radar') {
+      ds.backgroundColor = values.map(function(_, i){
+        return 'hsla(' + ((i * 37) % 360) + ',70%,55%,0.75)';
+      });
+      ds.borderColor = '#fff';
+    }
+    if (type === 'scatter') {
+      ds.data = values.map(function(v, i){ return { x: i + 1, y: v }; });
+      labels = [];
+    }
+
+    var ctx = document.getElementById('chartCanvas').getContext('2d');
+    if (this.chart) this.chart.destroy();
+    this.chart = new Chart(ctx, { type: chartType, data: { labels: labels, datasets: [ds] }, options: options });
+  }
+};
+
+function switchEditorTab(tabId) {
+  if (tabId === 'analytics') return Analytics.open();
+  return Analytics.close();
+}
+
+function sendChat() {
+  var inp = document.getElementById('chatInp');
+  var msg = inp.value.trim(); if (!msg) return;
+  addMsg(msg, 'user'); inp.value = '';
+  pushHistory('user', msg);
+
+  var sendBtn = document.getElementById('btnChatSend');
+  sendBtn.disabled = true; sendBtn.textContent = '...';
+  var thinkingNode = addThinking();
+
+  var currentTable = { headers: S.headers, rows: S.data };
+  
+  var hasSession = !!queryState.sessionId;
+  if (hasSession) {
+    currentTable = { headers: [], rows: [] };
+  }
+  
+  var selectionClustersPayload = chatSelectionClusters.map(function(cl){
+    return {
+      range_label: cl.range_label,
+      r1: cl.r1, c1: cl.c1, r2: cl.r2, c2: cl.c2,
+      rows_truncated: !!cl.rows_truncated,
+      rows_sent: cl.rows_sent || 0,
+      headers: cl.headers,
+      rows: cl.rows
+    };
+  });
+
+  apiFetch('/api/chat', {
+    method: 'POST',
+    body: JSON.stringify({
+      message: msg,
+      current_table: currentTable,
+      history: chatHistory,
+      query_id: queryState.queryId,
+      session_id: queryState.sessionId,
+      table_version: queryState.tableVersion,
+      selection_clusters: selectionClustersPayload
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    sendBtn.disabled = false; sendBtn.textContent = 'Применить';
+    if (thinkingNode && thinkingNode.parentNode) thinkingNode.parentNode.removeChild(thinkingNode);
+    if (data.detail) {
+      var d2 = String(data.detail || '');
+      if (d2.toLowerCase().indexOf('no such column') !== -1 || d2.toLowerCase().indexOf('не найден') !== -1) {
+        var e1 = 'Данные не найдены. Попробуйте сформулировать команду по-другому.';
+        typeAiMessage(e1);
+        pushHistory('ai', e1);
+      } else {
+        var e2 = 'Ошибка: ' + d2;
+        typeAiMessage(e2);
+        pushHistory('ai', e2);
+      }
+      return;
+    }
+    if (data.ai_message) { typeAiMessage(data.ai_message); pushHistory('ai', data.ai_message); }
+    if (data.query_id) queryState.queryId = data.query_id;
+    if (data.session_id) queryState.sessionId = data.session_id;
+    if (data.table_version !== undefined) queryState.tableVersion = data.table_version;
+    
+    if ((data.action === 'transform' || data.action === 'query') && data.table) {
+      if (data.table.headers && data.table.rows) {
+        S.saveUndo();
+        S.headers = data.table.headers;
+        S.data = data.table.rows.length ? data.table.rows : [new Array(data.table.headers.length).fill('')];
+        S.sel = {r:0,c:0}; S.selEnd = null;
+        queryState.loadedRows = S.data.length;
+        queryState.totalRows = S.data.length;
+        queryState.loadingMore = false;
+        S.render();
+        updateDataProgress();
+        toast('Таблица обновлена');
+      }
+    }
+  })
+  .catch(function(err) {
+    sendBtn.disabled = false; sendBtn.textContent = 'Применить';
+    if (thinkingNode && thinkingNode.parentNode) thinkingNode.parentNode.removeChild(thinkingNode);
+    var e3 = 'Ошибка соединения: ' + err.message;
+    typeAiMessage(e3);
+    pushHistory('ai', e3);
+  });
+}
+
+document.getElementById('btnChatSend').addEventListener('click', sendChat);
+document.getElementById('chatInp').addEventListener('keydown', function(e){ if(e.key==='Enter') sendChat(); });
+document.getElementById('btnAnalytics').addEventListener('click', function(){ switchEditorTab('analytics'); });
+document.getElementById('btnAnalyticsClose').addEventListener('click', function(){ switchEditorTab('table'); });
+document.getElementById('tabTable').addEventListener('click', function(){ switchEditorTab('table'); });
+document.getElementById('tabAnalytics').addEventListener('click', function(){ switchEditorTab('analytics'); });
+document.getElementById('chartMetric').addEventListener('change', function(){ Analytics.renderChart(); });
+
+// ── MODALS ────────────────────────────────────────────────────────────────────
+document.getElementById('btnKeys').addEventListener('click', function(){
+  document.getElementById('keysModal').classList.add('on');
+});
+document.getElementById('btnKeysCl').addEventListener('click', function(){
+  document.getElementById('keysModal').classList.remove('on');
+});
+document.getElementById('keysModal').addEventListener('click', function(e){
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('on');
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+initMenus();
+initToolbar();
+setZoom(100);
+resetQueryState();
+showView('auth');
+var initialAi = document.querySelector('#chatMsgs .msg.ai');
+if (initialAi) pushHistory('ai', initialAi.textContent || '');
+</script>
+</body>
+</html>
