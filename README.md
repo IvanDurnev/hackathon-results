@@ -20,7 +20,7 @@
 | БПК-IT_ver.3.0 | [репозиторий](https://github.com/Xalava228/Hack2026.git) | [папка со скринкастом и презентацией](https://disk.yandex.ru/d/dCd_D7qpS21jhA) |
 | Дикие огурцы | [репозиторий](https://github.com/vladkutolin-rgb/AI------------.git) | [папка со скринкастом и презентацией](https://disk.yandex.ru/d/GNWsUfo6rUyx2Q) |
 | ДНК | [репозиторий](https://github.com/epidersis/nerpochka) | [папка со скринкастом и презентацией](https://disk.yandex.ru/d/UCPNEXK5lYpJXw) |
-| К.И.С.И. | [репозиторий](https://github.com/Rexilone/hackathon2026) | — |
+| К.И.С.И. | [репозиторий](https://github.com/Rexilone/hackathon2026) | [папка со скринкастом и презентацией](https://disk.yandex.ru/d/HTcZAlShiBlt8A) |
 | Код 10 | [репозиторий](https://github.com/hikkieddd/hakaton.git) | [папка со скринкастом и презентацией](https://disk.yandex.ru/d/PWKpWOq7vCiO6Q) |
 | КПН | [репозиторий](https://github.com/ArtemChik103/amurcode) | [папка со скринкастом и презентацией](https://disk.yandex.ru/d/stlQ6Fynb1KCAQ) |
 | Крутые перцы | [репозиторий](https://gitlab.com/Stepakinoyan/cool-peppers-project) | [папка со скринкастом и презентацией](https://disk.yandex.ru/d/SmZYjWQPSjzxbw) |
