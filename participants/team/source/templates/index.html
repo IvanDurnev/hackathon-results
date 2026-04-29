@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ростелеком | AI-Генератор</title>
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="bg-blur"></div>
+    <header class="top-header">
+        <div class="header-container">
+            <div class="title-group">
+                <h1 class="main-title">AI ГЕНЕРАТОР</h1>
+                <span class="sub-title">презентаций</span>
+            </div>
+
+            <div class="brand-group">
+                <img src="/static/img/logo.png" alt="Ростелеком" class="rt-logo">
+                <p class="rt-text">РОСТЕЛЕКОМ</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="content-wrapper">
+    <div class="glass-card">
+        <h2 class="card-title">Создание презентации</h2>
+        <p class="card-subtitle">Загрузите документ или введите тему, чтобы ИИ подготовил слайды</p>
+
+       <form action="/generate" method="post" enctype="multipart/form-data" class="gen-form">
+    <div class="input-group">
+        <label for="topic">Тема презентации</label>
+        <input type="text" id="topic" name="user_prompt" placeholder="Например: Итоги квартала 2024" required>
+    </div>
+
+    <div class="row-group">
+        <div class="input-group">
+            <label for="slides_count">Количество слайдов:</label>
+            <input type="number" id="slides_count" name="slides_count" value="5" min="1" max="10">
+        </div>
+
+        <div class="input-group">
+            <label for="style">Стиль оформления</label>
+            <select id="style" name="style">
+                <option value="corporate" selected>Корпоративный</option>
+                <option value="modern">Минимализм</option>
+                <option value="creative">Творческий</option>
+                <option value="tech">Технологичный</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="tone">Тон изложения</label>
+            <select id="tone" name="tone">
+                <option value="professional" selected>Профессиональный</option>
+                <option value="formal">Строгий</option>
+                <option value="friendly">Дружелюбный</option>
+                <option value="inspiring">Вдохновляющий</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label for="file">Прикрепить документ (PDF, DOCX)</label>
+        <input type="file" id="file" name="file" accept=".pdf,.docx">
+    </div>
+
+    <button type="submit" class="btn-generate">Сгенерировать презентацию</button>
+</form>
+<div id="game-container" style="display: none; text-align: center; margin-top: 20px;">
+    <h3 class="text-white mb-3">Нейросеть думает... Пока соберите документы!</h3>
+     <h3 class="text-white mb-3">Примерное время генерации 3-4 минуты в зависимости от кол-ва слайдов</h3>
+    <canvas id="snakeGame" width="400" height="400" style="border: 2px solid #ff4f12; border-radius: 10px; background: #000;"></canvas>
+    <p class="text-white mt-2">Управление: Стрелочки на клавиатуре или WASD</p>
+    <div id="score" class="text-white" style="font-size: 20px; font-weight: bold;">Собрано: 0</div>
+</div>
+    </div>
+</main>
+
+<script>
+const canvas = document.getElementById('snakeGame');
+const ctx = canvas.getContext('2d');
+const scoreElement = document.getElementById('score');
+const form = document.querySelector('.gen-form');
+const gameContainer = document.getElementById('game-container');
+
+let score = 0;
+let box = 20;
+let snake = [{x: 9 * box, y: 10 * box}];
+let food = { x: Math.floor(Math.random() * 19 + 1) * box, y: Math.floor(Math.random() * 19 + 1) * box };
+let d;
+
+// Просто запускаем игру при отправке
+form.onsubmit = function() {
+    form.style.display = 'none';
+    gameContainer.style.display = 'block';
+    window.focus(); // Чтобы стрелочки сразу работали
+    setInterval(draw, 100);
+};
+
+document.addEventListener("keydown", direction);
+
+function direction(event) {
+    const key = event.code; // Используем code для надежности
+
+    // Влево (Стрелка влево или A)
+    if ((event.keyCode == 37 || key == "KeyA") && d != "RIGHT") {
+        d = "LEFT";
+    }
+    // Вверх (Стрелка вверх или W)
+    else if ((event.keyCode == 38 || key == "KeyW") && d != "DOWN") {
+        d = "UP";
+    }
+    // Вправо (Стрелка вправо или D)
+    else if ((event.keyCode == 39 || key == "KeyD") && d != "LEFT") {
+        d = "RIGHT";
+    }
+    // Вниз (Стрелка вниз или S)
+    else if ((event.keyCode == 40 || key == "KeyS") && d != "UP") {
+        d = "DOWN";
+    }
+}
+
+function draw() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for(let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = (i == 0) ? "#ff4f12" : "white";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+    }
+
+    // Документ
+    ctx.fillStyle = "white";
+    ctx.fillRect(food.x + 2, food.y + 2, box - 4, box - 4);
+    ctx.fillStyle = "#0052d4"; 
+    ctx.fillRect(food.x + 2, food.y + 2, box - 4, 6);
+
+    let snakeX = snake[0].x;
+    let snakeY = snake[0].y;
+
+    if( d == "LEFT") snakeX -= box;
+    if( d == "UP") snakeY -= box;
+    if( d == "RIGHT") snakeX += box;
+    if( d == "DOWN") snakeY += box;
+
+    if(snakeX == food.x && snakeY == food.y) {
+        score++;
+        scoreElement.innerHTML = "Собрано: " + score;
+        food = { x: Math.floor(Math.random() * 19 + 1) * box, y: Math.floor(Math.random() * 19 + 1) * box };
+    } else {
+        snake.pop();
+    }
+
+    let newHead = { x: snakeX, y: snakeY };
+
+    if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+        snake = [{x: 9 * box, y: 10 * box}];
+        d = null;
+        score = 0;
+        scoreElement.innerHTML = "Собрано: 0";
+    } else {
+        snake.unshift(newHead);
+    }
+}
+
+function collision(head, array) {
+    for(let i = 0; i < array.length; i++) {
+        if(head.x == array[i].x && head.y == array[i].y) return true;
+    }
+    return false;
+}
+</script>
+
+</body>
+</html>
