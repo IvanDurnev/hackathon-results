@@ -1,8 +1,12 @@
 """Конфигурация: пути, каталог метрик, правила разделов."""
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-DATA_DIR = ROOT / "Кейс_ Интеллектуальный отбор данных (БФТ, Минфин АО)"
+DATA_DIR = Path(os.environ.get(
+    "BK_DATA_DIR",
+    str(ROOT / "Кейс_ Интеллектуальный отбор данных (БФТ, Минфин АО)"),
+))
 
 RCHB_DIR = DATA_DIR / "1. РЧБ"
 AGREEMENTS_DIR = DATA_DIR / "2. Соглашения"

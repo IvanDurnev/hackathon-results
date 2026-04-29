@@ -367,7 +367,14 @@ createApp({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {
+          let detail = `HTTP ${res.status}`;
+          try {
+            const body = await res.json();
+            if (body && body.detail) detail = String(body.detail);
+          } catch (_) { /* ignore */ }
+          throw new Error(detail);
+        }
         const blob = await res.blob();
         const cd = res.headers.get("Content-Disposition") || "";
         const m = /filename="?([^";]+)"?/.exec(cd);
