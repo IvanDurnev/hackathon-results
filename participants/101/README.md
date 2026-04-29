@@ -1,7 +1,7 @@
 # 101
 
 - Repository: https://github.com/matteo-fl/101
-- Video: n/a
+- Video: https://disk.yandex.ru/d/EORM9ca1oR7m8Q
 - Description: n/a
-- Updated at: 2026-04-29T03:46:12+00:00
+- Updated at: 2026-04-29T03:52:50+00:00
 - Repository accessible: yes
