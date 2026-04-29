@@ -1,328 +1,489 @@
-<div align="center">
+<img width="1344" height="768" alt="17774334747ecd" src="https://github.com/user-attachments/assets/724995b6-d110-4b4e-a91f-59e8e4039b14" />
 
-  <h1>Интеллектуальный отбор данных</h1>
+# nerpochka
 
-  <p>
-    <b>Конструктор аналитических выборок для бюджетного планирования Амурской области</b>
-  </p>
+Nerpochka - система бюджетной аналитики для загрузки CSV-выгрузок, нормализации данных в PostgreSQL, построения витрины показателей и просмотра результата через API/UI с Excel-выгрузкой.
 
-  <img src="./image.jpg">
-  <p>
-    <sub>Команда «Некодеры»: Александр Самарин и Степан Исаков</sub>
-  </p>
+> [!NOTE]
+> Материалы проекта (презентация, Demo_UI) [Яндекс Диск](https://disk.yandex.ru/d/UCPNEXK5lYpJXw)
 
-  <p style="margin-top: 10px;">
-    <a href="https://necoders.tech/">
-      <img src="https://img.shields.io/badge/Демо-necoders.tech-2f6fed?style=for-the-badge" alt="Демо">
-    </a>
-    <img src="https://img.shields.io/badge/Команда-Некодеры-8ade3f?style=for-the-badge" alt="Команда Некодеры">
-    <img src="https://img.shields.io/badge/Frontend-React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React">
-    <img src="https://img.shields.io/badge/Backend-Python_3.12-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-    <img src="https://img.shields.io/badge/Deploy-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
-  </p>
+Проект поднимается одной Docker-командой: база данных, backend, ETL и frontend запускаются вместе, а ETL автоматически загружает исходные CSV и пересобирает staging/mart.
 
-  <p>
-    <img src="https://img.shields.io/badge/Product-UI%2FUX-7c3aed?style=flat-square" alt="Product UI/UX">
-    <img src="https://img.shields.io/badge/Architecture-Fullstack-0f766e?style=flat-square" alt="Architecture Fullstack">
-    <img src="https://img.shields.io/badge/Data-ETL%20%2B%20Analytics-2563eb?style=flat-square" alt="ETL Analytics">
-    <img src="https://img.shields.io/badge/Delivery-Docker%20%2B%20Amvera-ea580c?style=flat-square" alt="Docker Amvera">
-  </p>
+## Ссылка на работающий прототип
+http://62.109.20.155:5173/
 
-  <p>
-    <a href="https://necoders.tech/">Открыть демо</a>
-    ·
-    <a href="https://disk.yandex.ru/i/l3V9591GVSwTWA">Скринкаст</a>
-    ·
-    <a href="https://disk.yandex.ru/i/9Fvsk_kOp-kO6g">Презентация</a>
-  </p>
+## Возможности
 
-</div>
-
----
-
-## Ссылки
-
-- **Развернутое решение:** [https://necoders.tech/](https://necoders.tech/)
-- **Скринкаст:** [https://disk.yandex.ru/i/l3V9591GVSwTWA](https://disk.yandex.ru/i/l3V9591GVSwTWA)
-- **Презентация:** [https://disk.yandex.ru/i/9Fvsk_kOp-kO6g](https://disk.yandex.ru/i/9Fvsk_kOp-kO6g)
-
----
-
-## О продукте
-
-Проект решает кейс **«Интеллектуальный отбор данных. Конструктор аналитических выборок для бюджетного планирования»**. Платформа помогает специалистам собирать единую аналитическую картину по бюджетным объектам без ручного сведения CSV-выгрузок из разных ведомственных систем.
-
-Система работает с обезличенными данными из набора кейса:
-
-- **РЧБ** - бюджетные данные по месяцам нарастающим итогом: лимиты, обязательства, кассовые выплаты, остатки;
-- **Соглашения** - межбюджетные трансферты, субсидии учреждениям и иным получателям;
-- **ГЗ** - контракты, договоры, бюджетные строки и факты оплат;
-- **БУАУ** - выплаты бюджетным и автономным учреждениям.
-
-Вместо работы с тяжелыми таблицами пользователь выбирает объект, показатели и период, а приложение формирует итоговую таблицу, динамику, сравнение дат, расшифровку строк и экспорт.
-
----
-
-## Ключевые возможности
-
-- **Импорт источников администратором.** CSV-файлы проходят нормализацию кодировок, разделителей, дат, сумм и бюджетных кодов, после чего сохраняются в аналитическую базу.
-- **Контрольные шаблоны.** Реализованы сценарии `КИК`, `СКК`, `Раздел 3. 2/3` и `ОКВ` по правилам контрольного Excel-примера.
-- **Поиск объекта.** Можно искать по коду, названию, получателю, номеру договора или фрагменту бюджетной классификации.
-- **Показатели по разным источникам.** Поддерживаются лимиты, бюджетные обязательства, касса, соглашения, договоры, оплаты и выплаты БУАУ.
-- **Периоды и сравнение дат.** Для накопительных выгрузок РЧБ и БУАУ берется актуальный снимок на дату окончания периода, а для договоров и платежей используется событийная дата.
-- **Качество данных.** Отдельная вкладка показывает предупреждения: платеж без договора, договор без бюджетной строки, распределение суммы между строками и ошибки парсинга.
-- **Интерактивные результаты.** Таблица, итоговые суммы, помесячная динамика, расшифровка документов и история запусков в текущей сессии.
-- **Экспорт.** Результат можно скачать в `CSV` или `XLSX`; в Excel добавляется лист с предупреждениями активной выборки.
-- **Помощник и голосовой ввод.** В интерфейсе есть опциональный помощник для подбора параметров и объяснения выборок. Он вынесен в отдельный адаптер и может обращаться к совместимому внешнему зарубежному ресурсу; голосовой ввод реализован таким же изолированным способом через сервис распознавания речи. В закрытом контуре эти компоненты можно отключить или заменить внутренними аналогами без изменения ядра аналитики.
-
----
+- Импорт CSV из `data/incoming` в raw-слой PostgreSQL.
+- Устойчивое чтение CSV с разными разделителями: `,` и `;`.
+- Staging-слой для РЧБ, Госзаказа, соглашений и БУ/АУ.
+- Витрина `mart.indicators` для аналитики по разделам, КЦСР, объектам и типам показателей.
+- REST API для сводки, справочников и XLSX-выгрузки.
+- Vue UI с фильтрами, таблицей и интерактивными графиками ECharts.
+- Docker Compose запуск всей системы одной командой.
 
 ## Стек
 
-### Frontend
+- PostgreSQL 16
+- Python 3.12
+- FastAPI
+- SQLAlchemy
+- openpyxl
+- Vue 3 + Vite
+- axios
+- ECharts + vue-echarts
+- Docker Compose
 
-- **React 19** + **TypeScript** - интерфейс конструктора, авторизации, профиля и админ-раздела.
-- **Vite 6** - сборка и dev-сервер.
-- **Tailwind CSS 4** + локальный UI-kit - адаптивная корпоративная верстка.
-- **TanStack Query** - загрузка, кэширование и синхронизация API-данных.
-- **React Router 7** - маршрутизация и защищенные страницы.
-- **React Hook Form** + **Zod** - формы и валидация.
-- **Radix UI**, **lucide-react**, **sonner** - доступные UI-примитивы, иконки и уведомления.
-
-### Backend
-
-- **Python 3.12**.
-- **Flask 3** - REST API и раздача собранного frontend в production.
-- **SQLAlchemy** + **Flask-Migrate/Alembic** - модели, миграции и работа с БД.
-- **Pydantic 2** - API-схемы и валидация входных данных.
-- **Flask-Login** - сессионная авторизация и роли `user` / `admin`.
-- **openpyxl** - формирование Excel-экспорта.
-- **Gunicorn** - production-запуск.
-
-### Инфраструктура
-
-- **Docker multi-stage build** - сборка frontend и запуск backend одним контейнером.
-- **Amvera** - подготовленный `amvera.yaml`, постоянное хранилище `/data` и entrypoint с миграциями.
-- **SQLite** - удобен для локального контура.
-- **PostgreSQL** - рекомендован для production/Amvera.
-- **Отдельный интеллектуальный адаптер** - изолированный Python-сервис, который подключается к backend только по внутреннему HTTP API.
-
----
-
-## Архитектура приложения
-
-```mermaid
-flowchart LR
-    A["Администратор"] --> B["Импорт CSV / папки task"]
-    B --> C["Backend Flask API"]
-    C --> D["Парсинг и нормализация"]
-    D --> E["Аналитическая БД"]
-    E --> F["Query engine"]
-    F --> G["REST API /api/v1/analytics"]
-    G --> H["React workspace"]
-    H --> I["Таблицы, графики, экспорт"]
-    H --> J["Опциональный помощник"]
-    J --> K["Изолированный внешний/заменяемый сервис"]
-```
-
-Приложение построено как **модульный монолит**:
-
-- `backend/app/api/v1` собирает API под префиксом `/api/v1`;
-- `auth`, `users`, `admin`, `files` отвечают за базовую платформенную часть;
-- `budget_constructor` содержит доменную аналитику: импорт, поиск, шаблоны, выборки, сравнение, динамику, расшифровку и экспорт;
-- `assistant` проксирует запросы к отдельному помощнику и не смешивает внешние сервисы с ядром аналитики;
-- `frontend/src` разделен на `app`, `pages`, `widgets`, `features`, `entities`, `shared`.
-
-Основной поток данных:
-
-1. Администратор импортирует набор CSV из источников кейса.
-2. Backend определяет формат файлов, нормализует данные и сохраняет аналитические факты.
-3. Пользователь выбирает шаблон или ищет объект вручную.
-4. Query engine агрегирует показатели по объектам, источникам и периоду.
-5. Frontend показывает таблицу, график, сравнение дат, предупреждения качества и экспорт.
-
----
-
-## Структура репозитория
+## Структура проекта
 
 ```text
-newhaka_full/
-├── backend/                  # Flask API, доменная логика, миграции, тесты
-│   ├── app/
-│   │   ├── api/v1/           # Регистрация API endpoints
-│   │   ├── core/             # Ошибки, ответы, безопасность, пагинация
-│   │   └── modules/
-│   │       ├── auth/         # Регистрация, вход, сессии
-│   │       ├── users/        # Профиль пользователя
-│   │       ├── admin/        # Управление аккаунтами
-│   │       ├── files/        # Файловое хранилище
-│   │       ├── assistant/    # Прокси к помощнику
-│   │       └── budget_constructor/
-│   │           ├── engine.py     # Агрегация, шаблоны, поиск, динамика
-│   │           ├── parsing.py    # Чтение CSV и нормализация
-│   │           ├── exporters.py  # CSV/XLSX экспорт
-│   │           └── storage.py    # Сохранение импортированного набора
-│   ├── migrations/           # Alembic-миграции
-│   └── tests/                # Unit, API, integration, smoke
-├── frontend/                 # React/Vite приложение
-│   └── src/
-│       ├── app/              # Провайдеры, роутер, конфиг API
-│       ├── pages/            # Login, Register, Admin, Workspace, Profile
-│       ├── widgets/          # Shell, top nav, результаты аналитики
-│       ├── features/         # Формы и пользовательские сценарии
-│       ├── entities/         # API-клиенты, схемы, query hooks
-│       └── shared/           # UI-kit, api client, утилиты
-├── task/                     # Тестовые обезличенные данные кейса
-├── deploy/                   # Production entrypoint
-├── Dockerfile                # Единый production-контейнер
-├── amvera.yaml               # Конфигурация Amvera
-├── prepare.cmd / prepare.sh  # Первичная подготовка окружения
-└── dev.cmd / dev.sh          # Запуск локального dev-контура
+nerpochka/
+  demo_ui/
+  backend/              FastAPI API и XLSX-экспорт
+  data/incoming/        входные CSV-файлы для импорта
+  db/init/              SQL-инициализация схем raw/stg/mart
+  etl/                  импорт raw, загрузчики staging, сборка mart
+  frontend/             Vue UI
+  docker-compose.yml    единый запуск сервисов
+  .env                  переменные окружения для контейнеров
 ```
 
----
+## UI демонстрации
 
-## Локальное развертывание
+> [!CAUTION]
+> В демонстрации используется UI из [demo_ui/](demo_ui)
+> 
+> В сборке используется другой фронт [frontend/](frontend)
 
-### Требования
+## Быстрый старт
 
-- Python **3.12+**
-- Node.js **22 LTS** и npm
-- Git Bash, WSL или Linux shell для запуска `.sh`-скриптов на Linux/macOS
-- Для production-контура: Docker и PostgreSQL
+Требования:
 
-### Быстрый старт на Windows
+- Docker
+- Docker Compose
 
-```powershell
-prepare.cmd
-dev.cmd
-```
-
-Скрипт подготовки создает `.venv`, устанавливает backend/frontend-зависимости, создает `.env` из примеров, применяет миграции и подготавливает роли. После запуска:
-
-- frontend: `http://localhost:5173`
-- backend API: `http://127.0.0.1:5000/api/v1`
-
-Если виртуальное окружение было создано на другой ОС:
-
-```powershell
-prepare.cmd --force-venv
-```
-
-### Быстрый старт на Linux/macOS
+Запуск всего проекта:
 
 ```bash
-chmod +x ./prepare.sh ./dev.sh
-./prepare.sh
-./dev.sh
+docker compose up --build
 ```
 
-### Создание администратора
-
-Администратор нужен для импорта аналитических данных и управления пользователями.
-
-Windows:
-
-```powershell
-$env:PYTHONPATH = "backend"
-.\.venv\Scripts\python.exe -m flask --app wsgi create-admin
-```
-
-Linux/macOS:
+Запуск в фоне:
 
 ```bash
-PYTHONPATH=backend ./.venv/bin/python -m flask --app wsgi create-admin
+docker compose up --build -d
 ```
 
-После входа администратор открывает вкладку **«Источники данных»**, импортирует папку `task` или набор CSV-файлов и затем формирует выборки во вкладке **«Конструктор»**.
+После старта будут доступны:
 
-### Проверки
+- Frontend: <http://localhost:5173>
+- Backend API: <http://localhost:8000>
+- Healthcheck: <http://localhost:8000/health>
+- XLSX-выгрузка: <http://localhost:8000/api/analytics/export>
+- PostgreSQL: `localhost:5432`
 
-```powershell
-.\.venv\Scripts\python.exe -m pytest backend
-
-cd frontend
-npm test
-npm run build
-```
-
----
-
-## Production / Docker
+При запуске сервис `etl` автоматически выполняет:
 
 ```bash
-docker build -t budget-constructor .
-docker run -d --name budget-constructor \
-  -p 8080:8080 \
-  -e APP_ENV=production \
-  -e SECRET_KEY=<long-random-secret> \
-  -e DATABASE_URL=postgresql+psycopg://user:password@host:5432/dbname \
-  -v "$(pwd)/data:/data" \
-  --restart unless-stopped \
-  budget-constructor
+python run_import.py
+python run_pipeline.py
 ```
 
-Production-контейнер:
+После успешного выполнения ETL-контейнер остается живым, чтобы его можно было инспектировать.
 
-- собирает `frontend/dist`;
-- запускает Flask через Gunicorn на порту `8080`;
-- применяет миграции при старте;
-- хранит загружаемые файлы и изменяемые данные в `/data`;
-- требует `DATABASE_URL`, если SQLite отключен.
+## Переменные окружения
 
-Для Amvera уже подготовлены `Dockerfile`, `amvera.yaml` и `deploy/amvera-entrypoint.sh`. Обязательные переменные:
+Основные переменные лежат в `.env`:
+
+```env
+DATA_DIR=/data/incoming
+DATABASE_URL=postgresql://budget_user:budget_pass@postgres:5432/budget_analytics
+```
+
+Дополнительно ETL и экспорт используют `REPORT_YEAR`. Если переменная не задана, используется `2025`.
+
+Пример:
+
+```env
+REPORT_YEAR=2025
+```
+
+## Данные
+
+Исходные файлы кладутся в `data/incoming`.
+
+Ожидаемые папки:
 
 ```text
-SECRET_KEY=<long-random-secret>
-DATABASE_URL=postgresql+psycopg://user:password@host:5432/dbname
+data/incoming/
+  1. РЧБ/
+  2. Соглашения/
+  3. ГЗ/
+  4. БУАУ/
 ```
 
-Опционально для первого администратора:
+Raw-импорт сохраняет файлы в:
 
-```text
-ADMIN_EMAIL=admin@example.com
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=<strong-password>
+- `raw.import_files`
+- `raw.csv_rows`
+
+Повторный импорт безопасен: уже загруженные файлы пропускаются по hash.
+
+## ETL
+
+ETL состоит из двух этапов.
+
+1. Raw-импорт CSV:
+
+```bash
+docker compose exec etl python run_import.py
 ```
 
----
+2. Пересборка staging и mart:
+
+```bash
+docker compose exec etl python run_pipeline.py
+```
+
+Единый pipeline последовательно запускает:
+
+- `load_rchb`
+- `load_gz`
+- `load_agreements`
+- `load_buau`
+- `build_mart`
+
+Повторно пересобрать данные без перезапуска проекта:
+
+```bash
+docker compose exec etl python run_import.py
+docker compose exec etl python run_pipeline.py
+```
+
+Логи ETL:
+
+```bash
+docker compose logs -f etl
+```
+
+## Слои данных
+
+### raw
+
+Сырой слой хранит исходные CSV без потери структуры:
+
+- `raw.import_files` - метаданные файлов.
+- `raw.csv_rows` - строки CSV в JSONB.
+
+### stg
+
+Очищенный staging-слой:
+
+- `stg.budget_operations` - РЧБ.
+- `stg.gz_budget_lines` - бюджетные строки ГЗ.
+- `stg.gz_contracts` - контракты и договоры ГЗ.
+- `stg.gz_payments` - платежки ГЗ.
+- `stg.agreements` - соглашения.
+- `stg.buau_operations` - операции БУ/АУ.
+
+Правила staging:
+
+- бюджетные коды хранятся как `text`;
+- суммы приводятся к `numeric`;
+- даты приводятся к `date`;
+- пустые строки заменяются на `NULL`;
+- загрузчики не падают при отсутствующих колонках;
+- в логах печатается количество обработанных строк.
+
+### mart
+
+Витрина:
+
+- `mart.indicators`
+
+Основные типы показателей:
+
+- `limit`
+- `budget_obligation`
+- `cash_execution`
+- `contract_amount`
+- `contract_payment`
+- `budget_amount`
+
+Раздел определяется по бюджетным кодам:
+
+- `КИК`: КЦСР содержит `975`;
+- `СКК`: КЦСР содержит `970`;
+- `Раздел 2/3`: КЦСР содержит `6105`;
+- `ОКВ`: заполнен `kdr_code` и он не равен `0`;
+- иначе `Другое`.
 
 ## API
 
-Все endpoints живут под `/api/v1`.
+Базовый URL:
 
-Ключевые группы:
+```text
+http://localhost:8000
+```
 
-- `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`
-- `GET/PATCH /users/me`
-- `GET /analytics/sources`
-- `POST /analytics/import`
-- `DELETE /analytics/import`
-- `GET /analytics/import-issues`
-- `GET /analytics/templates`
-- `GET /analytics/metrics`
-- `GET /analytics/search?q=...`
-- `POST /analytics/query`
-- `POST /analytics/timeline`
-- `POST /analytics/compare`
-- `POST /analytics/drilldown`
-- `POST /analytics/export`
-- `GET /assistant/health`, `POST /assistant/chat`, `POST /assistant/transcribe`
-- `GET/POST/PATCH/DELETE /admin/users` для администраторов
+### `GET /health`
 
-Подробные контракты и правила расширения описаны в `docs/`.
+Проверка доступности backend.
 
----
+### `GET /api/analytics/summary`
 
-## Команда
+Возвращает сгруппированные суммы из `mart.indicators`.
 
-| Участник | Зона ответственности |
-| --- | --- |
-| **Самарин Александр** | Product, UI/UX, пользовательские сценарии, презентация решения |
-| **Исаков Степан** | Архитектура, backend, frontend, ETL-логика, контейнеризация |
+Фильтры:
 
----
+- `section`
+- `kcsr_code`
+- `indicator_type`
+- `period_to`
 
-<div align="center">
-  <i>Платформа превращает разрозненные бюджетные выгрузки в понятные аналитические выборки, которые можно получить без программирования, ручных сводных таблиц и долгой сверки кодов.</i>
-</div>
+Пример:
+
+```bash
+curl "http://localhost:8000/api/analytics/summary?section=КИК"
+```
+
+Формат ответа:
+
+```json
+[
+  {
+    "section": "КИК",
+    "kcsr_code": "0320497501",
+    "object_name": "Наименование объекта",
+    "indicator_type": "limit",
+    "amount": 1000000
+  }
+]
+```
+
+### `GET /api/analytics/sections`
+
+Список разделов.
+
+### `GET /api/analytics/objects`
+
+Список объектов.
+
+Фильтры:
+
+- `section`
+- `q`
+
+### `GET /api/analytics/indicators`
+
+Список типов показателей.
+
+### `GET /api/analytics/export`
+
+XLSX-выгрузка аналитики.
+
+Фильтры:
+
+- `section`
+- `kcsr_code`
+
+Пример:
+
+```bash
+curl -L "http://localhost:8000/api/analytics/export" -o nerpochka_analytics_export.xlsx
+```
+
+## Frontend
+
+Frontend доступен по адресу:
+
+```text
+http://localhost:5173
+```
+
+В UI есть:
+
+- фильтры по разделу, КЦСР и типу показателя;
+- интерактивный график;
+- переключатель графика `bar / line / pie`;
+- таблица сводных данных;
+- кнопка XLSX-выгрузки.
+
+Vite настроен для внешнего доступа:
+
+```js
+server: {
+  host: true,
+  allowedHosts: 'all'
+}
+```
+
+## Проверочные SQL-запросы
+
+Открыть `psql`:
+
+```bash
+docker compose exec postgres psql -U budget_user -d budget_analytics
+```
+
+Проверить количество строк:
+
+```sql
+select count(*) from raw.csv_rows;
+select count(*) from stg.budget_operations;
+select count(*) from stg.gz_budget_lines;
+select count(*) from stg.gz_contracts;
+select count(*) from stg.gz_payments;
+select count(*) from mart.indicators;
+```
+
+Проверить распределение витрины:
+
+```sql
+select section, indicator_type, count(*), sum(amount)
+from mart.indicators
+group by section, indicator_type
+order by section, indicator_type;
+```
+
+Проверить, что mart собран за отчетный год:
+
+```sql
+select source_type, extract(year from period_to) as year, count(*), sum(amount)
+from mart.indicators
+group by source_type, extract(year from period_to)
+order by source_type, year;
+```
+
+## Полезные команды
+
+Посмотреть статус контейнеров:
+
+```bash
+docker compose ps
+```
+
+Посмотреть логи всех сервисов:
+
+```bash
+docker compose logs -f
+```
+
+Посмотреть логи backend:
+
+```bash
+docker compose logs -f backend
+```
+
+Перезапустить backend:
+
+```bash
+docker compose restart backend
+```
+
+Полностью остановить проект:
+
+```bash
+docker compose down
+```
+
+Остановить проект и удалить volume PostgreSQL:
+
+```bash
+docker compose down -v
+```
+
+После удаления volume база будет создана заново из `db/init/001_init.sql`, а данные нужно будет импортировать повторно.
+
+## Разработка
+
+Backend запускается в контейнере с `uvicorn --reload`, поэтому изменения в `backend/app` подхватываются автоматически.
+
+Frontend запускается через Vite dev server:
+
+```bash
+docker compose exec frontend npm run dev -- --host
+```
+
+Проверка Python-синтаксиса:
+
+```bash
+docker compose exec backend python -m py_compile app/services/excel_export.py
+docker compose exec etl python -m py_compile run_import.py run_pipeline.py loaders/load_rchb.py transformers/build_mart.py
+```
+
+Сборка frontend:
+
+```bash
+docker compose exec frontend npm run build
+```
+
+## Типовые проблемы
+
+### Frontend не открывается через ngrok или внешний host
+
+Проверьте `frontend/vite.config.js`. Должно быть:
+
+```js
+server: {
+  host: true,
+  allowedHosts: 'all'
+}
+```
+
+После изменения конфигурации перезапустите frontend:
+
+```bash
+docker compose restart frontend
+```
+
+### UI пишет "Не удалось загрузить данные"
+
+Проверьте backend:
+
+```bash
+curl http://localhost:8000/health
+docker compose logs --tail=100 backend
+```
+
+Проверьте, что mart заполнен:
+
+```bash
+docker compose exec postgres psql -U budget_user -d budget_analytics -c "select count(*) from mart.indicators;"
+```
+
+Если mart пустой, пересоберите ETL:
+
+```bash
+docker compose exec etl python run_import.py
+docker compose exec etl python run_pipeline.py
+```
+
+### Изменились CSV, но данные не обновились
+
+Raw-слой пропускает файлы по hash. Если файл уже был импортирован и изменился, проверьте его hash/имя или пересоздайте базу:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+### PostgreSQL не стартует с новой схемой
+
+SQL из `db/init` выполняется только при первом создании volume. Для применения изменений схемы на чистой базе удалите volume:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+## Примечания по методологии
+
+- РЧБ и соглашения являются срезами, поэтому для отчета используется последний срез внутри `REPORT_YEAR`, а не сумма всех месяцев.
+- РЧБ за годы, отличные от `REPORT_YEAR`, не загружается в `stg.budget_operations`.
+- ГЗ-контракты и платежи в mart фильтруются по `REPORT_YEAR`.
+- В XLSX-выгрузке областной и местные бюджеты разносятся по разным блокам колонок.
+
+## Лицензия
+
+Лицензия не указана. Перед использованием вне проекта уточните условия у владельца репозитория.
