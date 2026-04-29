@@ -1,7 +1,7 @@
-# КПН
+# Крутые перцы
 
-- Repository: https://github.com/ArtemChik103/amurcode
+- Repository: https://gitlab.com/Stepakinoyan/cool-peppers-project
 - Video: n/a
 - Description: n/a
-- Updated at: 2026-04-29T01:59:00+00:00
+- Updated at: 2026-04-29T01:59:10+00:00
 - Repository accessible: yes
