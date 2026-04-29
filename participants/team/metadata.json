@@ -1,9 +1,9 @@
 {
-  "team_name": "Спартак",
-  "repo_url": "https://github.com/Xaze-debug/Xakaton",
-  "video_url": null,
-  "last_sync": "2026-04-29T01:59:53+00:00",
-  "repo_accessible": true,
+  "team_name": "Дикие огурцы",
+  "repo_url": "",
+  "video_url": "https://disk.yandex.ru/d/GNWsUfo6rUyx2Q",
+  "last_sync": "2026-04-29T03:48:08+00:00",
+  "repo_accessible": false,
   "last_processed_commit": null,
   "deleted_by_user": false
 }

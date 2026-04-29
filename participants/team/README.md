@@ -1,7 +1,7 @@
-# Спартак
+# Дикие огурцы
 
-- Repository: https://github.com/Xaze-debug/Xakaton
-- Video: n/a
+- Repository: 
+- Video: https://disk.yandex.ru/d/GNWsUfo6rUyx2Q
 - Description: n/a
-- Updated at: 2026-04-29T01:59:53+00:00
-- Repository accessible: yes
+- Updated at: 2026-04-29T03:48:08+00:00
+- Repository accessible: no
