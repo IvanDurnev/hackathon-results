@@ -1,0 +1,16 @@
+[project]
+name = "cool-peppers-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.18.4",
+    "asyncpg>=0.31.0",
+    "cachetools>=7.0.6",
+    "fastapi[standard]>=0.136.1",
+    "ollama>=0.6.1",
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.2",
+    "sqlalchemy>=2.0.49",
+]
