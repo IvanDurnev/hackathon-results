@@ -26,5 +26,5 @@
 | Крутые перцы | [репозиторий](https://gitlab.com/Stepakinoyan/cool-peppers-project) | [папка со скринкастом и презентацией](https://disk.yandex.ru/d/SmZYjWQPSjzxbw) |
 | Кумыс | [репозиторий](https://github.com/timur337228/amur-hakaton-2026) | [папка со скринкастом и презентацией](https://drive.google.com/drive/folders/1Xz_Xm-DR3NNGBVlrj9gdxFZ0KVz743zj?q=sharedwith:public%20parent:1Xz_Xm-DR3NNGBVlrj9gdxFZ0KVz743zj) |
 | Некодеры | [репозиторий](https://github.com/alexwork1109/Necoders) | [папка со скринкастом и презентацией](https://disk.yandex.ru/i/l3V9591GVSwTWA) |
-| Поколение чудес | [репозиторий](https://github.com/lLAYT0Nl/Our_decision-pokolenie-chudes-) | — |
+| Поколение чудес | [репозиторий](https://github.com/lLAYT0Nl/Our_decision-pokolenie-chudes-) | [папка со скринкастом и презентацией](https://docs.google.com/presentation/d/1ArLi7ZU4WsdErL1g-6OMgCpIwnTKXEi_/edit?usp=sharing&ouid=104783302745555605691&rtpof=true&sd=true) |
 | Спартак | [репозиторий](https://github.com/Xaze-debug/Xakaton) | [папка со скринкастом и презентацией](https://disk.yandex.ru/d/CunahIq-emJASg) |
