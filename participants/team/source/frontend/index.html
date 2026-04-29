@@ -1,12 +1,871 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hackathon Starter</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рос Метроком | AI Studio Pro</title>
+    <style>
+        :root {
+            --bg-color: #0b0d10;
+            --panel-bg: #16191f;
+            --border-color: #2a2f3a;
+            --text-main: #ffffff;
+            --text-sec: #94a3b8;
+            --accent-color: #7d3aff;
+            --accent-glow: rgba(125, 58, 255, 0.25);
+            --accent-hover: #6a2ef0;
+            --slide-bg: #ffffff;
+            --slide-text: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --highlight-color: #ff6b00;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; outline: none; }
+        body { background: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        header {
+            height: 60px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            background: rgba(22, 25, 31, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 20;
+        }
+        .logo { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+        .logo span { color: var(--accent-color); }
+        .logo svg path { stroke: var(--accent-color); }
+        .header-controls { display: flex; gap: 10px; align-items: center; }
+        .btn {
+            padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500;
+            cursor: pointer; transition: 0.2s; border: none; display: flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--accent-color); color: white; box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-secondary { background: #2a2f3a; color: white; }
+        .btn-secondary:hover { background: #374151; }
+        .btn-icon { padding: 8px; border-radius: 6px; background: transparent; color: var(--text-sec); }
+        .btn-icon:hover { background: #2a2f3a; color: white; }
+        .theme-picker { display: flex; gap: 6px; background: #0f1115; padding: 4px; border-radius: 20px; border: 1px solid var(--border-color); }
+        .color-dot { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-dot:hover, .color-dot.active { transform: scale(1.2); border-color: white; }
+        .workspace { display: flex; flex: 1; height: calc(100vh - 60px); }
+        .sidebar {
+            width: 320px;
+            background: rgba(22, 25, 31, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .input-group label { display: block; font-size: 11px; color: var(--text-sec); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .input-box {
+            width: 100%; background: #0f1115; border: 1px solid var(--border-color);
+            color: white; padding: 10px; border-radius: 6px; font-size: 13px; resize: none;
+            transition: 0.2s;
+        }
+        .input-box:focus { border-color: var(--accent-color); box-shadow: 0 0 0 2px var(--accent-glow); }
+        .file-drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            background: rgba(0,0,0,0.2);
+        }
+        .file-drop-zone:hover, .file-drop-zone.dragover { border-color: var(--accent-color); background: rgba(125, 58, 255, 0.05); }
+        .file-info { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; font-size: 12px; color: var(--highlight-color); }
+        .layout-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .layout-option {
+            aspect-ratio: 16/9; background: #0f1115; border: 2px solid var(--border-color);
+            border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+        }
+        .layout-option:hover { border-color: var(--text-sec); }
+        .layout-option.active { border-color: var(--accent-color); background: var(--accent-glow); }
+        .layout-option svg { width: 24px; height: 24px; stroke: var(--text-sec); }
+        .layout-option.active svg { stroke: var(--accent-color); }
+        .status-bar {
+            margin-top: auto; padding: 15px; background: #0f1115; border-radius: 8px;
+            font-size: 12px; color: var(--text-sec);
+        }
+        .status-item { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .status-item:last-child { margin-bottom: 0; }
+        .status-value { color: var(--text-main); font-weight: 600; }
+        .auto-save { color: var(--success); display: flex; align-items: center; gap: 5px; }
+        .stage {
+            flex: 1;
+            background: radial-gradient(circle at center, #1e232e 0%, #0b0d10 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .slide-wrapper {
+            width: 960px;
+            aspect-ratio: 16/9;
+            background: var(--slide-bg);
+            color: var(--slide-text);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 60px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .slide-wrapper.transition { animation: slideTransition 0.5s ease; }
+        @keyframes slideTransition {
+            0% { transform: translateX(50px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        [contenteditable]:hover { background: rgba(0,0,0,0.03); cursor: text; border-radius: 4px; }
+        [contenteditable]:focus { background: rgba(125, 58, 255, 0.05); outline: 2px dashed var(--accent-color); }
+        .slide-title { 
+            font-size: 42px; font-weight: 800; margin-bottom: 40px; 
+            border-bottom: 4px solid var(--accent-color); padding-bottom: 20px; 
+            display: inline-block; color: var(--slide-text);
+        }
+        .slide-body { display: flex; gap: 40px; flex: 1; }
+        .slide-list { flex: 1; font-size: 24px; line-height: 1.6; list-style-position: inside; color: var(--slide-text); }
+        .slide-list li { margin-bottom: 15px; position: relative; padding-left: 10px; }
+        .magic-btn {
+            position: absolute; right: -30px; top: 0; opacity: 0;
+            background: var(--accent-color); color: white; border: none;
+            width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 12px;
+            transition: 0.2s;
+        }
+        .slide-list li:hover .magic-btn { opacity: 1; right: -25px; }
+        .slide-img-box {
+            flex: 1; background: #f1f5f9; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; border: 2px dashed #cbd5e1;
+        }
+        .slide-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .slide-footer { position: absolute; bottom: 30px; right: 40px; font-size: 14px; color: #94a3b8; font-weight: 600; }
+        .thumbnails-strip {
+            width: 180px;
+            background: #13151a;
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .thumb {
+            aspect-ratio: 16/9;
+            background: var(--slide-bg);
+            border-radius: 6px;
+            opacity: 0.6;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .thumb:hover { opacity: 0.8; }
+        .thumb.active { opacity: 1; border-color: var(--accent-color); transform: scale(1.03); }
+        .thumb-number {
+            position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,0.7);
+            color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px;
+        }
+        .notes-panel {
+            position: absolute;
+            bottom: 0; left: 0; right: 320px;
+            height: 200px;
+            background: var(--panel-bg);
+            border-top: 1px solid var(--border-color);
+            display: none;
+            flex-direction: column;
+            z-index: 15;
+        }
+        .notes-panel.show { display: flex; }
+        .notes-header {
+            padding: 10px 20px; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .notes-header h3 { font-size: 13px; color: var(--text-sec); text-transform: uppercase; }
+        .notes-content { flex: 1; padding: 20px; overflow-y: auto; }
+        .notes-content textarea {
+            width: 100%; height: 100%; background: #0f1115; border: none;
+            color: var(--text-main); padding: 15px; border-radius: 8px;
+            font-size: 14px; resize: none; line-height: 1.6;
+        }
+        .presentation-mode {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            display: none; flex-direction: column;
+        }
+        .presentation-mode.active { display: flex; }
+        .presentation-slide {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            background: #000; position: relative; overflow: hidden;
+        }
+        .presentation-controls {
+            height: 80px; background: rgba(0,0,0,0.8);
+            display: flex; align-items: center; justify-content: center; gap: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .pres-btn {
+            background: #333; color: white; border: none;
+            padding: 12px 24px; border-radius: 8px; cursor: pointer;
+            font-size: 14px; transition: 0.2s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .pres-btn:hover { background: var(--accent-color); transform: translateY(-2px); }
+        .pres-counter { color: white; font-weight: 600; font-size: 16px; min-width: 80px; text-align: center; }
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            z-index: 500; display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--panel-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 30px; max-width: 500px; width: 90%;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .modal h2 { margin-bottom: 20px; font-size: 20px; }
+        .modal-close {
+            margin-top: 20px; width: 100%; background: #2a2f3a; color: white;
+            border: none; padding: 12px; border-radius: 6px; cursor: pointer;
+        }
+        .loader-full {
+            position: fixed; inset: 0; background: rgba(11, 13, 16, 0.95); z-index: 1000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .loader-bar { width: 300px; height: 4px; background: #333; border-radius: 2px; overflow: hidden; margin-top: 20px; }
+        .loader-fill { height: 100%; background: var(--accent-color); width: 0%; transition: 0.3s; }
+        .toast {
+            position: fixed; bottom: 20px; right: 20px; background: #1e293b; color: white;
+            padding: 14px 24px; border-radius: 8px; border-left: 4px solid var(--accent-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(100px); transition: 0.3s;
+            display: flex; align-items: center; gap: 10px; z-index: 2000; font-size: 14px;
+        }
+        .toast.show { transform: translateY(0); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .empty-state { text-align: center; color: #64748b; }
+        .empty-state svg { opacity: 0.3; margin-bottom: 20px; }
+        .empty-state h2 { margin-bottom: 10px; color: var(--text-sec); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z"/><path d="M2 17L12 22L22 17"/><path d="M2 12L12 17L22 12"/>
+            </svg>
+            Рос <span>Метроком</span> AI Pro
+        </div>
+        <div class="header-controls">
+            <div class="theme-picker">
+                <div class="color-dot active" style="background: #7d3aff;" onclick="setTheme('#7d3aff')"></div>
+                <div class="color-dot" style="background: #10b981;" onclick="setTheme('#10b981')"></div>
+                <div class="color-dot" style="background: #f59e0b;" onclick="setTheme('#f59e0b')"></div>
+                <div class="color-dot" style="background: #3b82f6;" onclick="setTheme('#3b82f6')"></div>
+                <div class="color-dot" style="background: #ef4444;" onclick="setTheme('#ef4444')"></div>
+            </div>
+            <button class="btn btn-icon" onclick="toggleNotes()" title="Заметки (N)">📝</button>
+            <button class="btn btn-secondary" onclick="startPresentation()" title="Режим презентации (F5)">🖥️</button>
+            <button class="btn btn-primary" onclick="exportMenu()">📥 Экспорт</button>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <aside class="sidebar">
+            <div class="input-group">
+                <label>Тема презентации</label>
+                <textarea class="input-box" id="prompt" rows="3" placeholder="О чем будет презентация?"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>Загрузить документ</label>
+                <div class="file-drop-zone" id="dropZone">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-sec)">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <div class="file-info" id="fileInfo" style="display:none;"></div>
+                    <p style="font-size: 12px; color: var(--text-sec); margin-top: 5px;">Перетащите файл сюда</p>
+                </div>
+                <input type="file" id="fileInput" hidden accept=".pdf,.docx,.txt,.png,.jpg">
+            </div>
+            
+            <div class="input-group">
+                <label>Количество слайдов</label>
+                <input type="number" class="input-box" id="count" value="5" min="1" max="20">
+            </div>
+
+            <div class="input-group">
+                <label>Тон повествования</label>
+                <select class="input-box" id="toneSelect">
+                    <option value="formal">Официально-деловой</option>
+                    <option value="friendly">Дружелюбный</option>
+                    <option value="sales">Продающий</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>Нейросеть (Модель)</label>
+                <select class="input-box" id="aiModelSelect">
+                    <option value="sd">Stable Diffusion (Фотореализм)</option>
+                    <option value="yaArt">Yandex Art (Арт/Иллюстрации)</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>Макет слайда</label>
+                <div class="layout-selector">
+                    <div class="layout-option active" onclick="setLayout('standard')" title="Стандарт">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    </div>
+                    <div class="layout-option" onclick="setLayout('image-left')" title="Картинка слева">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                    </div>
+                    <div class="layout-option" onclick="setLayout('title-only')" title="Только заголовок">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>Стиль</label>
+                <select class="input-box" id="styleSelect">
+                    <option value="corporate">Корпоративный</option>
+                    <option value="minimal">Минимализм</option>
+                    <option value="creative">Креатив</option>
+                    <option value="dark">Dark Mode</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" onclick="generatePresentation()">✨ Сгенерировать</button>
+            
+            <div class="status-bar">
+                <div class="status-item">
+                    <span>Слайдов</span>
+                    <span class="status-value" id="statusSlides">0</span>
+                </div>
+                <div class="status-item">
+                    <span>Слов</span>
+                    <span class="status-value" id="statusWords">0</span>
+                </div>
+                <div class="status-item">
+                    <span>Автосохранение</span>
+                    <span class="auto-save">✓ Включено</span>
+                </div>
+                <div class="status-item" style="margin-top: 10px; font-size: 10px; color: #64748b;">
+                    <span>Последнее сохранение: <span id="lastSave">--:--</span></span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="stage" id="stage">
+            <div class="empty-state" id="emptyState">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
+                </svg>
+                <h2>Презентация пуста</h2>
+                <p>Заполните параметры и нажмите "Сгенерировать"</p>
+            </div>
+            <div class="slide-wrapper" id="activeSlide" style="display: none;"></div>
+
+            <div class="notes-panel" id="notesPanel">
+                <div class="notes-header">
+                    <h3>📝 Заметки спикера</h3>
+                    <button class="btn btn-icon" onclick="toggleNotes()">✕</button>
+                </div>
+                <div class="notes-content">
+                    <textarea id="speakerNotes" placeholder="Добавьте заметки для этого слайда..."></textarea>
+                </div>
+            </div>
+        </main>
+
+        <aside class="thumbnails-strip" id="thumbnails" style="display: none;"></aside>
+    </div>
+
+    <div class="presentation-mode" id="presentationMode">
+        <div class="presentation-slide" id="presSlide"></div>
+        <div class="presentation-controls">
+            <button class="pres-btn" onclick="presentationPrev()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                Назад
+            </button>
+            <span class="pres-counter" id="presCounter">1 / 5</span>
+            <button class="pres-btn" onclick="presentationNext()">
+                Вперед
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+            <button class="pres-btn" onclick="exitPresentation()" style="background: #ef4444;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                Выход
+            </button>
+        </div>
+    </div>
+
+    <div class="loader-full" id="loader">
+        <h3 style="color: white; margin-bottom: 10px;">Генерация...</h3>
+        <div class="loader-bar"><div class="loader-fill" id="loadFill"></div></div>
+        <p style="color: #94a3b8; margin-top: 10px; font-size: 14px;" id="loadText">Анализ запроса</p>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toastMsg">Готово!</span>
+    </div>
+
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal">
+            <h2>📥 Экспорт презентации</h2>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="exportPPTX()" style="justify-content: flex-start;">📊 PowerPoint (.pptx)</button>
+                <button class="btn btn-secondary" onclick="exportJSON()" style="justify-content: flex-start;">📋 JSON Данные</button>
+            </div>
+            <button class="modal-close" onclick="closeExportMenu()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        let slidesData = [];
+        let currentSlideIndex = 0;
+        let currentLayout = 'standard';
+        let currentTone = 'formal';
+        let currentModel = 'sd';
+        let notesData = {};
+        let isPresentationMode = false;
+        let uploadedFile = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            setupKeyboardShortcuts();
+            setupFileUpload();
+            updateStatus();
+        });
+
+        function setupFileUpload() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            dropZone.addEventListener('click', () => fileInput.click());
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+            dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('dragover'); });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault(); dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+            });
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) handleFile(e.target.files[0]);
+            });
+        }
+
+        function handleFile(file) {
+            uploadedFile = file;
+            const ext = file.name.split('.').pop().toUpperCase();
+            const fileInfo = document.getElementById('fileInfo');
+            fileInfo.innerHTML = `📄 ${file.name} <span style="background:rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 10px;">${ext}</span>`;
+            fileInfo.style.display = 'flex';
+            document.getElementById('dropZone').style.borderColor = 'var(--accent-color)';
+            document.getElementById('dropZone').style.background = 'rgba(125, 58, 255, 0.05)';
+            showToast(`Файл загружен: ${file.name}`, 'success');
+        }
+
+        function setTheme(color) {
+            document.documentElement.style.setProperty('--accent-color', color);
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            event.target.classList.add('active');
+            saveToStorage();
+        }
+
+        function setLayout(layout) {
+            currentLayout = layout;
+            document.querySelectorAll('.layout-option').forEach(o => o.classList.remove('active'));
+            event.target.closest('.layout-option').classList.add('active');
+            if(slidesData.length > 0) renderSlide();
+        }
+
+        async function generatePresentation() {
+            const prompt = document.getElementById('prompt').value;
+            const count = parseInt(document.getElementById('count').value);
+            const tone = document.getElementById('toneSelect').value;
+            const style = document.getElementById('styleSelect').value;
+            const model = document.getElementById('aiModelSelect').value;
+            
+            currentModel = model;
+            currentTone = tone;
+            
+            if(!prompt && !uploadedFile) { showToast('Введите тему или загрузите файл!', 'error'); return; }
+
+            document.getElementById('loader').style.display = 'flex';
+            document.getElementById('loadFill').style.width = '0%';
+            
+            const modelName = model === 'sd' ? 'Stable Diffusion' : 'Yandex Art';
+            
+            try {
+                await progress(10, `Подключение к ${modelName}...`);
+                
+                // === РЕАЛЬНЫЙ ЗАПРОС К API ===
+                const formData = new FormData();
+                if (prompt) formData.append('prompt', prompt);
+                if (uploadedFile) formData.append('file', uploadedFile);
+                formData.append('slides', count);
+                formData.append('style', style);
+                formData.append('tone', tone);
+                formData.append('image_service', model);
+
+                await progress(30, "Генерация структуры...");
+                
+                const response = await fetch('/api/generate', { 
+                    method: 'POST', 
+                    body: formData 
+                });
+                
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.detail || `HTTP ${response.status}`);
+                }
+
+                await progress(70, "Обработка слайдов...");
+                
+                const data = await response.json();
+                
+                await progress(100, "Готово!");
+                
+                // === Преобразуем ответ API в формат для UI ===
+                slidesData = data.slides.map(s => ({
+                    title: s.title,
+                    points: s.bullets || [],
+                    img: s.image_url || `https://placehold.co/600x400/${getRandomColor()}/white?text=${encodeURIComponent(s.title)}`
+                }));
+                
+                notesData = {};
+                slidesData.forEach((_, i) => { notesData[i] = ""; });
+
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('activeSlide').style.display = 'flex';
+                document.getElementById('thumbnails').style.display = 'flex';
+                
+                currentSlideIndex = 0;
+                renderSlide();
+                renderThumbnails();
+                updateStatus();
+                saveToStorage();
+                showToast(`Презентация создана (${modelName})!`, 'success');
+                
+            } catch (e) {
+                console.error(e);
+                showToast(`Ошибка: ${e.message}`, 'error');
+                document.getElementById('loader').style.display = 'none';
+            }
+        }
+
+        function renderSlide() {
+            const data = slidesData[currentSlideIndex];
+            const container = document.getElementById('activeSlide');
+            
+            let layoutStyle = '';
+            if(currentLayout === 'image-left') layoutStyle = 'flex-direction: row-reverse;';
+
+            container.innerHTML = `
+                <div class="slide-title" contenteditable="true" oninput="updateSlideData(); saveToStorage()">${data.title}</div>
+                <div class="slide-body" ${currentLayout !== 'title-only' ? `style="${layoutStyle}"` : 'style="display:none;"'}>
+                    <ul class="slide-list">
+                        ${data.points.map((p, idx) => `
+                            <li contenteditable="true" oninput="updateSlideData(); saveToStorage()">
+                                ${p}
+                                <button class="magic-btn" onclick="rewritePoint(this)" title="Переписать AI">✨</button>
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <div class="slide-img-box">
+                        <img src="${data.img}" alt="Slide Image" onerror="this.src='https://placehold.co/600x400?text=Image+Error'">
+                    </div>
+                </div>
+                ${currentLayout === 'title-only' ? '<div style="flex:1; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:18px;">Текст по центру</div>' : ''}
+                <div class="slide-footer">${currentSlideIndex + 1} / ${slidesData.length}</div>
+            `;
+            
+            document.getElementById('speakerNotes').value = notesData[currentSlideIndex] || '';
+            updateThumbnailsActive();
+            
+            container.classList.remove('transition');
+            void container.offsetWidth;
+            container.classList.add('transition');
+        }
+
+        function renderThumbnails() {
+            const container = document.getElementById('thumbnails');
+            container.innerHTML = slidesData.map((s, i) => `
+                <div class="thumb ${i === currentSlideIndex ? 'active' : ''}" onclick="goToSlide(${i})">
+                    <span class="thumb-number">${i+1}</span>
+                    <div style="padding: 8px;">
+                        <div style="height: 6px; background: #333; width: 80%; margin-bottom: 4px; border-radius: 2px;"></div>
+                        <div style="height: 3px; background: #eee; width: 100%; margin-bottom: 2px; border-radius: 1px;"></div>
+                        <div style="height: 3px; background: #eee; width: 60%; margin-bottom: 2px; border-radius: 1px;"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateThumbnailsActive() {
+            document.querySelectorAll('.thumb').forEach((t, i) => { t.classList.toggle('active', i === currentSlideIndex); });
+        }
+
+        function updateSlideData() {
+            const container = document.getElementById('activeSlide');
+            const title = container.querySelector('.slide-title').innerText;
+            const points = Array.from(container.querySelectorAll('.slide-list li')).map(li => {
+                const btn = li.querySelector('.magic-btn');
+                if(btn) btn.remove();
+                return li.innerText.trim();
+            });
+            slidesData[currentSlideIndex].title = title;
+            slidesData[currentSlideIndex].points = points;
+            updateStatus();
+        }
+
+        function nextSlide() { if(currentSlideIndex < slidesData.length - 1) { currentSlideIndex++; renderSlide(); } }
+        function prevSlide() { if(currentSlideIndex > 0) { currentSlideIndex--; renderSlide(); } }
+        function goToSlide(index) { currentSlideIndex = index; renderSlide(); }
+        function presentationNext() { if(currentSlideIndex < slidesData.length - 1) { currentSlideIndex++; renderPresentationSlide(); } }
+        function presentationPrev() { if(currentSlideIndex > 0) { currentSlideIndex--; renderPresentationSlide(); } }
+
+        function toggleNotes() {
+            if(isPresentationMode) return;
+            const panel = document.getElementById('notesPanel');
+            panel.classList.toggle('show');
+            if(panel.classList.contains('show')) document.getElementById('speakerNotes').focus();
+        }
+
+        document.getElementById('speakerNotes').addEventListener('input', (e) => {
+            notesData[currentSlideIndex] = e.target.value;
+            saveToStorage();
+        });
+
+        function startPresentation() {
+            if(slidesData.length === 0) { showToast('Сначала создайте презентацию', 'error'); return; }
+            isPresentationMode = true;
+            document.getElementById('presentationMode').classList.add('active');
+            renderPresentationSlide();
+        }
+
+        function renderPresentationSlide() {
+            const data = slidesData[currentSlideIndex];
+            const presSlide = document.getElementById('presSlide');
+            presSlide.innerHTML = `
+                <div class="slide-wrapper" style="background: var(--slide-bg); color: var(--slide-text); width: 100%; height: 100%; padding: 80px; display: flex; flex-direction: column;">
+                    <div class="slide-title" style="font-size: 42px; font-weight: 800; margin-bottom: 40px; border-bottom: 4px solid var(--accent-color); padding-bottom: 20px; display: inline-block;">${data.title}</div>
+                    <div class="slide-body" style="display: flex; gap: 40px; flex: 1;">
+                        <ul class="slide-list" style="flex: 1; font-size: 24px; line-height: 1.6; list-style-position: inside;">
+                            ${data.points.map(p => `<li style="margin-bottom: 15px;">${p}</li>`).join('')}
+                        </ul>
+                        <div class="slide-img-box" style="flex: 1; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <img src="${data.img}" alt="Slide Image" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+                    <div class="slide-footer" style="position: absolute; bottom: 30px; right: 40px; font-size: 14px; color: var(--text-sec); font-weight: 600;">${currentSlideIndex + 1} / ${slidesData.length}</div>
+                </div>
+            `;
+            document.getElementById('presCounter').innerText = `${currentSlideIndex + 1} / ${slidesData.length}`;
+        }
+
+        function exitPresentation() {
+            isPresentationMode = false;
+            document.getElementById('presentationMode').classList.remove('active');
+        }
+
+        function exportMenu() {
+            if(slidesData.length === 0) { showToast('Сначала создайте презентацию', 'error'); return; }
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function closeExportMenu() { document.getElementById('exportModal').classList.remove('active'); }
+
+        async function exportPPTX() {
+            showToast('Генерация .pptx файла...', 'success');
+            
+            const presentationData = {
+                title: document.getElementById('prompt').value.trim() || 'Презентация',
+                slides: slidesData.map(s => ({
+                    title: s.title,
+                    bullets: s.points,
+                    image_url: s.img
+                }))
+            };
+
+            const style = document.getElementById('styleSelect').value;
+
+            try {
+                const formData = new FormData();
+                formData.append('presentation_data', JSON.stringify(presentationData));
+                formData.append('style', style);
+
+                const response = await fetch('/api/export/pptx', { method: 'POST', body: formData });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.detail || 'Ошибка генерации PPTX');
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `presentation_${new Date().getTime()}.pptx`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                showToast('Файл PPTX скачан!', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast(`Ошибка: ${e.message}`, 'error');
+            } finally {
+                closeExportMenu();
+            }
+        }
+
+        function exportJSON() {
+            const data = JSON.stringify({slides: slidesData, notes: notesData, tone: currentTone, model: currentModel}, null, 2);
+            const blob = new Blob([data], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'presentation.json';
+            a.click();
+            showToast('JSON экспортирован!', 'success');
+            closeExportMenu();
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('rosmetrocom_slides', JSON.stringify(slidesData));
+            localStorage.setItem('rosmetrocom_notes', JSON.stringify(notesData));
+            localStorage.setItem('rosmetrocom_layout', currentLayout);
+            localStorage.setItem('rosmetrocom_tone', currentTone);
+            localStorage.setItem('rosmetrocom_model', currentModel);
+            localStorage.setItem('rosmetrocom_theme', getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim());
+            const now = new Date();
+            document.getElementById('lastSave').innerText = now.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function loadFromStorage() {
+            const slides = localStorage.getItem('rosmetrocom_slides');
+            const notes = localStorage.getItem('rosmetrocom_notes');
+            const layout = localStorage.getItem('rosmetrocom_layout');
+            const tone = localStorage.getItem('rosmetrocom_tone');
+            const model = localStorage.getItem('rosmetrocom_model');
+            const theme = localStorage.getItem('rosmetrocom_theme');
+            
+            if(slides) {
+                slidesData = JSON.parse(slides);
+                if(slidesData.length > 0) {
+                    document.getElementById('emptyState').style.display = 'none';
+                    document.getElementById('activeSlide').style.display = 'flex';
+                    document.getElementById('thumbnails').style.display = 'flex';
+                    renderSlide();
+                    renderThumbnails();
+                    updateStatus();
+                }
+            }
+            if(notes) notesData = JSON.parse(notes);
+            if(layout) {
+                currentLayout = layout;
+                document.querySelectorAll('.layout-option').forEach((o, i) => {
+                    o.classList.toggle('active', (i === 0 && layout === 'standard') || (i === 1 && layout === 'image-left') || (i === 2 && layout === 'title-only'));
+                });
+            }
+            if(tone) { currentTone = tone; document.getElementById('toneSelect').value = tone; }
+            if(model) { currentModel = model; document.getElementById('aiModelSelect').value = model; }
+            if(theme) setTheme(theme);
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if(isPresentationMode) {
+                    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); presentationNext(); return; }
+                    if(e.key === 'ArrowLeft') { e.preventDefault(); presentationPrev(); return; }
+                    if(e.key === 'Escape') { e.preventDefault(); exitPresentation(); return; }
+                    return;
+                }
+                if(e.key === '?' && !e.shiftKey) { e.preventDefault(); showShortcuts(); }
+                if(e.key === 'F5') { e.preventDefault(); startPresentation(); }
+                if(e.key === 'n' || e.key === 'N') { if(document.activeElement.tagName !== 'TEXTAREA' && !document.activeElement.isContentEditable) { e.preventDefault(); toggleNotes(); } }
+                if(e.key === 'ArrowRight') { if(!document.activeElement.isContentEditable && document.activeElement.tagName !== 'TEXTAREA') { nextSlide(); } }
+                if(e.key === 'ArrowLeft') { if(!document.activeElement.isContentEditable && document.activeElement.tagName !== 'TEXTAREA') { prevSlide(); } }
+                if(e.key === 'Escape') { closeExportMenu(); showShortcuts(); if(document.getElementById('notesPanel').classList.contains('show')) { toggleNotes(); } }
+                if(e.ctrlKey && e.key === 's') { e.preventDefault(); saveToStorage(); showToast('Сохранено!', 'success'); }
+                if(e.ctrlKey && e.key === 'e') { e.preventDefault(); exportMenu(); }
+                if(e.ctrlKey && e.key === 'n') { e.preventDefault(); newPresentation(); }
+            });
+        }
+
+        function showShortcuts() { document.getElementById('shortcutsModal').classList.toggle('active'); }
+
+        function newPresentation() {
+            if(confirm('Создать новую презентацию? Текущая будет сохранена.')) {
+                slidesData = []; notesData = {}; uploadedFile = null; currentSlideIndex = 0;
+                document.getElementById('prompt').value = '';
+                document.getElementById('fileInfo').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('activeSlide').style.display = 'none';
+                document.getElementById('thumbnails').style.display = 'none';
+                document.getElementById('notesPanel').classList.remove('show');
+                updateStatus(); saveToStorage();
+                showToast('Новая презентация создана', 'success');
+            }
+        }
+
+        function progress(percent, text) {
+            return new Promise(resolve => {
+                document.getElementById('loadFill').style.width = percent + '%';
+                document.getElementById('loadText').innerText = text;
+                setTimeout(resolve, 500);
+            });
+        }
+
+        function showToast(msg, type='info') {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            t.className = 'toast show ' + type;
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function updateStatus() {
+            document.getElementById('statusSlides').innerText = slidesData.length;
+            const words = slidesData.reduce((acc, s) => acc + s.title.split(' ').length + s.points.reduce((a, p) => a + p.split(' ').length, 0), 0);
+            document.getElementById('statusWords').innerText = words;
+        }
+
+        function rewritePoint(btn) {
+            const li = btn.parentElement;
+            btn.innerHTML = '⏳'; li.style.opacity = '0.5';
+            setTimeout(() => {
+                const phrases = ["Улучшенная формулировка.", "Более точное описание.", "Альтернативный взгляд."];
+                li.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+                li.appendChild(btn); li.style.opacity = '1'; btn.innerHTML = '✨';
+                updateSlideData(); saveToStorage();
+                showToast('Текст переписан!', 'success');
+            }, 800);
+        }
+
+        function getRandomColor() {
+            const colors = ['7d3aff', '10b981', 'f59e0b', '3b82f6', 'ec4899'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function getRandomTopic() {
+            const topics = ["Анализ", "Стратегия", "Результаты", "Планы", "Бюджет"];
+            return topics[Math.floor(Math.random() * topics.length)];
+        }
+    </script>
+</body>
 </html>
