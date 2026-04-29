@@ -1,0 +1,7 @@
+# Некодеры
+
+- Repository: https://github.com/alexwork1109/Necoders
+- Video: https://disk.yandex.ru/i/l3V9591GVSwTWA
+- Description: n/a
+- Updated at: 2026-04-29T08:24:27+00:00
+- Repository accessible: yes
