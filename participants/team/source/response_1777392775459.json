@@ -1,0 +1,2427 @@
+[
+  {
+    "kcsr_code": "88.8.00.61050",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "01.13",
+    "kfsr_name": "Другие общегосударственные вопросы",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-01",
+    "limit_pbs": "3015023766.63",
+    "budget_obligations": "0.00",
+    "limit_remaining": "6030047533.26",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.2.01.61058",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Технологическое присоединение к сетям электроснабжения в квартале 800 г. Благовещенска (со строительством центра питания)",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "1600000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "3200000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.61058",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Технологическое присоединение к сетям электроснабжения в квартале 800 г. Благовещенска (со строительством центра питания)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "1600000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "3200000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "13.2.02.61052",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (капитальный ремонт и реконструкция региональной автомобильной дороги \"Благовещенск-Бибиково\", ведущей к аэропорту \"Игнатьево\")",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "450000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "900000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.1.03.61053",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (cтроительство газовой котельной 15 квартала г.Свободный)",
+    "budget_name": "Бюджет города Свободного",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "381000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "762000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.61053",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство газовой котельной 15 квартала г. Свободный)»",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "381000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "762000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.2.01.61055",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство сливной станции с. Садовое)",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "232700000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "465400000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.61055",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство сливной станции с. Садовое)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "232700000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "465400000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "13.2.02.61051",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (закупка автобусов)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.08",
+    "kfsr_name": "Транспорт",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "176323766.63",
+    "budget_obligations": "0.00",
+    "limit_remaining": "352647533.26",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "02.1.02.61051",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (закупка автобусов)",
+    "budget_name": "Бюджет города Свободного",
+    "kfsr_code": "04.08",
+    "kfsr_name": "Транспорт",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "176323766.63",
+    "budget_obligations": "0.00",
+    "limit_remaining": "352647533.26",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0.00",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "02.2.01.97003",
+    "kcsr_name": "Реализация мероприятий в транспортной сфере, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет г. Тынды",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-02",
+    "limit_pbs": "133752149.85",
+    "budget_obligations": "0.00",
+    "limit_remaining": "267504299.70",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0.00",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "13.2.01.97003",
+    "kcsr_name": "Реализация мероприятий в транспортной сфере, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-01",
+    "limit_pbs": "133752149.85",
+    "budget_obligations": "0.00",
+    "limit_remaining": "267504299.70",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "02.2.01.97003",
+    "kcsr_name": "Реализация мероприятий в транспортной сфере, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет г. Тынды",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Муниципальные средства",
+    "budget_period": "2025-01",
+    "limit_pbs": "133752149.85",
+    "budget_obligations": "0.00",
+    "limit_remaining": "267504299.70",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0.00",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.1.03.6105В",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (cтроительство распределительных пунктов в целях реализации мероприятия \"Инфраструктурное обеспечение новых территорий застройки г.Свободного\")",
+    "budget_name": "Бюджет города Свободного",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "120000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "240000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0.00",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "03.1.05.6105В",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство распределительных пунктов в целях реализации мероприятия \"Инфраструктурное обеспечение новых территорий застройки г.Свободного\")",
+    "budget_name": "Бюджет города Свободного",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-07",
+    "limit_pbs": "120000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "240000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0.00",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "128018785.13",
+    "gz_paid": "147893548.97",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-07-15",
+        "amount": 128018785.13,
+        "number": "11",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-07-25",
+        "amount": 12204452.24,
+        "number": "459",
+        "payment_key": "1401054783774"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 47634196.73,
+        "number": "457",
+        "payment_key": "1401054772948"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 88054900,
+        "number": "458",
+        "payment_key": "1401054772681"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.6105В",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство распределительных пунктов в целях реализации мероприятия «Инфраструктурное обеспечение новых территорий застройки г. Свободного»)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "120000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "240000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "13.2.01.97003",
+    "kcsr_name": "Реализация мероприятий в транспортной сфере, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "90406841.10",
+    "budget_obligations": "0.00",
+    "limit_remaining": "180813682.20",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "05.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.03",
+    "kfsr_name": "Благоустройство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-01",
+    "limit_pbs": "67437662.85",
+    "budget_obligations": "0.00",
+    "limit_remaining": "134875325.70",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "10.1.01.6105Б",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (модернизация котельной \"Южная\", строительство теплотрассы, угольной эстакады)",
+    "budget_name": "Бюджет города Белогорск",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-07",
+    "limit_pbs": "55185650.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "110371300.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0.00",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "128018785.13",
+    "gz_paid": "147893548.97",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-07-15",
+        "amount": 128018785.13,
+        "number": "11",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-07-25",
+        "amount": 12204452.24,
+        "number": "459",
+        "payment_key": "1401054783774"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 47634196.73,
+        "number": "457",
+        "payment_key": "1401054772948"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 88054900,
+        "number": "458",
+        "payment_key": "1401054772681"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.6105Б",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Модернизация котельной \"Южная\", строительство теплотрассы, угольной эстакады)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-07",
+    "limit_pbs": "55185650.00",
+    "budget_obligations": "55185650.00",
+    "limit_remaining": "55185650.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "128018785.13",
+    "gz_paid": "147893548.97",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-07-15",
+        "amount": 128018785.13,
+        "number": "11",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-07-25",
+        "amount": 12204452.24,
+        "number": "459",
+        "payment_key": "1401054783774"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 47634196.73,
+        "number": "457",
+        "payment_key": "1401054772948"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 88054900,
+        "number": "458",
+        "payment_key": "1401054772681"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.6105Б",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Модернизация котельной \"Южная\", строительство теплотрассы, угольной эстакады)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "55000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "110000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "10.1.01.6105Б",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (модернизация котельной \"Южная\", строительство теплотрассы, угольной эстакады)",
+    "budget_name": "Бюджет города Белогорск",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "55000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "110000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0.00",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "03.2.04.97001",
+    "kcsr_name": "Реализация мероприятий в социальной сфере, одобренных президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "08.01",
+    "kfsr_name": "Культура",
+    "fund_source": "Федеральные средства",
+    "budget_period": "2025-01",
+    "limit_pbs": "31743501.05",
+    "budget_obligations": "0.00",
+    "limit_remaining": "63487002.10",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "02.2.01.97003",
+    "kcsr_name": "Реализация мероприятий в транспортной сфере, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет г. Тынды",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "20660198.10",
+    "budget_obligations": "0.00",
+    "limit_remaining": "41320396.20",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0.00",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.1.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет г. Тынды",
+    "kfsr_code": "05.03",
+    "kfsr_name": "Благоустройство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "16846849.03",
+    "budget_obligations": "0.00",
+    "limit_remaining": "33693698.06",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0.00",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "05.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-01",
+    "limit_pbs": "10000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "20000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Федеральные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "10000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "20000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "11.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.03",
+    "kfsr_name": "Благоустройство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "9000000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "18000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0.00",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Муниципальные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "1722950.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "3445900.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Муниципальные средства",
+    "budget_period": "2025-04",
+    "limit_pbs": "50000.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "100000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "459952349.62",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-04-07",
+        "amount": 459952349.62,
+        "number": "К.2025.0383",
+        "counterparty": "1401000007044"
+      }
+    ],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Муниципальные средства",
+    "budget_period": "2025-08",
+    "limit_pbs": "8414.53",
+    "budget_obligations": "0.00",
+    "limit_remaining": "-1756120.94",
+    "rcb_payments": "1772950.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "44622636.12",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "125963986.92",
+    "gz_paid": "67418531.41",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-08-25",
+        "amount": 118776000,
+        "number": "0123300007925000326",
+        "counterparty": "4150000000032"
+      },
+      {
+        "date": "2025-08-04",
+        "amount": 6650000,
+        "number": "0296/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-08-13",
+        "amount": 537986.92,
+        "number": "13",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-08-01",
+        "amount": 22795895.29,
+        "number": "503",
+        "payment_key": "1401054875336"
+      },
+      {
+        "date": "2025-08-20",
+        "amount": 44622636.12,
+        "number": "345",
+        "payment_key": "1401055046179"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "13.2.01.97003",
+    "kcsr_name": "Реализация мероприятий в транспортной сфере, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-08",
+    "limit_pbs": "0.00",
+    "budget_obligations": "154412347.95",
+    "limit_remaining": "-154412347.95",
+    "rcb_payments": "44622636.12",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "44622636.12",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "44622636.12",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "125963986.92",
+    "gz_paid": "67418531.41",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-08-25",
+        "amount": 118776000,
+        "number": "0123300007925000326",
+        "counterparty": "4150000000032"
+      },
+      {
+        "date": "2025-08-04",
+        "amount": 6650000,
+        "number": "0296/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-08-13",
+        "amount": 537986.92,
+        "number": "13",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-08-01",
+        "amount": 22795895.29,
+        "number": "503",
+        "payment_key": "1401054875336"
+      },
+      {
+        "date": "2025-08-20",
+        "amount": 44622636.12,
+        "number": "345",
+        "payment_key": "1401055046179"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "13.2.01.97003",
+    "kcsr_name": "Реализация мероприятий в транспортной сфере, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-02",
+    "limit_pbs": "0.00",
+    "budget_obligations": "133752149.85",
+    "limit_remaining": "-133752149.85",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "03.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Федеральные средства",
+    "budget_period": "2025-05",
+    "limit_pbs": "0.00",
+    "budget_obligations": "10000000.00",
+    "limit_remaining": "-10000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "128194144.81",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": [
+      {
+        "date": "2025-05-15",
+        "amount": 5407890.69,
+        "number": "1160",
+        "payment_key": "1401053980157"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 14842403.3,
+        "number": "1159",
+        "payment_key": "1401053980156"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 2682663.14,
+        "number": "1158",
+        "payment_key": "1401053980155"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 630492.59,
+        "number": "1168",
+        "payment_key": "1401053981662"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 10330527.3,
+        "number": "1167",
+        "payment_key": "1401053981661"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 22105580.9,
+        "number": "1166",
+        "payment_key": "1401053981660"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 3466267.13,
+        "number": "1165",
+        "payment_key": "1401053981659"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 62903.72,
+        "number": "1164",
+        "payment_key": "1401053981658"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 9027640.03,
+        "number": "1163",
+        "payment_key": "1401053981657"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 578210.8,
+        "number": "1162",
+        "payment_key": "1401053981656"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 59059565.21,
+        "number": "1161",
+        "payment_key": "1401053981655"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "03.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Федеральные средства",
+    "budget_period": "2025-08",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "-10000000.00",
+    "rcb_payments": "10000000.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "44622636.12",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "125963986.92",
+    "gz_paid": "67418531.41",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-08-25",
+        "amount": 118776000,
+        "number": "0123300007925000326",
+        "counterparty": "4150000000032"
+      },
+      {
+        "date": "2025-08-04",
+        "amount": 6650000,
+        "number": "0296/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-08-13",
+        "amount": 537986.92,
+        "number": "13",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-08-01",
+        "amount": 22795895.29,
+        "number": "503",
+        "payment_key": "1401054875336"
+      },
+      {
+        "date": "2025-08-20",
+        "amount": 44622636.12,
+        "number": "345",
+        "payment_key": "1401055046179"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "13.2.02.61052",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (капитальный ремонт и реконструкция региональной автомобильной дороги \"Благовещенск-Бибиково\", ведущей к аэропорту \"Игнатьево\")",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "0.00",
+    "rcb_payments": "7662647.60",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "13.2.02.61052",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (капитальный ремонт и реконструкция региональной автомобильной дороги \"Благовещенск-Бибиково\", ведущей к аэропорту \"Игнатьево\")",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-05",
+    "limit_pbs": "0.00",
+    "budget_obligations": "450000000.00",
+    "limit_remaining": "-450000000.00",
+    "rcb_payments": "127563652.22",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "128194144.81",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": [
+      {
+        "date": "2025-05-15",
+        "amount": 5407890.69,
+        "number": "1160",
+        "payment_key": "1401053980157"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 14842403.3,
+        "number": "1159",
+        "payment_key": "1401053980156"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 2682663.14,
+        "number": "1158",
+        "payment_key": "1401053980155"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 630492.59,
+        "number": "1168",
+        "payment_key": "1401053981662"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 10330527.3,
+        "number": "1167",
+        "payment_key": "1401053981661"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 22105580.9,
+        "number": "1166",
+        "payment_key": "1401053981660"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 3466267.13,
+        "number": "1165",
+        "payment_key": "1401053981659"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 62903.72,
+        "number": "1164",
+        "payment_key": "1401053981658"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 9027640.03,
+        "number": "1163",
+        "payment_key": "1401053981657"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 578210.8,
+        "number": "1162",
+        "payment_key": "1401053981656"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 59059565.21,
+        "number": "1161",
+        "payment_key": "1401053981655"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.61053",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство газовой котельной 15 квартала г. Свободный)»",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "0.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.61053",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство газовой котельной 15 квартала г. Свободный)»",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-07",
+    "limit_pbs": "0.00",
+    "budget_obligations": "381000000.00",
+    "limit_remaining": "-381000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "128018785.13",
+    "gz_paid": "147893548.97",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-07-15",
+        "amount": 128018785.13,
+        "number": "11",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-07-25",
+        "amount": 12204452.24,
+        "number": "459",
+        "payment_key": "1401054783774"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 47634196.73,
+        "number": "457",
+        "payment_key": "1401054772948"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 88054900,
+        "number": "458",
+        "payment_key": "1401054772681"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "03.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Муниципальные средства",
+    "budget_period": "2025-05",
+    "limit_pbs": "0.00",
+    "budget_obligations": "1772950.00",
+    "limit_remaining": "-1772950.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "128194144.81",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": [
+      {
+        "date": "2025-05-15",
+        "amount": 5407890.69,
+        "number": "1160",
+        "payment_key": "1401053980157"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 14842403.3,
+        "number": "1159",
+        "payment_key": "1401053980156"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 2682663.14,
+        "number": "1158",
+        "payment_key": "1401053980155"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 630492.59,
+        "number": "1168",
+        "payment_key": "1401053981662"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 10330527.3,
+        "number": "1167",
+        "payment_key": "1401053981661"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 22105580.9,
+        "number": "1166",
+        "payment_key": "1401053981660"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 3466267.13,
+        "number": "1165",
+        "payment_key": "1401053981659"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 62903.72,
+        "number": "1164",
+        "payment_key": "1401053981658"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 9027640.03,
+        "number": "1163",
+        "payment_key": "1401053981657"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 578210.8,
+        "number": "1162",
+        "payment_key": "1401053981656"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 59059565.21,
+        "number": "1161",
+        "payment_key": "1401053981655"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "03.1.03.61053",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (cтроительство газовой котельной 15 квартала г.Свободный)",
+    "budget_name": "Бюджет города Свободного",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-07",
+    "limit_pbs": "0.00",
+    "budget_obligations": "381000000.00",
+    "limit_remaining": "-381000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "128018785.13",
+    "gz_paid": "147893548.97",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-07-15",
+        "amount": 128018785.13,
+        "number": "11",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-07-25",
+        "amount": 12204452.24,
+        "number": "459",
+        "payment_key": "1401054783774"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 47634196.73,
+        "number": "457",
+        "payment_key": "1401054772948"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 88054900,
+        "number": "458",
+        "payment_key": "1401054772681"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.61055",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство сливной станции с. Садовое)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-07",
+    "limit_pbs": "0.00",
+    "budget_obligations": "232700000.00",
+    "limit_remaining": "-232700000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "128018785.13",
+    "gz_paid": "147893548.97",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-07-15",
+        "amount": 128018785.13,
+        "number": "11",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-07-25",
+        "amount": 12204452.24,
+        "number": "459",
+        "payment_key": "1401054783774"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 47634196.73,
+        "number": "457",
+        "payment_key": "1401054772948"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 88054900,
+        "number": "458",
+        "payment_key": "1401054772681"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.61055",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство сливной станции с. Садовое)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "0.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "13.2.01.97003",
+    "kcsr_name": "Реализация мероприятий в транспортной сфере, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-04",
+    "limit_pbs": "0.00",
+    "budget_obligations": "-133752149.85",
+    "limit_remaining": "133752149.85",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "459952349.62",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-04-07",
+        "amount": 459952349.62,
+        "number": "К.2025.0383",
+        "counterparty": "1401000007044"
+      }
+    ],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "05.2.01.61058",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Технологическое присоединение к сетям электроснабжения в квартале 800 г. Благовещенска (со строительством центра питания)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "0.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "13.2.02.61051",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (закупка автобусов)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "04.08",
+    "kfsr_name": "Транспорт",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "0.00",
+    "budget_obligations": "176323766.63",
+    "limit_remaining": "-176323766.63",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "03.2.01.61055",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство сливной станции с. Садовое)",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-08",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "0.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "44622636.12",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "125963986.92",
+    "gz_paid": "67418531.41",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-08-25",
+        "amount": 118776000,
+        "number": "0123300007925000326",
+        "counterparty": "4150000000032"
+      },
+      {
+        "date": "2025-08-04",
+        "amount": 6650000,
+        "number": "0296/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-08-13",
+        "amount": 537986.92,
+        "number": "13",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-08-01",
+        "amount": 22795895.29,
+        "number": "503",
+        "payment_key": "1401054875336"
+      },
+      {
+        "date": "2025-08-20",
+        "amount": 44622636.12,
+        "number": "345",
+        "payment_key": "1401055046179"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.6105Б",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Модернизация котельной \"Южная\", строительство теплотрассы, угольной эстакады)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "0.00",
+    "budget_obligations": "55000000.00",
+    "limit_remaining": "-55000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "11.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет города Благовещенска",
+    "kfsr_code": "05.03",
+    "kfsr_name": "Благоустройство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-05",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "0.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0.00",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0.00",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "128194144.81",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": [
+      {
+        "date": "2025-05-15",
+        "amount": 5407890.69,
+        "number": "1160",
+        "payment_key": "1401053980157"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 14842403.3,
+        "number": "1159",
+        "payment_key": "1401053980156"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 2682663.14,
+        "number": "1158",
+        "payment_key": "1401053980155"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 630492.59,
+        "number": "1168",
+        "payment_key": "1401053981662"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 10330527.3,
+        "number": "1167",
+        "payment_key": "1401053981661"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 22105580.9,
+        "number": "1166",
+        "payment_key": "1401053981660"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 3466267.13,
+        "number": "1165",
+        "payment_key": "1401053981659"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 62903.72,
+        "number": "1164",
+        "payment_key": "1401053981658"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 9027640.03,
+        "number": "1163",
+        "payment_key": "1401053981657"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 578210.8,
+        "number": "1162",
+        "payment_key": "1401053981656"
+      },
+      {
+        "date": "2025-05-15",
+        "amount": 59059565.21,
+        "number": "1161",
+        "payment_key": "1401053981655"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.6105В",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (Строительство распределительных пунктов в целях реализации мероприятия «Инфраструктурное обеспечение новых территорий застройки г. Свободного»)",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "0.00",
+    "budget_obligations": "120000000.00",
+    "limit_remaining": "-120000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.03",
+    "kfsr_name": "Благоустройство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-07",
+    "limit_pbs": "0.00",
+    "budget_obligations": "9000000.00",
+    "limit_remaining": "-9000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "128018785.13",
+    "gz_paid": "147893548.97",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-07-15",
+        "amount": 128018785.13,
+        "number": "11",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-07-25",
+        "amount": 12204452.24,
+        "number": "459",
+        "payment_key": "1401054783774"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 47634196.73,
+        "number": "457",
+        "payment_key": "1401054772948"
+      },
+      {
+        "date": "2025-07-23",
+        "amount": 88054900,
+        "number": "458",
+        "payment_key": "1401054772681"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "02.1.02.61051",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (закупка автобусов)",
+    "budget_name": "Бюджет города Свободного",
+    "kfsr_code": "04.08",
+    "kfsr_name": "Транспорт",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-08",
+    "limit_pbs": "0.00",
+    "budget_obligations": "118776000.00",
+    "limit_remaining": "-176323766.63",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0.00",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "44622636.12",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "125963986.92",
+    "gz_paid": "67418531.41",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-08-25",
+        "amount": 118776000,
+        "number": "0123300007925000326",
+        "counterparty": "4150000000032"
+      },
+      {
+        "date": "2025-08-04",
+        "amount": 6650000,
+        "number": "0296/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-08-13",
+        "amount": 537986.92,
+        "number": "13",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-08-01",
+        "amount": 22795895.29,
+        "number": "503",
+        "payment_key": "1401054875336"
+      },
+      {
+        "date": "2025-08-20",
+        "amount": 44622636.12,
+        "number": "345",
+        "payment_key": "1401055046179"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.03",
+    "kfsr_name": "Благоустройство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-04",
+    "limit_pbs": "0.00",
+    "budget_obligations": "16846849.03",
+    "limit_remaining": "-16846849.03",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "459952349.62",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-04-07",
+        "amount": 459952349.62,
+        "number": "К.2025.0383",
+        "counterparty": "1401000007044"
+      }
+    ],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "02.2.01.97003",
+    "kcsr_name": "Реализация мероприятий в транспортной сфере, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Бюджет г. Тынды",
+    "kfsr_code": "04.09",
+    "kfsr_name": "Дорожное хозяйство (дорожные фонды)",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-08",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "-89245272.24",
+    "rcb_payments": "44622636.12",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "44622636.12",
+    "buau_payments": "44622636.12",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "125963986.92",
+    "gz_paid": "67418531.41",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-08-25",
+        "amount": 118776000,
+        "number": "0123300007925000326",
+        "counterparty": "4150000000032"
+      },
+      {
+        "date": "2025-08-04",
+        "amount": 6650000,
+        "number": "0296/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-08-13",
+        "amount": 537986.92,
+        "number": "13",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-08-01",
+        "amount": 22795895.29,
+        "number": "503",
+        "payment_key": "1401054875336"
+      },
+      {
+        "date": "2025-08-20",
+        "amount": 44622636.12,
+        "number": "345",
+        "payment_key": "1401055046179"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "05.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-03",
+    "limit_pbs": "0.00",
+    "budget_obligations": "10000000.00",
+    "limit_remaining": "-10000000.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "05.2.01.97002",
+    "kcsr_name": "Реализация мероприятий в сфере коммунальной инфраструктуры и благоустройства территорий, одобренных Президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "05.02",
+    "kfsr_name": "Коммунальное хозяйство",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-08",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "0.00",
+    "rcb_payments": "10000000.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "10000000.00",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "44622636.12",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "125963986.92",
+    "gz_paid": "67418531.41",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-08-25",
+        "amount": 118776000,
+        "number": "0123300007925000326",
+        "counterparty": "4150000000032"
+      },
+      {
+        "date": "2025-08-04",
+        "amount": 6650000,
+        "number": "0296/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-08-13",
+        "amount": 537986.92,
+        "number": "13",
+        "counterparty": "1401000048335"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-08-01",
+        "amount": 22795895.29,
+        "number": "503",
+        "payment_key": "1401054875336"
+      },
+      {
+        "date": "2025-08-20",
+        "amount": 44622636.12,
+        "number": "345",
+        "payment_key": "1401055046179"
+      }
+    ]
+  },
+  {
+    "kcsr_code": "03.2.04.97001",
+    "kcsr_name": "Реализация мероприятий в социальной сфере, одобренных президиумом (штабом) Правительственной комиссии по региональному развитию в Российской Федерации",
+    "budget_name": "Областной бюджет Амурской области",
+    "kfsr_code": "08.01",
+    "kfsr_name": "Культура",
+    "fund_source": "Региональные средства",
+    "budget_period": "2025-01",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "0.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "0",
+    "gz_paid": "0",
+    "agreement_details": [],
+    "gz_contract_details": [],
+    "gz_payment_details": []
+  },
+  {
+    "kcsr_code": "02.1.02.61051",
+    "kcsr_name": "Реализация мер, финансирование которых осуществляется за счет высвобождаемых средств в результате списания задолженности по бюджетным кредитам (закупка автобусов)",
+    "budget_name": "Бюджет города Свободного",
+    "kfsr_code": "04.08",
+    "kfsr_name": "Транспорт",
+    "fund_source": "Муниципальные средства",
+    "budget_period": "2025-06",
+    "limit_pbs": "0.00",
+    "budget_obligations": "0.00",
+    "limit_remaining": "0.00",
+    "rcb_payments": "0.00",
+    "rcb_payments_kvr2": "0.00",
+    "rcb_payments_kvr5": "0",
+    "rcb_payments_kvr6": "0",
+    "buau_payments": "0",
+    "agr_amount": "0",
+    "agr_mbt_amount": "0",
+    "agr_subsidy_amount": "0",
+    "gz_contracts_amount": "532198434.32",
+    "gz_paid": "7662647.60",
+    "agreement_details": [],
+    "gz_contract_details": [
+      {
+        "date": "2025-06-24",
+        "amount": 945972,
+        "number": "39/2025",
+        "counterparty": "1001000000149"
+      },
+      {
+        "date": "2025-06-02",
+        "amount": 531252462.32,
+        "number": "0182/2025",
+        "counterparty": "1001000000149"
+      }
+    ],
+    "gz_payment_details": [
+      {
+        "date": "2025-06-19",
+        "amount": 7662647.6,
+        "number": "1505",
+        "payment_key": "1401054400057"
+      }
+    ]
+  }
+]
