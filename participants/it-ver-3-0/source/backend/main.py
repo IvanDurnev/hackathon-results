@@ -2,8 +2,12 @@
 from __future__ import annotations
 
 import asyncio
+import base64
+import hashlib
+import json
 import logging
 from pathlib import Path
+import time
 
 import shutil
 import uuid
@@ -15,17 +19,42 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from . import config
-from .orchestrator import JOBS, create_job, run_job_async
+from .engagement import analyze_plan_engagement
+from .ai_client import AIClient, AIClientError
+from .orchestrator import JOBS, create_job, run_job_async, run_render_job_async
 from .sample_analyzer import SampleAnalysis, analyze_file
+from .slide_planner import (
+    plan_from_dict,
+    plan_presentation,
+    plan_presentation_from_sample,
+    regenerate_slide,
+)
+from .web_research import collect_web_context
 
 SAMPLES: dict[str, SampleAnalysis] = {}
+PLAN_CACHE: dict[str, tuple[float, dict]] = {}
+PLAN_CACHE_TTL_SEC = 60 * 20
+
+
+def _plan_cache_key(req: PlanRequest) -> str:
+    payload = {
+        "prompt": req.prompt.strip(),
+        "n_slides": req.n_slides,
+        "text_density": req.text_density,
+        "images_mode": req.images_mode,
+        "research_mode": req.research_mode,
+        "sample_id": req.sample_id or "",
+        "design_preset": req.design_preset,
+    }
+    raw = json.dumps(payload, ensure_ascii=False, sort_keys=True)
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
 
-app = FastAPI(title="AI Presentation Generator", version="1.0.0")
+app = FastAPI(title="БПК-IT_ver.3.0", version="3.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,13 +69,46 @@ class GenerateRequest(BaseModel):
     prompt: str = Field(..., min_length=3, max_length=2000)
     n_slides: int = Field(8, ge=3, le=25)
     text_density: str = Field("balanced", pattern="^(minimal|balanced|detailed)$")
-    images_mode: str = Field("with-images", pattern="^(with-images|no-images)$")
+    images_mode: str = Field("with-images", pattern="^(with-images|no-images|internet-images)$")
     output_format: str = Field("both", pattern="^(pptx|pdf|both)$")
-    image_backend: str = Field("yandex-art", pattern="^(yandex-art|sd)$")
+    image_backend: str = Field("yandex-art", pattern="^(yandex-art|sd|internet)$")
+    research_mode: str = Field("off", pattern="^(off|web)$")
     sample_id: str | None = None
+    design_preset: str = Field(
+        "fresh",
+        pattern="^(fresh|ocean|sunrise|midnight|pastel|forest)$",
+    )
 
 
-_ALLOWED_SUFFIX = {".pptx", ".pdf"}
+class PlanRequest(GenerateRequest):
+    pass
+
+
+class RenderRequest(BaseModel):
+    plan: dict
+    images_mode: str = Field("with-images", pattern="^(with-images|no-images|internet-images)$")
+    output_format: str = Field("both", pattern="^(pptx|pdf|both)$")
+    image_backend: str = Field("yandex-art", pattern="^(yandex-art|sd|internet)$")
+
+
+class RegenerateSlideRequest(BaseModel):
+    plan: dict
+    slide_index: int = Field(..., ge=0, le=100)
+    instruction: str = Field(..., min_length=3, max_length=1200)
+    images_mode: str = Field("with-images", pattern="^(with-images|no-images|internet-images)$")
+
+
+class EngagementRequest(BaseModel):
+    plan: dict
+
+
+class WebImagesRequest(BaseModel):
+    query: str = Field(..., min_length=2, max_length=300)
+    count: int = Field(6, ge=1, le=12)
+    aspect: str = Field("16:9", pattern="^(16:9|1:1)$")
+
+
+_ALLOWED_SUFFIX = {".pptx", ".pdf", ".docx"}
 _MAX_UPLOAD_BYTES = 30 * 1024 * 1024  # 30 MB
 
 
@@ -58,7 +120,7 @@ async def api_analyze(file: UploadFile = File(...)):
     if suffix not in _ALLOWED_SUFFIX:
         raise HTTPException(
             status_code=400,
-            detail="Поддерживаются только файлы .pptx и .pdf",
+            detail="Поддерживаются только файлы .pptx, .pdf и .docx",
         )
 
     sample_id = uuid.uuid4().hex[:12]
@@ -119,9 +181,149 @@ async def api_generate(req: GenerateRequest):
             output_format=req.output_format,  # type: ignore[arg-type]
             image_backend=req.image_backend,  # type: ignore[arg-type]
             sample=sample,
+            design_preset=req.design_preset,
+            research_mode=req.research_mode,  # type: ignore[arg-type]
         )
     )
     return {"job_id": job_id}
+
+
+@app.post("/api/plan")
+async def api_plan(req: PlanRequest):
+    now = time.monotonic()
+    cache_key = _plan_cache_key(req)
+    cached = PLAN_CACHE.get(cache_key)
+    if cached and (now - cached[0]) <= PLAN_CACHE_TTL_SEC:
+        return {"plan": cached[1]}
+
+    sample = None
+    if req.sample_id:
+        sample = SAMPLES.get(req.sample_id)
+        if sample is None:
+            raise HTTPException(status_code=404, detail="sample_id не найден")
+    try:
+        client = AIClient()
+        web_context = ""
+        if req.research_mode == "web":
+            try:
+                web_context = await collect_web_context(req.prompt)
+            except Exception:
+                logger.exception("collect_web_context failed, continue without web context")
+                web_context = ""
+        if sample is None:
+            plan = await plan_presentation(
+                client,
+                user_prompt=req.prompt,
+                n_slides=req.n_slides,
+                text_density=req.text_density,  # type: ignore[arg-type]
+                images_mode=req.images_mode,  # type: ignore[arg-type]
+                design_preset=req.design_preset,
+                web_context=web_context,
+            )
+        else:
+            plan = await plan_presentation_from_sample(
+                client,
+                user_prompt=req.prompt,
+                sample=sample,
+                n_slides=req.n_slides,
+                images_mode=req.images_mode,  # type: ignore[arg-type]
+                text_density=req.text_density,  # type: ignore[arg-type]
+                design_preset=req.design_preset,
+                web_context=web_context,
+            )
+    except AIClientError as e:
+        logger.warning("api_plan: AI unavailable: %s", e)
+        raise HTTPException(
+            status_code=503,
+            detail="Сервис ИИ временно недоступен (проблема сети/доступа к AI API). Проверьте VPN/прокси/интернет и повторите.",
+        )
+    except Exception:
+        logger.exception("api_plan failed unexpectedly")
+        raise HTTPException(status_code=500, detail="Не удалось собрать план презентации.")
+    plan_dict = plan.to_dict()
+    PLAN_CACHE[cache_key] = (now, plan_dict)
+    if len(PLAN_CACHE) > 120:
+        stale_cutoff = now - PLAN_CACHE_TTL_SEC
+        for k, (ts, _) in list(PLAN_CACHE.items()):
+            if ts < stale_cutoff:
+                PLAN_CACHE.pop(k, None)
+    return {"plan": plan_dict}
+
+
+@app.post("/api/render")
+async def api_render(req: RenderRequest):
+    try:
+        _ = plan_from_dict(req.plan)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"invalid plan: {e}")
+    job_id = create_job()
+    asyncio.create_task(
+        run_render_job_async(
+            job_id,
+            plan_data=req.plan,
+            images_mode=req.images_mode,  # type: ignore[arg-type]
+            output_format=req.output_format,  # type: ignore[arg-type]
+            image_backend=req.image_backend,  # type: ignore[arg-type]
+        )
+    )
+    return {"job_id": job_id}
+
+
+@app.post("/api/regenerate-slide")
+async def api_regenerate_slide(req: RegenerateSlideRequest):
+    try:
+        plan = plan_from_dict(req.plan)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"invalid plan: {e}")
+    if req.slide_index >= len(plan.slides):
+        raise HTTPException(status_code=400, detail="slide_index out of range")
+    try:
+        client = AIClient()
+        slide = await regenerate_slide(
+            client,
+            plan=plan,
+            slide_index=req.slide_index,
+            instruction=req.instruction,
+            images_mode=req.images_mode,  # type: ignore[arg-type]
+        )
+    except AIClientError:
+        raise HTTPException(
+            status_code=503,
+            detail="Сервис ИИ временно недоступен для перегенерации слайда.",
+        )
+    old = req.plan.get("slides", [])
+    if isinstance(old, list) and req.slide_index < len(old) and isinstance(old[req.slide_index], dict):
+        old_data_url = str(old[req.slide_index].get("image_data_url", "")).strip()
+        if old_data_url:
+            slide.image_data_url = old_data_url
+        old_bg_url = str(old[req.slide_index].get("background_image_data_url", "")).strip()
+        if old_bg_url:
+            slide.background_image_data_url = old_bg_url
+    return {"slide": slide.to_dict()}
+
+
+@app.post("/api/engagement-heatmap")
+async def api_engagement_heatmap(req: EngagementRequest):
+    try:
+        plan = plan_from_dict(req.plan)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"invalid plan: {e}")
+    return analyze_plan_engagement(plan)
+
+
+@app.post("/api/web-images")
+async def api_web_images(req: WebImagesRequest):
+    try:
+        client = AIClient()
+        images = await client.internet_image_candidates(req.query, count=req.count, aspect=req.aspect)
+    except Exception:
+        logger.exception("web image search failed")
+        raise HTTPException(status_code=503, detail="Не удалось выполнить поиск картинок по запросу.")
+    encoded = [
+        f"data:image/jpeg;base64,{base64.b64encode(img).decode('ascii')}"
+        for img in images
+    ]
+    return {"query": req.query, "items": encoded}
 
 
 @app.get("/api/jobs/{job_id}")
