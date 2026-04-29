@@ -1,5 +1,5 @@
 // ============================================
-// CONFIGURATION
+// Конфигурация
 // ============================================
 const API_URL = 'http://127.0.0.1:8000';
 const LS_THEME_KEY = 'presgen-theme';
@@ -21,18 +21,6 @@ const translations = {
         done: 'Готово',
         formReset: 'Форма сброшена',
         createFirst: 'Сначала создайте презентацию',
-        slide1: 'Титульный слайд',
-        slide2: 'Введение',
-        slide3: 'Основная часть',
-        slide4: 'Анализ',
-        slide5: 'Решения',
-        slide6: 'Заключение',
-        slide7: 'Итоги',
-        item1: 'Основной пункт',
-        item2: 'Дополнительная информация',
-        item3: 'Ключевые моменты',
-        heroSubtitle: 'Эстетика автоматизации',
-        heroQuote: '«Хватит тратить часы на дизайн — выбери AI и сделай красиво за несколько секунд.»',
     },
     en: {
         fileLoaded: 'File loaded',
@@ -49,18 +37,6 @@ const translations = {
         done: 'Done',
         formReset: 'Form reset',
         createFirst: 'Create presentation first',
-        slide1: 'Title Slide',
-        slide2: 'Introduction',
-        slide3: 'Main Content',
-        slide4: 'Analysis',
-        slide5: 'Solutions',
-        slide6: 'Conclusion',
-        slide7: 'Summary',
-        item1: 'Main point',
-        item2: 'Additional information',
-        item3: 'Key highlights',
-        heroSubtitle: 'Aesthetics of Automation',
-        heroQuote: '«Stop wasting hours on design — choose AI and make it beautiful in seconds.»',
     }
 };
 
@@ -88,6 +64,15 @@ function bindEvents() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
+    document.getElementById('prompt').addEventListener('input', () => {
+        const textarea = document.getElementById('prompt');
+        document.getElementById('charCount').textContent = textarea.value.length;
+        if (textarea.value.trim()) {
+            textarea.style.borderColor = 'var(--border)';
+            textarea.style.boxShadow = 'none';
+        }
+    });
+
     const ua = document.getElementById('uploadArea');
     const fi = document.getElementById('fileInput');
     ua.addEventListener('click', () => fi.click());
@@ -101,11 +86,24 @@ function bindEvents() {
     fi.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
     document.getElementById('removeFile').addEventListener('click', e => { e.stopPropagation(); removeFile(); });
 
-    document.getElementById('prompt').addEventListener('input', () => {
-        document.getElementById('charCount').textContent = document.getElementById('prompt').value.length;
+    document.getElementById('nextStep').addEventListener('click', () => {
+        const prompt = document.getElementById('prompt').value.trim();
+        if (!prompt && !selectedFile) {
+            toast(t('enterTopic'), 'error');
+            const textarea = document.getElementById('prompt');
+            textarea.style.borderColor = 'var(--error)';
+            textarea.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+            textarea.style.animation = 'shake 0.5s ease';
+            setTimeout(() => {
+                textarea.style.borderColor = 'var(--border)';
+                textarea.style.boxShadow = 'none';
+                textarea.style.animation = '';
+            }, 2000);
+            return;
+        }
+        switchStep(2);
     });
 
-    document.getElementById('nextStep').addEventListener('click', () => switchStep(2));
     document.getElementById('prevStep').addEventListener('click', () => switchStep(1));
     document.getElementById('decSlides').addEventListener('click', () => adjustSlides(-1));
     document.getElementById('incSlides').addEventListener('click', () => adjustSlides(1));
@@ -116,6 +114,14 @@ function bindEvents() {
     document.getElementById('nextSlide').addEventListener('click', () => navSlide(1));
     document.getElementById('downloadBtn').addEventListener('click', download);
     document.getElementById('resetBtn').addEventListener('click', reset);
+
+    // Установка начального placeholder для всех полей с data-*-placeholder
+    document.querySelectorAll('textarea[data-ru-placeholder][data-en-placeholder], input[data-ru-placeholder][data-en-placeholder]').forEach(el => {
+        const ph = el.getAttribute(`data-${currentLang}-placeholder`);
+        if (ph) {
+            el.placeholder = ph;
+        }
+    });
 }
 
 function toggleTheme() {
@@ -131,31 +137,41 @@ function applyTheme(theme) {
 }
 
 function toggleLanguage() {
-    // Инвертируем язык
     currentLang = currentLang === 'ru' ? 'en' : 'ru';
     localStorage.setItem(LS_LANG_KEY, currentLang);
     applyLanguage(currentLang);
 }
 
+// ============================================
+// Функция смены языка на сайте
+// ============================================
 function applyLanguage(lang) {
     document.documentElement.lang = lang;
-
-    // Кнопка языка: RU когда русский, EN когда английский
     document.getElementById('langText').textContent = lang === 'ru' ? 'RU' : 'EN';
 
-    // Обновляем все элементы с data-ru/data-en
+    // Обработка всех элементов с data-ru/data-en
     document.querySelectorAll('[data-ru][data-en]').forEach(el => {
         const text = el.getAttribute(`data-${lang}`);
         if (text === null) return;
 
         if (el.tagName === 'TEXTAREA') {
+            // Обновляем placeholder
             const ph = el.getAttribute(`data-${lang}-placeholder`);
-            if (ph !== null) el.placeholder = ph;
+            if (ph !== null) {
+                el.placeholder = ph;
+            }
         } else if (el.tagName === 'OPTION') {
             el.textContent = text;
         } else if (!el.querySelector('[data-ru]')) {
-            // Только если нет вложенных data-ru элементов
             el.textContent = text;
+        }
+    });
+
+    // Дополнительно: обновляем placeholder для всех textarea с data-*-placeholder
+    document.querySelectorAll('textarea[data-ru-placeholder][data-en-placeholder]').forEach(el => {
+        const ph = el.getAttribute(`data-${lang}-placeholder`);
+        if (ph !== null) {
+            el.placeholder = ph;
         }
     });
 
@@ -165,21 +181,14 @@ function applyLanguage(lang) {
         if (t !== null) el.title = t;
     });
 
-    // Обновляем hero подзаголовок и цитату (они используют data-ru/data-en)
+    // Обновляем hero элементы
     const heroSubtitle = document.querySelector('.hero-subtitle');
     const heroQuote = document.querySelector('.hero-quote');
-
     if (heroSubtitle) {
         heroSubtitle.textContent = heroSubtitle.getAttribute(`data-${lang}`);
     }
     if (heroQuote) {
         heroQuote.textContent = heroQuote.getAttribute(`data-${lang}`);
-    }
-
-    // Обновляем превью если есть слайды
-    if (slides.length > 0) {
-        slides = generatePreview();
-        renderSlide();
     }
 }
 
@@ -203,24 +212,29 @@ function removeFile() {
     document.getElementById('uploadFile').style.display = 'none';
 }
 
-function adjustSlides(d) { const i = document.getElementById('slidesCount'); i.value = Math.max(1, Math.min(20, parseInt(i.value)+d)); }
+function adjustSlides(d) {
+    const i = document.getElementById('slidesCount');
+    i.value = Math.max(1, Math.min(20, parseInt(i.value)+d));
+}
 
 function switchStep(s) {
     document.querySelectorAll('.form-step').forEach(e => e.classList.remove('active'));
-    document.getElementById(`formStep${s}`).classList.add('active');
+    const formStep = document.getElementById(`formStep${s}`);
+    if (formStep) formStep.classList.add('active');
+
     document.querySelectorAll('.step').forEach(st => {
         const n = parseInt(st.dataset.step);
         st.classList.remove('active', 'completed');
         if (n < s) st.classList.add('completed');
-        if (n === s) st.classList.add('active');
+        else if (n === s) st.classList.add('active');
     });
 }
 
 async function generate() {
     const prompt = document.getElementById('prompt').value.trim();
     if (!prompt && !selectedFile) return toast(t('enterTopic'), 'error');
+
     setLoading(true);
-    switchStep(2);
 
     const fd = new FormData();
     fd.append('prompt', prompt);
@@ -232,95 +246,236 @@ async function generate() {
     try {
         updateProgress(10, t('preparing'));
         updateProgress(30, t('sending'));
-        const res = await fetch(`${API_URL}/generate-presentation`, { method: 'POST', body: fd });
+
+        const res = await fetch(`${API_URL}/generate-presentation`, {
+            method: 'POST',
+            body: fd
+        });
+
         updateProgress(60, t('generatingContent'));
-        if (!res.ok) { let e = `Error ${res.status}`; try { const j = await res.json(); e = j.detail || e; } catch(_){} throw new Error(e); }
+
+        if (!res.ok) {
+            let e = `Error ${res.status}`;
+            try { const j = await res.json(); e = j.detail || e; } catch(_) {}
+            throw new Error(e);
+        }
+
         updateProgress(80, t('saving'));
         pptBlob = await res.blob();
-        if (!pptBlob.size) throw new Error('Empty');
+        if (!pptBlob.size) throw new Error('Empty response');
+
         updateProgress(100, t('done'));
-        slides = generatePreview();
+
+        slides = await parsePptx(pptBlob);
         currentSlide = 0;
-        setTimeout(() => { setLoading(false); showSlides(); switchStep(3); toast(t('ready'),'success'); setTimeout(download,500); }, 500);
-    } catch(e) { setLoading(false); switchStep(1); toast(`${t('error')}: ${e.message}`,'error'); }
+
+        setTimeout(() => {
+            setLoading(false);
+            showSlides();
+
+            document.querySelectorAll('.step').forEach(st => {
+                st.classList.remove('active');
+                st.classList.add('completed');
+            });
+
+            toast(t('ready'), 'success');
+            setTimeout(download, 500);
+        }, 500);
+
+    } catch(e) {
+        setLoading(false);
+        switchStep(1);
+        toast(`${t('error')}: ${e.message}`, 'error');
+    }
 }
 
-function generatePreview() {
-    const c = parseInt(document.getElementById('slidesCount').value) || 5;
-    const g = [
-        { title: t('slide1'), items: [t('item1'),t('item2'),t('item3')] },
-        { title: t('slide2'), items: [t('item1'),t('item2'),t('item3')] },
-        { title: t('slide3'), items: [t('item1'),t('item2'),t('item3')] },
-        { title: t('slide4'), items: [t('item1'),t('item2'),t('item3')] },
-        { title: t('slide5'), items: [t('item1'),t('item2'),t('item3')] },
-        { title: t('slide6'), items: [t('item1'),t('item2'),t('item3')] },
-        { title: t('slide7'), items: [t('item1'),t('item2'),t('item3')] },
+async function parsePptx(blob) {
+    try {
+        const arrayBuffer = await blob.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        const unzipped = fflate.unzipSync(uint8Array);
+        const slideFiles = [];
+
+        for (const [filename, data] of Object.entries(unzipped)) {
+            const match = filename.match(/^ppt\/slides\/slide(\d+)\.xml$/);
+            if (match) {
+                const decoder = new TextDecoder('utf-8');
+                const xmlText = decoder.decode(data);
+                slideFiles.push({
+                    num: parseInt(match[1]),
+                    xml: xmlText
+                });
+            }
+        }
+
+        slideFiles.sort((a, b) => a.num - b.num);
+        const slides = [];
+
+        for (const sf of slideFiles) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(sf.xml, 'text/xml');
+            const textElements = xmlDoc.getElementsByTagName('a:t');
+            const texts = [];
+
+            for (let i = 0; i < textElements.length; i++) {
+                const text = textElements[i].textContent;
+                if (text && text.trim()) texts.push(text.trim());
+            }
+
+            const title = texts[0] || `Слайд ${sf.num}`;
+            const items = texts.slice(1);
+
+            slides.push({
+                number: sf.num,
+                title: title,
+                items: items.length > 0 ? items : ['Содержимое слайда'],
+                isTitle: sf.num === 1,
+                isFinal: sf.num === slideFiles.length
+            });
+        }
+
+        if (slides.length > 0) return slides;
+    } catch (e) {
+        console.log('⚠️ Ошибка парсинга PPTX:', e.message);
+    }
+    return generateDemoSlides();
+}
+
+function generateDemoSlides() {
+    const prompt = document.getElementById('prompt').value.trim();
+    const count = parseInt(document.getElementById('slidesCount').value) || 5;
+    const slides = [];
+
+    slides.push({
+        number: 1,
+        title: prompt || 'Презентация',
+        items: [`Тема: ${prompt || 'Не указана'}`, `Дата: ${new Date().toLocaleDateString('ru-RU')}`, 'AI Presentation Generator'],
+        isTitle: true
+    });
+
+    const templates = [
+        { title: 'Введение', items: ['Обзор темы', 'Ключевые понятия', 'Цели презентации'] },
+        { title: 'Основная часть', items: ['Пункт 1', 'Пункт 2', 'Пункт 3'] },
+        { title: 'Анализ', items: ['Текущая ситуация', 'Данные', 'Тенденции'] },
+        { title: 'Решения', items: ['Подходы', 'Преимущества', 'План'] },
+        { title: 'Примеры', items: ['Кейс 1', 'Кейс 2', 'Результаты'] },
     ];
-    return Array.from({length:c}, (_,i)=>({...g[Math.min(i,g.length-1)], number:i+1}));
+
+    for (let i = 1; i < count - 1; i++) {
+        const t = templates[Math.min(i - 1, templates.length - 1)];
+        slides.push({ number: i + 1, title: t.title, items: t.items });
+    }
+
+    if (count > 1) {
+        slides.push({
+            number: count,
+            title: 'Заключение',
+            items: ['Основные выводы', 'Рекомендации', 'Спасибо за внимание!'],
+            isFinal: true
+        });
+    }
+
+    return slides;
 }
 
 function showSlides() {
-    document.getElementById('stateEmpty').style.display='none';
-    document.getElementById('stateLoading').style.display='none';
-    document.getElementById('stateSlides').style.display='block';
-    document.getElementById('previewToolbar').style.display='flex';
-    renderSlide(); renderDots();
+    document.getElementById('stateEmpty').style.display = 'none';
+    document.getElementById('stateLoading').style.display = 'none';
+    document.getElementById('stateSlides').style.display = 'block';
+    document.getElementById('previewToolbar').style.display = 'flex';
+    renderSlide();
+    renderDots();
 }
 
 function renderSlide() {
-    if(!slides.length) return;
+    if (!slides.length) return;
     const s = slides[currentSlide];
-    document.getElementById('slideView').innerHTML = `<h3>${esc(s.title)}</h3><ul>${s.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`;
-    document.getElementById('slideCounter').textContent = `${currentSlide+1} / ${slides.length}`;
-    document.getElementById('prevSlide').disabled = currentSlide===0;
-    document.getElementById('nextSlide').disabled = currentSlide===slides.length-1;
+    let html = '';
+
+    if (s.isTitle) {
+        html = `<div style="text-align:center;padding:30px 20px;">
+            <h3 style="font-size:28px;margin-bottom:30px;color:var(--primary);">${esc(s.title)}</h3>
+            ${s.items.map(i => `<div style="margin-bottom:10px;font-size:16px;color:var(--text-secondary);">${esc(i)}</div>`).join('')}
+        </div>`;
+    } else if (s.isFinal) {
+        html = `<div style="text-align:center;padding:30px 20px;">
+            <h3 style="font-size:28px;margin-bottom:30px;color:var(--success);">${esc(s.title)}</h3>
+            ${s.items.map(i => `<div style="margin-bottom:12px;font-size:18px;color:var(--text-secondary);">${esc(i)}</div>`).join('')}
+        </div>`;
+    } else {
+        html = `<h3 style="font-size:24px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:3px solid var(--primary);">${esc(s.title)}</h3>
+        <ul style="list-style:none;padding:0;">
+            ${s.items.map(i => `<li style="padding:10px 0 10px 25px;position:relative;font-size:16px;color:var(--text-secondary);">${esc(i)}</li>`).join('')}
+        </ul>`;
+    }
+
+    document.getElementById('slideView').innerHTML = html;
+    document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${slides.length}`;
+    document.getElementById('prevSlide').disabled = currentSlide === 0;
+    document.getElementById('nextSlide').disabled = currentSlide === slides.length - 1;
 }
 
 function renderDots() {
-    document.getElementById('slideDots').innerHTML = slides.map((_,i)=>`<div class="dot ${i===currentSlide?'active':''}" onclick="navTo(${i})"></div>`).join('');
+    document.getElementById('slideDots').innerHTML = slides.map((_, i) =>
+        `<div class="dot ${i === currentSlide ? 'active' : ''}" onclick="navTo(${i})"></div>`
+    ).join('');
 }
 
-function navSlide(d) { currentSlide=Math.max(0,Math.min(slides.length-1,currentSlide+d)); renderSlide(); renderDots(); }
-function navTo(i) { currentSlide=i; renderSlide(); renderDots(); }
+function navSlide(d) { currentSlide = Math.max(0, Math.min(slides.length-1, currentSlide+d)); renderSlide(); renderDots(); }
+function navTo(i) { currentSlide = i; renderSlide(); renderDots(); }
 
 function download() {
-    if(!pptBlob) return toast(t('createFirst'),'error');
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(pptBlob);
-    a.download=`pres_${Date.now()}.pptx`;
+    if (!pptBlob) return toast(t('createFirst'), 'error');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(pptBlob);
+    a.download = `presentation_${Date.now()}.pptx`;
     a.click();
-    toast(t('downloaded'),'success');
+    URL.revokeObjectURL(a.href);
+    toast(t('downloaded'), 'success');
 }
 
 function reset() {
-    pptBlob=null; slides=[]; currentSlide=0;
-    document.getElementById('stateEmpty').style.display='block';
-    document.getElementById('stateSlides').style.display='none';
-    document.getElementById('previewToolbar').style.display='none';
-    switchStep(1);
-    toast(t('formReset'),'info');
+    pptBlob = null; slides = []; currentSlide = 0;
+    document.getElementById('stateEmpty').style.display = 'block';
+    document.getElementById('stateSlides').style.display = 'none';
+    document.getElementById('previewToolbar').style.display = 'none';
+    document.getElementById('slideView').innerHTML = '';
+    document.getElementById('slideDots').innerHTML = '';
+
+    document.querySelectorAll('.step').forEach(st => st.classList.remove('active', 'completed'));
+    const firstStep = document.querySelector('.step[data-step="1"]');
+    if (firstStep) firstStep.classList.add('active');
+
+    document.querySelectorAll('.form-step').forEach(e => e.classList.remove('active'));
+    const formStep1 = document.getElementById('formStep1');
+    if (formStep1) formStep1.classList.add('active');
+
+    toast(t('formReset'), 'info');
 }
 
 function setLoading(v) {
-    document.getElementById('stateEmpty').style.display=v?'none':'block';
-    document.getElementById('stateLoading').style.display=v?'block':'none';
-    document.getElementById('stateSlides').style.display='none';
-    const btn=document.getElementById('generateBtn');
-    btn.querySelector('.btn-text').style.display=v?'none':'inline';
-    btn.querySelector('.btn-loader').style.display=v?'flex':'none';
-    btn.disabled=v;
+    document.getElementById('stateEmpty').style.display = v ? 'none' : 'block';
+    document.getElementById('stateLoading').style.display = v ? 'block' : 'none';
+    document.getElementById('stateSlides').style.display = 'none';
+    const btn = document.getElementById('generateBtn');
+    btn.querySelector('.btn-text').style.display = v ? 'none' : 'inline';
+    btn.querySelector('.btn-loader').style.display = v ? 'flex' : 'none';
+    btn.disabled = v;
 }
 
-function updateProgress(p,txt) { document.getElementById('progressFill').style.width=p+'%'; document.getElementById('loadingText').textContent=txt; }
+function updateProgress(p, txt) {
+    document.getElementById('progressFill').style.width = p + '%';
+    document.getElementById('loadingText').textContent = txt;
+}
 
-function toast(msg,type='info') {
-    const c=document.getElementById('toasts');
-    const t=document.createElement('div');
-    t.className=`toast ${type}`;
-    t.textContent=msg;
+function toast(msg, type = 'info') {
+    const c = document.getElementById('toasts');
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.textContent = msg;
     c.appendChild(t);
-    setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300);},4000);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 4000);
 }
 
-function formatSize(b){return b<1024?b+' B':b<1024*1024?(b/1024).toFixed(1)+' KB':(b/1024/1024).toFixed(1)+' MB';}
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function formatSize(b) { return b < 1024 ? b + ' B' : b < 1024*1024 ? (b/1024).toFixed(1)+' KB' : (b/1024/1024).toFixed(1)+' MB'; }
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }

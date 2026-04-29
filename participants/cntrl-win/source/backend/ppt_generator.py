@@ -277,35 +277,53 @@ def add_image_card(
 # SMART IMAGE PROMPTS
 # =====================================
 
-def build_image_prompt(title, slide_type):
+def build_image_prompt(title, content, slide_type, index):
     """
-    Prevent repeated photos
+    Делает разные запросы для каждого слайда,
+    чтобы картинки не повторялись
     """
 
-    mapping = {
-        "problem": "business problem visual",
-        "solution": "startup solution illustration",
-        "market": "market growth analytics visual",
-        "team": "professional startup team",
-        "finance": "financial dashboard visual",
-        "timeline": "business roadmap visual",
-        "comparison": "comparison strategy visual",
-        "summary": "executive presentation visual"
-    }
+    full_text = f"{title} {content}".lower()
 
-    base = mapping.get(
-        slide_type,
-        "modern business consulting visual"
-    )
+    # если пользователь пишет про конкретное место / объект
+    if any(word in full_text for word in [
+        "город", "москва", "благовещенск", "казань",
+        "владивосток", "сочи", "санкт-петербург"
+    ]):
+        return f"{title} city landmark photo {index}"
 
-    return (
-        f"{title}, "
-        f"{base}, "
-        f"premium presentation style, "
-        f"minimal professional composition"
-    )
+    if any(word in full_text for word in [
+        "школа", "университет", "образование", "студент"
+    ]):
+        return f"{title} education university campus {index}"
 
+    if any(word in full_text for word in [
+        "медицина", "больница", "врач", "hospital"
+    ]):
+        return f"{title} hospital healthcare medical {index}"
 
+    if any(word in full_text for word in [
+        "финансы", "инвестиции", "экономика", "бизнес"
+    ]):
+        return f"{title} finance analytics business {index}"
+
+    if any(word in full_text for word in [
+        "технологии", "ai", "искусственный интеллект",
+        "автоматизация", "digital"
+    ]):
+        return f"{title} technology innovation digital {index}"
+
+    if slide_type == "timeline":
+        return f"{title} roadmap timeline strategy {index}"
+
+    if slide_type == "comparison":
+        return f"{title} comparison analysis chart {index}"
+
+    if slide_type == "summary":
+        return f"{title} executive summary business {index}"
+
+    # default
+    return f"{title} professional presentation unique visual {index}"
 # =====================================
 # MAIN GENERATOR
 # =====================================
@@ -373,7 +391,9 @@ def create_pptx(slides_data: list) -> str:
         try:
             image_prompt = build_image_prompt(
                 title,
-                slide_type
+                content,
+                slide_type,
+                index
             )
 
             print(f"Searching image: {image_prompt}")

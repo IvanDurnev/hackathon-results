@@ -303,8 +303,8 @@ def generate_presentation_content(
                 "Отвечай только JSON."
             ),
             "max_new_tokens": 4096,
-            "temperature": 0.2,
-            "top_p": 0.9,
+            "temperature": 0.8,
+            "top_p": 0.95,
             "repetition_penalty": 1.1,
             "no_repeat_ngram_size": 15
         }
