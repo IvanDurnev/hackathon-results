@@ -1,7 +1,7 @@
-# Некодеры
+# Дикие огурцы
 
-- Repository: https://github.com/alexwork1109/Necoders
-- Video: https://disk.yandex.ru/i/l3V9591GVSwTWA
+- Repository: https://github.com/vladkutolin-rgb/AI------------.git
+- Video: https://disk.yandex.ru/d/GNWsUfo6rUyx2Q
 - Description: n/a
-- Updated at: 2026-04-29T04:49:40+00:00
+- Updated at: 2026-04-29T05:13:35+00:00
 - Repository accessible: yes
