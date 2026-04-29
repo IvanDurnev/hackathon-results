@@ -54,6 +54,43 @@ export const api = {
     return res.json();
   },
 
+  importTemplatePptx: async (file, name) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    if (name) fd.append('name', name);
+    const res = await fetch('/api/templates/import/pptx', {
+      method: 'POST',
+      body: fd,
+    });
+    if (!res.ok) {
+      let detail;
+      try { detail = await res.json(); } catch { detail = await res.text(); }
+      const err = new Error(`Import failed: ${res.status}`);
+      err.status = res.status;
+      err.detail = detail;
+      throw err;
+    }
+    return res.json();
+  },
+
+  extractDocumentText: async (file) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch('/api/ai/documents/extract', {
+      method: 'POST',
+      body: fd,
+    });
+    if (!res.ok) {
+      let detail;
+      try { detail = await res.json(); } catch { detail = await res.text(); }
+      const err = new Error(`Extract failed: ${res.status}`);
+      err.status = res.status;
+      err.detail = detail;
+      throw err;
+    }
+    return res.json();
+  },
+
   exportPptxUrl: (id) => `/api/presentations/${id}/export/pptx`,
 
   createGenerationOutline: (payload) =>

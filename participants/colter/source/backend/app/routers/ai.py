@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from ..ai_generation import (
     AiApiError,
@@ -18,9 +18,29 @@ from ..ai_models import (
     PresentationBuildRequest,
     SlideRegenerateRequest,
 )
+from ..document_extract import extract_text
 from ..models import PresentationDocument
 
 router = APIRouter(prefix="/api/ai", tags=["ai"])
+
+
+@router.post("/documents/extract")
+async def extract_document(file: UploadFile = File(...)):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Не указано имя файла")
+    contents = await file.read()
+    if not contents:
+        raise HTTPException(status_code=400, detail="Пустой файл")
+    try:
+        text = extract_text(file.filename, file.content_type, contents)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Не удалось извлечь текст: {exc}",
+        ) from exc
+    return {"fileName": file.filename, "text": text, "length": len(text)}
 
 
 @router.post("/generations/outline", response_model=OutlineGenerationResponse)

@@ -33,11 +33,6 @@
 
     <div class="spacer" />
 
-    <button class="tb-btn amber-soft" title="Скоро: AI помощник" @click="askAiHint">
-      <AcIcon name="sparkle" :size="13" /> AI помощник
-      <span class="ac-kbd" style="background: rgba(255,181,71,0.10); border-color: rgba(255,181,71,0.25); color: var(--amber-200);">⌘K</span>
-    </button>
-
     <div class="zoom-group">
       <button class="tb-btn icon" @click="zoomOut"><AcIcon name="zoomOut" :size="13" /></button>
       <span class="zoom-label">{{ zoomLabel }}</span>
@@ -151,9 +146,6 @@ export default {
     zoomOut() {
       const cur = this.editorStore.autoFit ? 1 : this.editorStore.zoom;
       this.editorStore.setZoom(cur - 0.1);
-    },
-    askAiHint() {
-      // Placeholder while AI panel is wired up — keeps the button responsive.
     },
   },
 };

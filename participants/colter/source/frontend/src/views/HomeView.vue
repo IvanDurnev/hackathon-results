@@ -64,11 +64,49 @@
             @update="setStylePreset"
             placeholder="Стиль"
           />
-          <SelectChip
-            icon="grid"
-            :value="length"
-            :options="['6 слайдов','12 слайдов','20 слайдов']"
-            @update="(v) => length = v"
+          <div class="slide-count-chip" :title="`Количество слайдов: ${slideCount}`">
+            <AcIcon name="grid" :size="13" />
+            <button
+              type="button"
+              class="slide-count-step"
+              :disabled="slideCount <= 1"
+              @click="setSlideCount(slideCount - 1)"
+              aria-label="Уменьшить количество слайдов"
+            >−</button>
+            <input
+              type="number"
+              class="slide-count-input"
+              :min="1"
+              :max="40"
+              :value="slideCount"
+              @input="(e) => setSlideCount(Number(e.target.value))"
+              @blur="(e) => setSlideCount(Number(e.target.value))"
+            />
+            <span class="slide-count-suffix">{{ slideCountWord }}</span>
+            <button
+              type="button"
+              class="slide-count-step"
+              :disabled="slideCount >= 40"
+              @click="setSlideCount(slideCount + 1)"
+              aria-label="Увеличить количество слайдов"
+            >+</button>
+          </div>
+          <button
+            type="button"
+            class="tb-btn ghost"
+            :disabled="extractingDoc"
+            :title="extractingDoc ? 'Извлекаем текст…' : 'Прикрепить PDF / DOCX / TXT'"
+            @click="$refs.docUpload.click()"
+          >
+            <AcIcon name="plus" :size="13" />
+            {{ extractingDoc ? 'Загружаем…' : 'Прикрепить файл' }}
+          </button>
+          <input
+            ref="docUpload"
+            type="file"
+            accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+            style="display:none"
+            @change="onDocUpload"
           />
           <span class="composer-counter">{{ prompt.length }}/4000</span>
           <button
@@ -81,6 +119,23 @@
             {{ generationLoading ? 'Готовим оглавление…' : 'Сгенерировать' }}
             <span class="ac-kbd" style="background:rgba(255,255,255,0.30); color:rgba(255,255,255,0.92); border-color:rgba(255,255,255,0.35);">⏎</span>
           </button>
+        </div>
+        <div v-if="attachedDocs.length" class="composer-attachments">
+          <span
+            v-for="(doc, i) in attachedDocs"
+            :key="`${doc.fileName}-${i}`"
+            class="composer-attachment"
+            :title="`${doc.fileName} · ${doc.length} симв.`"
+          >
+            <AcIcon name="file" :size="11" />
+            {{ doc.fileName }}
+            <button
+              type="button"
+              class="composer-attachment-remove"
+              @click="removeAttachment(i)"
+              aria-label="Убрать файл"
+            >×</button>
+          </span>
         </div>
       </div>
 
@@ -138,9 +193,27 @@
         <h2>Шаблоны</h2>
         <span class="count">{{ templates.length }}</span>
         <div class="spacer" />
+        <button
+          class="tb-btn"
+          :disabled="importingTemplate"
+          @click="$refs.tplUpload.click()"
+        >
+          <AcIcon name="upload" :size="13" />
+          {{ importingTemplate ? 'Импортируем…' : 'Импорт PPTX' }}
+        </button>
+        <input
+          ref="tplUpload"
+          type="file"
+          accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+          style="display:none"
+          @change="onTemplatePptxUpload"
+        />
         <button class="tb-btn" @click="createTemplate">
           <AcIcon name="plus" :size="13" /> Новый шаблон
         </button>
+      </div>
+      <div v-if="templateImportError" class="generation-error" style="margin: 8px 0;">
+        {{ templateImportError }}
       </div>
       <div v-if="templates.length" class="template-grid">
         <router-link
@@ -323,7 +396,7 @@ export default {
       createName: '',
       createTemplateId: null,
       prompt: '',
-      length: '12 слайдов',
+      slideCount: 12,
       basisKind: 'layout',
       stylePreset: STYLE_PRESETS[0],
       composerTpl: null,
@@ -334,6 +407,10 @@ export default {
       generationLoading: false,
       buildingPresentation: false,
       generationError: '',
+      attachedDocs: [],
+      extractingDoc: false,
+      importingTemplate: false,
+      templateImportError: '',
       examples: [
         'Презентация для инвесторов: SaaS B2B, 10 слайдов, упор на трекшн',
         'Внутренний отчёт по итогам Q3 для команды product-маркетинга',
@@ -354,9 +431,14 @@ export default {
     selectedStyleId() {
       return STYLE_IDS[this.stylePreset] || 'business';
     },
-    slideCount() {
-      const match = this.length.match(/\d+/);
-      return match ? Number(match[0]) : 12;
+    slideCountWord() {
+      const n = this.slideCount;
+      const last2 = n % 100;
+      const last = n % 10;
+      if (last2 >= 11 && last2 <= 14) return 'слайдов';
+      if (last === 1) return 'слайд';
+      if (last >= 2 && last <= 4) return 'слайда';
+      return 'слайдов';
     },
     canGenerate() {
       if (!this.prompt.trim()) return false;
@@ -401,6 +483,11 @@ export default {
     previewStyle(i) {
       const c = this.accentFor(i);
       return { background: `linear-gradient(135deg, ${c}28, ${c}08)` };
+    },
+    setSlideCount(value) {
+      const n = Math.round(Number(value));
+      if (!Number.isFinite(n)) return;
+      this.slideCount = Math.max(1, Math.min(40, n));
     },
     setBasisKind(kind) {
       this.basisKind = kind;
@@ -561,7 +648,7 @@ export default {
           generationDraft: {
             basis: { kind: 'style', style: this.stylePreset },
             prompt: this.prompt,
-            slideCount: this.length,
+            slideCount: this.slideCount,
           },
         };
         const saved = await api.createPresentation(doc);
@@ -603,6 +690,72 @@ export default {
       ];
       this.createOpen = false;
       this.$router.push(`/presentations/${saved.id}`);
+    },
+    async onDocUpload(e) {
+      const file = e.target.files?.[0];
+      e.target.value = '';
+      if (!file) return;
+      this.extractingDoc = true;
+      this.generationError = '';
+      try {
+        const result = await api.extractDocumentText(file);
+        const text = (result?.text || '').trim();
+        if (!text) {
+          this.generationError = 'В файле не нашлось текста.';
+          return;
+        }
+        this.attachedDocs.push({
+          fileName: result.fileName || file.name,
+          length: result.length || text.length,
+          text,
+        });
+        this.appendDocToPrompt(result.fileName || file.name, text);
+      } catch (err) {
+        this.generationError = this.apiErrorMessage(err, 'Не удалось прочитать файл.');
+      } finally {
+        this.extractingDoc = false;
+      }
+    },
+    appendDocToPrompt(fileName, text) {
+      const block = `\n\n--- Источник: ${fileName} ---\n${text}`;
+      let next = (this.prompt || '') + block;
+      if (next.length > 4000) {
+        next = next.slice(0, 4000);
+      }
+      this.prompt = next;
+    },
+    removeAttachment(index) {
+      const removed = this.attachedDocs[index];
+      if (!removed) return;
+      this.attachedDocs.splice(index, 1);
+      const marker = `--- Источник: ${removed.fileName} ---`;
+      const idx = this.prompt.indexOf(marker);
+      if (idx < 0) return;
+      let endIdx = this.prompt.indexOf('--- Источник:', idx + marker.length);
+      if (endIdx < 0) endIdx = this.prompt.length;
+      const before = this.prompt.slice(0, idx).replace(/\n+$/, '');
+      const after = this.prompt.slice(endIdx);
+      this.prompt = (before + (after ? '\n\n' + after : '')).trimEnd();
+    },
+    async onTemplatePptxUpload(e) {
+      const file = e.target.files?.[0];
+      e.target.value = '';
+      if (!file) return;
+      this.importingTemplate = true;
+      this.templateImportError = '';
+      try {
+        const saved = await api.importTemplatePptx(file, file.name.replace(/\.pptx$/i, ''));
+        this.templates = [
+          { id: saved.id, name: saved.name, slideSize: saved.slideSize },
+          ...this.templates.filter((t) => t.id !== saved.id),
+        ];
+        this.composerTpl = saved.name;
+        this.$router.push(`/templates/${saved.id}`);
+      } catch (err) {
+        this.templateImportError = this.apiErrorMessage(err, 'Не удалось импортировать PPTX.');
+      } finally {
+        this.importingTemplate = false;
+      }
     },
     async createTemplate() {
       const id = uid('tmpl');

@@ -862,6 +862,80 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
 }
 .composer-counter { color: var(--fg-4); font-size: 11.5px; margin-left: auto; }
+.slide-count-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: var(--ink-3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--fg-2);
+  font-size: 12.5px;
+}
+.slide-count-chip:hover { background: var(--ink-4); color: var(--fg-1); }
+.slide-count-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--fg-3);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+.slide-count-step:hover:not(:disabled) { background: var(--ink-2); color: var(--fg-1); }
+.slide-count-step:disabled { opacity: 0.4; cursor: not-allowed; }
+.slide-count-input {
+  width: 36px;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  color: var(--fg-1);
+  font-size: 12.5px;
+  text-align: center;
+  outline: none !important;
+  box-shadow: none !important;
+  -moz-appearance: textfield;
+}
+.slide-count-input::-webkit-outer-spin-button,
+.slide-count-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.slide-count-suffix { color: var(--fg-3); font-size: 12px; }
+.composer-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 14px 10px;
+}
+.composer-attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: rgba(255,181,71,0.10);
+  border: 1px solid rgba(255,181,71,0.28);
+  color: var(--fg-1);
+  border-radius: 999px;
+  font-size: 11.5px;
+}
+.composer-attachment-remove {
+  border: 0;
+  background: transparent;
+  color: var(--fg-2);
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 14px;
+  line-height: 1;
+}
+.composer-attachment-remove:hover { color: var(--rust); }
 .generation-error {
   margin-top: 10px;
   padding: 9px 12px;

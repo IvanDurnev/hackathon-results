@@ -21,6 +21,7 @@ import random
 import re
 import threading
 import time
+import unicodedata
 import uuid
 from typing import Any
 from urllib import error, parse, request
@@ -148,49 +149,101 @@ STYLE_VISUAL_LANGUAGE: dict[str, str] = {
 
 OUTLINE_SYSTEM_PROMPT = (
     "Ты — старший продюсер презентаций и сценарист, работающий с топ-менеджерами, "
-    "стартапами и преподавателями. Ты пишешь конкретно, по делу и без штампов.\n\n"
-    "ЖЁСТКИЕ ПРАВИЛА:\n"
-    "1. Заголовки слайдов — это ТЕЗИСЫ, а не рубрики. Запрещены: «Введение», «Раздел 1..N», "
-    "«Основная часть», «Тезис 1», «Контекст», «Главное», «Ключевой образ», «Выводы», "
-    "«Заключение», «Спасибо за внимание», «Обзор», «О нас», «Цели», «Подход».\n"
-    "2. Каждый заголовок — формулировка, у которой видна позиция автора. Пример «плохо»: "
-    "«Финансовые показатели». Пример «хорошо»: «Выручка выросла на 38% за счёт enterprise — "
-    "и это меняет приоритеты команды».\n"
-    "3. Заголовок должен помещаться в 1–2 строки: обычно 45–75 символов. Длинную мысль переноси "
-    "в keyPoints или speakerNotes.\n"
-    "4. keyPoints — короткие, осмысленные тезисы (5–14 слов), желательно с цифрами, фактами "
-    "или конкретными решениями. Никаких «Тезис 1 / Тезис 2».\n"
-    "5. Каждый слайд должен раскрывать что-то новое. Не повторяй мысль из предыдущего слайда.\n"
-    "6. Используй живой деловой русский язык, без канцелярита и общих мест.\n"
-    "7. visualIntent — короткое описание визуала на русском (что должно быть на слайде, "
-    "какая метафора). imagePrompt — детальный prompt для генерации изображения на АНГЛИЙСКОМ, "
-    "конкретный, с указанием стиля, света, композиции и цветовой палитры. Запрещены слова "
-    "text, words, letters, logo, watermark, caption — внутри картинки текста быть не должно.\n"
-    "8. needsImage = true только если визуал реально усиливает мысль слайда. Не делай картинки "
-    "ради картинок.\n\n"
+    "стартапами и преподавателями. Ты пишешь то, что зрители увидят НА ЭКРАНЕ, "
+    "а не инструкции для докладчика.\n\n"
+    "ЯЗЫК. Только русский. Никаких иероглифов, китайских/арабских/японских символов, "
+    "эмодзи и невидимых юникод-знаков. Если случайно попал лишний символ — перепиши.\n\n"
+    "ЗАГОЛОВКИ. Заголовок — это тезис или сильная формулировка, а не рубрика. "
+    "Запрещены: «Введение», «Раздел N», «Основная часть», «Тезис 1», «Контекст», "
+    "«Главное», «Ключевой образ», «Обзор», «О нас», «Цели», «Подход». "
+    "Плохо: «Финансовые показатели». Хорошо: «Выручка выросла на 38% за счёт enterprise». "
+    "Длина — обычно одна строка (примерно до 70 символов), но не делай заголовок "
+    "телеграфным; если тема требует — пусть будет полноценная фраза.\n\n"
+    "КОНТЕНТ. keyPoints — это текст, который видят зрители, а не подсказки автору. "
+    "ЗАПРЕЩЕНО начинать пункт с инфинитивов в значении «надо сделать»: подчеркнуть, "
+    "отметить, обозначить, показать, рассказать, донести, передать, осветить, раскрыть, "
+    "акцентировать, продемонстрировать, озвучить, объяснить, выделить, упомянуть, "
+    "представить, описать, перечислить, разобрать, обсудить. Это слова для speakerNotes. "
+    "Каждый пункт — законченная мысль с конкретикой: цифра, имя, действие, срок, процент. "
+    "Без вводных «итак», «таким образом», «как мы видим», «стоит отметить». "
+    "Не повторяй тезис между слайдами.\n\n"
+    "ТИПЫ СЛАЙДОВ. У тебя есть пять slideType, каждый — отдельный жанр. Используй их "
+    "по смыслу, не делай всю презентацию из bullets:\n"
+    "  • title — обложка (первый слайд) или раздел.\n"
+    "  • text — связный текст, абзац или 2–3 предложения. ЭТО НЕ СПИСОК. "
+    "    keyPoints здесь — это предложения связного текста, без маркеров и без "
+    "    перечислительной интонации. Используй text для тезисного утверждения, "
+    "    цитаты, описания контекста, истории.\n"
+    "  • bullets — перечисление коротких пунктов. Используй именно тогда, когда у тебя "
+    "    реально есть список параллельных фактов / шагов / преимуществ.\n"
+    "  • image — визуальный слайд, у которого 0–2 коротких пункта подписи.\n"
+    "  • conclusion — последний слайд. Заголовок — реплика выступающего: "
+    "    «Спасибо за внимание», «Готов(а) ответить на вопросы», «Давайте обсудим», "
+    "    «До встречи в проекте». Не пиши «Заключение/Выводы/Итоги».\n"
+    "Чередуй типы по смыслу. Не делай 5 одинаковых слайдов подряд. Если идея — рассказ "
+    "или контекст, выбирай text, а не bullets. Если идея — список — bullets.\n\n"
+    "ОБЪЁМ. Сколько строк/пунктов нужно — решай сам по смыслу. Не накачивай слайд "
+    "пустотой ради количества и не урезай до односложной фразы. Ориентир: "
+    "text — 2–5 предложений, bullets — 3–6 пунктов, image — 0–2 короткие подписи. "
+    "Это ориентир, не догма.\n\n"
+    "ВИЗУАЛ. visualIntent — короткое описание сцены на русском. imagePrompt — детальный "
+    "английский prompt: subject, scene, style, lighting, color palette, composition. "
+    "Запрещены слова text, words, letters, logo, watermark, caption — текста на картинке "
+    "быть не должно. needsImage = true только когда slideType=image.\n\n"
     "Возвращай строго валидный JSON-объект без Markdown, без комментариев и без текста вокруг."
 )
 
 CONTENT_SYSTEM_PROMPT = (
     "Ты — редактор и сценарист презентаций. На вход получаешь утверждённое оглавление "
-    "(заголовки и тезисы) и должен превратить его в готовое содержимое слайдов.\n\n"
-    "ЖЁСТКИЕ ПРАВИЛА:\n"
-    "1. Сохрани порядок и количество слайдов. Заголовки можно слегка отредактировать, "
-    "если они шаблонны, но смысл не меняй.\n"
-    "2. keyPoints — это финальный текст, который окажется на слайде. Каждая строка — "
-    "цельная, законченная мысль (8–18 слов), без вводных «итак», «таким образом», «как мы видим». "
-    "Используй конкретику: цифры, имена продуктов, действия, сроки.\n"
-    "3. Запрещены штампы: «Тезис 1», «Раздел N», «Контекст», «Введение», «Заключение», "
+    "и превращаешь его в ГОТОВОЕ содержимое слайдов — то, что зрители видят на экране.\n\n"
+    "ЯЗЫК. Только русский, без иероглифов, эмодзи и невидимых юникод-знаков. "
+    "Если появился любой такой символ — перепиши без него.\n\n"
+    "ОСНОВНЫЕ ПРИНЦИПЫ.\n"
+    "1. Сохрани порядок, количество слайдов и slideType каждого слайда. Заголовки "
+    "можно подкорректировать, если они шаблонные, но смысл не меняй.\n"
+    "2. Заголовок — короткая надпись на слайде, без точки в конце. Не предложение "
+    "из доклада, а опорная фраза. Длина — обычно одна строка.\n"
+    "3. keyPoints — это текст НА СЛАЙДЕ, а не инструкции автору. Запрещено начинать "
+    "пункт с инфинитивов «надо сделать»: подчеркнуть, отметить, обозначить, показать, "
+    "рассказать, донести, передать, осветить, раскрыть, акцентировать, продемонстрировать, "
+    "озвучить, объяснить, выделить, упомянуть, представить, описать, перечислить, "
+    "разобрать, обсудить. Это слова для speakerNotes.\n"
+    "4. Плохо: «Подчеркнуть уникальные возможности», «Сформулировать следующий шаг», "
+    "«Раскрыть часть темы». Хорошо: «Конверсия выросла с 4 до 11% за 3 месяца», "
+    "«Запуск в Москве и Алматы — 28 марта», «60% клиентов остаются после второго месяца».\n"
+    "5. Используй конкретику: цифры, имена, действия, сроки, проценты. Без вводных "
+    "«итак», «таким образом», «как мы видим». Не повторяй заголовок и не повторяй "
+    "тезис между соседними слайдами.\n\n"
+    "РАЗНЫЕ ТИПЫ СЛАЙДОВ ПИШУТСЯ ПО-РАЗНОМУ:\n"
+    "  • title — обложка или разделитель. keyPoints обычно пустые или один короткий "
+    "    подзаголовок.\n"
+    "  • text — СВЯЗНЫЙ ТЕКСТ, не список. keyPoints здесь — это предложения связного "
+    "    рассказа (2–5 предложений), их склеят в абзац без маркеров. Используй "
+    "    нормальный синтаксис, союзы, переходы — пиши, как пишут в книге или статье. "
+    "    Не превращай в перечисление.\n"
+    "  • bullets — список параллельных фактов / шагов / преимуществ. Пиши тогда, "
+    "    когда содержание реально перечислительное. Каждый пункт — самостоятельная "
+    "    короткая фраза. Ориентир — 3–6 пунктов, но смотри по смыслу.\n"
+    "  • image — визуальный слайд. 0–2 коротких подписи в keyPoints; не дублируй "
+    "    то, что и так читается с картинки.\n"
+    "  • conclusion — финал. title = реплика выступающего: «Спасибо за внимание», "
+    "    «Готов(а) ответить на вопросы», «Давайте обсудим», «До встречи в проекте». "
+    "    keyPoints — необязательны; если есть, то это контакты, CTA или одно ключевое "
+    "    обещание.\n\n"
+    "ОБЪЁМ. Сколько строк нужно — решай по смыслу. Не накачивай слайд пустотой и не "
+    "урезай до односложной фразы. На пустом слайде должно быть достаточно для понимания "
+    "идеи без устной расшифровки.\n\n"
+    "ОСТАЛЬНОЕ.\n"
+    "  • purpose — одна сильная фраза о роли слайда в нарративе, не пересказ заголовка.\n"
+    "  • speakerNotes — 2–3 предложения для устной речи. Сюда уходят инструкционные "
+    "    глаголы и контекст, не помещающийся на слайд.\n"
+    "  • visualIntent — на русском, что в кадре. imagePrompt — на английском, детально "
+    "    (subject, scene, style, lighting, palette, composition). Без текста, логотипов, "
+    "    водяных знаков на изображении.\n"
+    "  • needsImage = true только если slideType=image, иначе false.\n\n"
+    "Запрещены штампы и служебные пометки: «Тезис 1», «Раздел N», «Контекст», "
     "«Главный вывод», «Ключевой образ», «Поддерживающий тезис», «Решение или действие», "
-    "«Целевая аудитория из запроса», «Раскрыть часть темы».\n"
-    "4. purpose — одна сильная фраза о роли слайда в нарративе (зачем он нужен в этой логике). "
-    "Не пересказывай заголовок.\n"
-    "5. speakerNotes — 2–3 предложения, что докладчик может сказать вслух, расширяя тезисы.\n"
-    "6. visualIntent — на русском, что должно быть в кадре и почему. imagePrompt — на АНГЛИЙСКОМ, "
-    "детальный prompt для генерации изображения: субъект, окружение, стиль, освещение, цветовая "
-    "палитра под выбранный стиль презентации, композиция (rule of thirds, close-up, wide shot). "
-    "Никакого текста на изображении, без логотипов, без водяных знаков.\n"
-    "7. needsImage = true только если визуал реально работает на смысл слайда.\n\n"
+    "«Целевая аудитория из запроса», «Раскрыть часть темы», «Связать с запросом».\n\n"
     "Возвращай строго валидный JSON-объект без Markdown."
 )
 
@@ -207,26 +260,35 @@ IMAGE_PROMPT_SYSTEM = (
 
 def _outline_user_text(payload: dict[str, Any]) -> str:
     style_hint = _style_hint(payload.get("basis"))
+    slide_count = int(payload.get("slideCount") or 0)
     return (
         "Сгенерируй оглавление презентации по входному JSON.\n"
         f"Стиль и визуальный язык: {style_hint}.\n"
+        f"Количество слайдов: ровно {slide_count}.\n"
+        "Первый слайд — title, последний — conclusion. Между ними чередуй "
+        "text / bullets / image по смыслу содержания. Не превращай всё в bullets — "
+        "если идея цельная, выбирай text (связный текст). Если идея реально "
+        "перечислительная — bullets. Если визуальная — image.\n"
+        "Последний слайд (conclusion) — РЕПЛИКА выступающего: «Спасибо за внимание», "
+        "«Готовы ответить на вопросы», «Давайте обсудим». Не пиши «Заключение/Выводы/Итоги».\n"
+        "Только русский язык, без иероглифов и эмодзи.\n"
         "Ответ — валидный JSON-объект без Markdown.\n\n"
         "Формат ответа:\n"
         "{\n"
         '  "title": "string — заголовок презентации, цепляющий, без штампов",\n'
-        '  "audience": "string — кому это адресовано, конкретно (роль/сегмент)",\n'
+        '  "audience": "string — кому это адресовано (конкретная роль/сегмент)",\n'
         '  "goal": "string — какое решение/действие должно состояться после просмотра",\n'
         '  "slides": [\n'
         "    {\n"
         '      "order": 1,\n'
         '      "title": "string — заголовок-тезис, не рубрика",\n'
         '      "purpose": "string — зачем этот слайд в нарративе (одно предложение)",\n'
-        '      "keyPoints": ["string — короткий осмысленный тезис, 5-14 слов"],\n'
+        '      "keyPoints": ["string — для text это предложения связного текста, для bullets — короткие пункты"],\n'
         '      "visualIntent": "string — описание визуала на русском",\n'
         '      "needsImage": false,\n'
         '      "slideType": "title|text|image|bullets|conclusion",\n'
         '      "imagePrompt": "string — детальный английский prompt для генерации изображения",\n'
-        '      "speakerNotes": "string — что сказать вслух (1-2 предложения)"\n'
+        '      "speakerNotes": "string — что сказать вслух (1-3 предложения)"\n'
         "    }\n"
         "  ]\n"
         "}\n\n"
@@ -239,18 +301,40 @@ def _content_user_text(payload: dict[str, Any]) -> str:
     style_hint = _style_hint(payload.get("basis"))
     return (
         "Преврати утверждённое оглавление в финальное содержимое слайдов. Это контент, "
-        "который окажется на экране, поэтому формулировки должны быть готовы к показу.\n"
+        "который окажется НА ЭКРАНЕ — формулировки должны быть готовы к показу, "
+        "а не быть инструкциями автору.\n"
         f"Визуальный язык: {style_hint}.\n"
         "Ответ — валидный JSON-объект без Markdown, та же структура, что на входе.\n\n"
         "Каждый слайд:\n"
-        "- title: финальный заголовок (можно слегка переписать, если он шаблонный)\n"
-        "- purpose: 1 предложение, роль слайда в логике\n"
-        "- keyPoints: МАССИВ строк. Каждая строка — самостоятельный тезис из 8-18 слов с "
-        "конкретикой (цифры/имена/действия). Без вводных слов и без перечислений типа «Тезис N».\n"
-        "- needsImage: bool, true только если визуал реально нужен\n"
-        "- visualIntent: на русском\n"
-        "- imagePrompt: на АНГЛИЙСКОМ, детально (subject, scene, style, lighting, palette)\n"
-        "- speakerNotes: 1-3 предложения для докладчика\n\n"
+        "- title: короткий заголовок, без точки в конце.\n"
+        "- purpose: одна фраза о роли слайда в нарративе.\n"
+        "- keyPoints: МАССИВ строк. Содержимое и стиль зависят от slideType:\n"
+        "    • text  — 2–5 предложений связного текста; каждый элемент массива — "
+        "       одно предложение. Не маркируй их пунктами и не превращай в перечень.\n"
+        "    • bullets — короткие самостоятельные пункты, обычно 3–6, по смыслу.\n"
+        "    • image — 0–2 коротких подписи, не дублирующих картинку.\n"
+        "    • title / conclusion — обычно пусто или 1–2 строки (подзаголовок, CTA, контакт).\n"
+        "  Сколько именно строк нужно — решай по содержанию; не накачивай пустотой и "
+        "  не урезай до односложной фразы.\n"
+        "- slideType: сохрани такой же, как в исходном слайде.\n"
+        "- needsImage: true только если slideType=image, иначе false.\n"
+        "- visualIntent: 1 фраза на русском, что в кадре.\n"
+        "- imagePrompt: на АНГЛИЙСКОМ, детально (subject, scene, style, lighting, palette).\n"
+        "- speakerNotes: 1–3 предложения, что докладчик скажет вслух. Сюда уходят "
+        "  инструктивные глаголы (подчеркнуть, отметить и т.п.) и контекст, не "
+        "  помещающийся на слайд.\n\n"
+        "Conclusion: title — реплика выступающего («Спасибо за внимание», «Готов(а) ответить "
+        "на вопросы», «Давайте обсудим»), а не слово «Заключение».\n\n"
+        "Запрещено начинать пункт с инфинитивов «подчеркнуть/отметить/обозначить/"
+        "раскрыть/показать/донести/...» — это инструкция, а не контент.\n"
+        "Не повторяй пункты между слайдами. Только русский язык, без иероглифов и эмодзи.\n\n"
+        "Примеры:\n"
+        "Плохо: «Подчеркнуть уникальные возможности продукта», «Раскрыть часть темы».\n"
+        "Хорошо (bullets): «Конверсия выросла с 4 до 11% за 3 месяца», "
+        "«Запуск в Москве и Алматы — 28 марта», «Поддерживаем 30+ языков из коробки».\n"
+        "Хорошо (text): «За три месяца команда переписала backend с нуля и закрыла "
+        "технический долг, который копился два года.», «Это позволило сократить время "
+        "ответа сервиса с 1.4 секунды до 280 миллисекунд.»\n\n"
         "Входной JSON:\n"
         f"{json.dumps(payload, ensure_ascii=False)}"
     )
@@ -878,10 +962,12 @@ def _normalize_outline(
             _coerce_slide(item, idx, fallback_slide)
         )
 
+    raw_audience = data.get("audience") or (fallback_outline.audience if fallback_outline else None)
+    raw_goal = data.get("goal") or (fallback_outline.goal if fallback_outline else None)
     return PresentationOutline(
-        title=str(data.get("title") or fallback_title),
-        audience=data.get("audience") or (fallback_outline.audience if fallback_outline else None),
-        goal=data.get("goal") or (fallback_outline.goal if fallback_outline else None),
+        title=_normalize_text(str(data.get("title") or fallback_title)).rstrip(".!?…"),
+        audience=_normalize_text(str(raw_audience)) if raw_audience else None,
+        goal=_normalize_text(str(raw_goal)) if raw_goal else None,
         slides=slides[: source_request.slideCount],
     )
 
@@ -900,20 +986,251 @@ def _normalize_single_slide(
     return _coerce_slide(raw, expected_order, fallback)
 
 
+_KEY_POINT_BANNED_PREFIXES = (
+    "тезис ",
+    "тезис:",
+    "пункт ",
+    "пункт:",
+    "раздел ",
+    "контекст:",
+    "связать с запросом",
+    "целевая аудитория из запроса",
+    "сформулировать вывод",
+    "сформулировать ",
+    "ключевой образ",
+    "поддерживающий тезис",
+    "решение или действие",
+    "раскрыть часть темы",
+    "учтено:",
+    "уточнено:",
+    "уточнённый тезис",
+    "уточненный тезис",
+)
+
+# Глаголы-инфинитивы в значении «надо сделать на сцене». Если пункт начинается
+# с них — это инструкция автору, а не контент слайда.
+_INSTRUCTIONAL_INFINITIVES = (
+    "подчеркнуть",
+    "отметить",
+    "обозначить",
+    "показать",
+    "рассказать",
+    "донести",
+    "передать",
+    "осветить",
+    "раскрыть",
+    "раскрывать",
+    "акцентировать",
+    "продемонстрировать",
+    "демонстрировать",
+    "озвучить",
+    "озвучивать",
+    "объяснить",
+    "объяснять",
+    "выделить",
+    "выделять",
+    "упомянуть",
+    "упоминать",
+    "представить",
+    "представлять",
+    "описать",
+    "описывать",
+    "перечислить",
+    "перечислять",
+    "разобрать",
+    "разбирать",
+    "обсудить",
+    "обсуждать",
+    "напомнить",
+    "напоминать",
+    "пояснить",
+    "пояснять",
+    "разъяснить",
+    "разъяснять",
+    "охарактеризовать",
+    "охарактеризовывать",
+    "проиллюстрировать",
+    "иллюстрировать",
+    "сообщить",
+    "сообщать",
+    "указать",
+    "указывать",
+    "сделать акцент",
+    "сделать вывод",
+)
+
+_GENERIC_CONCLUSION_TITLES = {
+    "заключение",
+    "выводы",
+    "итоги",
+    "финал",
+    "что дальше",
+    "конец",
+    "the end",
+    "thank you",
+    "вывод",
+    "итог",
+}
+
+_HUMAN_CLOSERS = (
+    "Спасибо за внимание",
+    "Готов(а) ответить на вопросы",
+    "Готовы обсудить",
+    "Поделитесь вопросами",
+    "До встречи в проекте",
+)
+
+
+_INVISIBLE_RE = re.compile(
+    "["
+    "​-‏"   # zero-width space/joiner/non-joiner, bidi marks
+    "‪-‮"   # bidi embedding/override
+    "⁠-⁯"   # word joiner, invisible separators, deprecated tags
+    "﻿"          # BOM
+    "᠎"          # Mongolian vowel separator
+    "]"
+)
+
+
+def _is_safe_codepoint(cp: int) -> bool:
+    """Whitelist for printable Russian-language slide content.
+
+    Drops CJK / Arabic / Hebrew / Devanagari / private-use characters that the
+    LLM occasionally hallucinates into Russian text and that render as
+    "иероглифы" on the slide.
+    """
+    if cp < 0x80:
+        return True
+    # Latin-1 supplement, Latin Extended-A/B, IPA, spacing modifiers, combining
+    if 0x00A0 <= cp <= 0x036F:
+        return True
+    # Cyrillic and supplements
+    if 0x0400 <= cp <= 0x052F:
+        return True
+    # General punctuation (dashes, quotes, ellipsis, bullet)
+    if 0x2010 <= cp <= 0x2027:
+        return True
+    if 0x2030 <= cp <= 0x205E:
+        return True
+    # Currency
+    if 0x20A0 <= cp <= 0x20CF:
+        return True
+    # Letterlike, number forms (№, ℃, ½)
+    if 0x2100 <= cp <= 0x218F:
+        return True
+    # Arrows, math, geometric shapes (rare bullets)
+    if 0x2190 <= cp <= 0x27BF:
+        return True
+    # Specific bullets / box drawings frequently used as bullets
+    if cp in {0x25A0, 0x25A1, 0x25CF, 0x25CB, 0x25E6, 0x2022, 0x2023, 0x2043, 0x2219}:
+        return True
+    return False
+
+
+def _normalize_text(text: str | None) -> str:
+    """Strip invisible / hostile / non-Cyrillic-script characters.
+
+    Keeps Russian, Latin, common punctuation, currency, math arrows, bullets.
+    Drops CJK / Arabic / Hebrew / private-use code points that occasionally
+    appear in Qwen output and render as little squares ("иероглифы") on the
+    slide. Also normalises NBSP and collapses runs of whitespace.
+    """
+    if not text:
+        return text or ""
+    cleaned = unicodedata.normalize("NFC", text)
+    cleaned = _INVISIBLE_RE.sub("", cleaned)
+    out_chars: list[str] = []
+    for ch in cleaned:
+        if ch in ("\n", "\t"):
+            out_chars.append(ch)
+            continue
+        cat = unicodedata.category(ch)
+        if cat[0] == "C":
+            # other control characters — drop
+            continue
+        if not _is_safe_codepoint(ord(ch)):
+            continue
+        out_chars.append(ch)
+    cleaned = "".join(out_chars)
+    cleaned = cleaned.replace(" ", " ").replace(" ", " ").replace(" ", " ")
+    cleaned = re.sub(r"[ \t]+", " ", cleaned)
+    cleaned = re.sub(r" *\n *", "\n", cleaned)
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
+    return cleaned.strip()
+
+
+def _is_filler_point(text: str) -> bool:
+    cleaned = text.strip().lower().lstrip("•-*·●○▪▫▸▹►. \t").strip()
+    if not cleaned:
+        return True
+    if cleaned.startswith(_KEY_POINT_BANNED_PREFIXES):
+        return True
+    for verb in _INSTRUCTIONAL_INFINITIVES:
+        if cleaned == verb:
+            return True
+        if cleaned.startswith(verb + " "):
+            return True
+        if cleaned.startswith(verb + ","):
+            return True
+    return False
+
+
+def _is_generic_conclusion_title(title: str) -> bool:
+    norm = (title or "").strip().lower().rstrip(".!?…").strip()
+    if not norm:
+        return True
+    if norm in _GENERIC_CONCLUSION_TITLES:
+        return True
+    if norm.startswith("заключени") or norm.startswith("итоги") or norm.startswith("выводы"):
+        return True
+    return False
+
+
 def _coerce_slide(
     item: dict[str, Any],
     idx: int,
     fallback: OutlineSlide | None,
 ) -> OutlineSlide:
-    key_points = _coerce_str_list(
+    raw_points = _coerce_str_list(
         item.get("keyPoints")
         or item.get("points")
         or item.get("bullets")
         or (fallback.keyPoints if fallback else [])
     )
+    cleaned_points: list[str] = []
+    seen: set[str] = set()
+    for raw in raw_points:
+        normalized = _normalize_text(raw).strip("•-*·●○▪▫▸▹►. \t")
+        if not normalized or _is_filler_point(normalized):
+            continue
+        # No internal colons that look like instruction headers ("Контекст: ...")
+        if ":" in normalized:
+            head, _, tail = normalized.partition(":")
+            head_clean = head.strip().lower()
+            if len(head_clean.split()) <= 3 and head_clean.endswith(("ие", "ий", "од", "ст", "тв", "ст:")):
+                normalized = tail.strip() or normalized
+        key = normalized.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        cleaned_points.append(normalized)
+
     slide_type = item.get("slideType") or (fallback.slideType if fallback else None)
     if slide_type not in ALLOWED_SLIDE_TYPES:
         slide_type = None
+
+    # Soft cap depends on the slide kind. text-слайды могут быть длинными абзацами,
+    # bullets — список, image / title / conclusion — компактные.
+    if slide_type == "text":
+        cap = 8
+    elif slide_type == "bullets":
+        cap = 8
+    elif slide_type in {"title", "conclusion", "image"}:
+        cap = 3
+    else:
+        cap = 6
+    key_points = cleaned_points[:cap]
+
     visual_intent = (
         item.get("visualIntent")
         or item.get("visual")
@@ -931,16 +1248,34 @@ def _coerce_slide(
         or slide_type == "image"
         or (fallback.needsImage if fallback else False)
     )
+
+    raw_title = item.get("title") or (fallback.title if fallback else f"Слайд {idx}")
+    title = _normalize_text(str(raw_title)).rstrip(".!?…") or f"Слайд {idx}"
+
+    if slide_type == "conclusion" and _is_generic_conclusion_title(title):
+        title = "Спасибо за внимание"
+
+    purpose_raw = item.get("purpose") or (fallback.purpose if fallback else "")
+    purpose = _normalize_text(str(purpose_raw))
+
+    speaker_raw = item.get("speakerNotes") or item.get("notes") or (
+        fallback.speakerNotes if fallback else None
+    )
+    speaker_notes = _normalize_text(str(speaker_raw)) if speaker_raw else None
+
+    visual_intent_norm = _normalize_text(str(visual_intent)) if visual_intent else None
+    image_prompt_norm = str(image_prompt).strip() if image_prompt else None
+
     return OutlineSlide(
         order=int(item.get("order") or idx),
-        title=str(item.get("title") or (fallback.title if fallback else f"Слайд {idx}")),
-        purpose=str(item.get("purpose") or (fallback.purpose if fallback else "")),
+        title=title,
+        purpose=purpose,
         keyPoints=key_points,
-        visualIntent=str(visual_intent) if visual_intent else None,
+        visualIntent=visual_intent_norm,
         needsImage=needs_image,
         slideType=slide_type,
-        imagePrompt=str(image_prompt) if image_prompt else None,
-        speakerNotes=item.get("speakerNotes") or item.get("notes") or (fallback.speakerNotes if fallback else None),
+        imagePrompt=image_prompt_norm,
+        speakerNotes=speaker_notes,
     )
 
 
@@ -989,8 +1324,20 @@ def _build_layout_document(
         slides=[],
         assets=[a.model_copy(deep=True) for a in template.assets],
     )
+    type_usage: dict[str, int] = {}
+    last_layout_id: str | None = None
     for idx, slide_outline in enumerate(outline.slides):
-        layout = _pick_layout(template, basis, slide_outline, idx, len(outline.slides))
+        layout = _pick_layout(
+            template,
+            basis,
+            slide_outline,
+            idx,
+            len(outline.slides),
+            type_usage,
+            last_layout_id,
+        )
+        type_usage[layout.slideType] = type_usage.get(layout.slideType, 0) + 1
+        last_layout_id = layout.id
         doc.slides.append(_slide_from_layout(layout, slide_outline, outline))
     return doc
 
@@ -1001,6 +1348,8 @@ def _pick_layout(
     slide: OutlineSlide,
     idx: int,
     total: int,
+    type_usage: dict[str, int] | None = None,
+    last_layout_id: str | None = None,
 ) -> LayoutDocument:
     layouts = template.layouts
     if basis.layoutIds:
@@ -1022,11 +1371,25 @@ def _pick_layout(
         else:
             wanted = "text"
 
-    return (
-        next((layout for layout in layouts if layout.slideType == wanted), None)
-        or next((layout for layout in layouts if layout.slideType == "text"), None)
-        or layouts[0]
-    )
+    candidates = [layout for layout in layouts if layout.slideType == wanted]
+    if not candidates and wanted in {"text", "bullets"}:
+        # bullets/text are interchangeable when the template is sparse
+        other = "bullets" if wanted == "text" else "text"
+        candidates = [layout for layout in layouts if layout.slideType == other]
+    if not candidates:
+        candidates = [layout for layout in layouts if layout.slideType == "text"]
+    if not candidates:
+        candidates = list(layouts)
+
+    if len(candidates) == 1:
+        return candidates[0]
+
+    # Rotate through candidates of the same slideType so a deck with many
+    # "bullets" slides actually uses every available layout instead of
+    # collapsing on the first match. Stable in idx so re-runs are deterministic.
+    usage = (type_usage or {}).get(wanted, 0)
+    fresh = [c for c in candidates if c.id != last_layout_id] or candidates
+    return fresh[usage % len(fresh)]
 
 
 def _slide_from_layout(
@@ -1150,7 +1513,11 @@ def _style_slide(
                 38, 700, theme.colors.text,
             )
         )
-        role = "bulletList" if slide_outline.keyPoints else "body"
+        # bulletList только для bullets-слайдов; text/image/conclusion — связный body.
+        if slide_outline.slideType == "bullets" and slide_outline.keyPoints:
+            role = "bulletList"
+        else:
+            role = "body"
         elements.append(
             _text_element(
                 role,
@@ -1876,11 +2243,15 @@ def _text_for_role(
     if role == "slideNumber":
         return str(slide.order)
 
+    # Default text role (body, custom, etc.) — связный текст без маркеров.
+    # text-слайды и подобные роли получают абзац: предложения склеиваются через
+    # перенос строки. Это лечит давний баг, когда text-слайд тоже превращался
+    # в список с «•».
     parts: list[str] = []
-    if slide.purpose:
-        parts.append(slide.purpose)
     if slide.keyPoints:
-        parts.extend(f"• {point}" for point in slide.keyPoints)
+        parts.extend(slide.keyPoints)
+    elif slide.purpose:
+        parts.append(slide.purpose)
     return "\n".join(parts) or slide.title
 
 
@@ -1962,14 +2333,13 @@ def _mock_content(
 def _fallback_content(
     source_request: OutlineGenerationRequest, outline: PresentationOutline
 ) -> PresentationOutline:
-    slides: list[OutlineSlide] = []
-    for slide in outline.slides:
-        points = slide.keyPoints or [
-            f"Связать с запросом: {source_request.prompt[:80]}",
-            "Сформулировать вывод коротко",
-        ]
-        slides.append(slide.model_copy(update={"keyPoints": points}))
-    return outline.model_copy(update={"slides": slides})
+    """Used when the second LLM pass fails — keep the user-approved outline as-is.
+
+    We deliberately avoid synthesizing placeholder bullets here, because filler
+    text like «Связать с запросом …» ends up shipped onto the slide and looks
+    like a bug. The approved outline is already meaningful enough to display.
+    """
+    return outline.model_copy(deep=True)
 
 
 def _coerce_str_list(value: Any) -> list[str]:

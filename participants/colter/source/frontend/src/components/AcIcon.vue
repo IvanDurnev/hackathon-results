@@ -38,6 +38,7 @@ const PATHS = {
   italic: '<path d="M14 5h-4M14 19h-4M15 5l-4 14"/>',
   underline: '<path d="M6 4v8a6 6 0 0012 0V4"/><path d="M5 20h14"/>',
   upload: '<path d="M12 16V4m0 0l-4 4m4-4l4 4M4 20h16"/>',
+  file: '<path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6"/>',
   eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   eyeOff: '<path d="M2 12s4-7 10-7c2 0 3.6.5 5 1.3M22 12s-4 7-10 7c-2 0-3.6-.5-5-1.3"/><path d="M3 3l18 18"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/>',
