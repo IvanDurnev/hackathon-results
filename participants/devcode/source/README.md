@@ -1,6 +1,6 @@
 # PresentAI
 
-> **AI-генератор презентаций:** от текстового запроса или документа до готового `.pptx` за несколько секунд.
+> **AI-генератор презентаций:** от текстового запроса или документа до готового `.pptx` за пару минут.
 
 🌐 **Хостинг:** [https://presentai-y64a.onrender.com/](https://presentai-y64a.onrender.com/)
 
@@ -49,7 +49,7 @@ PresentAI — это веб-сервис, который автоматичес�
      │              │  │                 │
      │ RT LLM API   │  │ Stable Diffusion│
      │ Anthropic    │  │ Yandex ART API  │
-     │ local fallback│  │ circuit breaker│
+     │local fallback│  │ circuit breaker │
      └───────┬──────┘  └────┬────────────┘
              │              │
              ▼              ▼
@@ -118,38 +118,25 @@ export ANTHROPIC_API_KEY=your_key_here
 .venv/bin/python iigenerator/app.py
 ```
 
-### Windows PowerShell
+### Windows CMD
 
-```powershell
-# 1. Клонировать репозиторий
+```CMD
+# 1. Клонироватьерированных презентаций в количестве не менее 3 штук. Презентации должны быть созданы одним и тем  репозиторий
 git clone https://github.com/huskkke/hackathon.git
 cd hackathon
 
-# 2. Создать виртуальное окружение
-py -3 -m venv .venv --upgrade-deps
-.\.venv\Scripts\python.exe -m ensurepip --upgrade
-.\.venv\Scripts\python.exe -m pip install --upgrade pip setuptools wheel
+# 2. Установить зависимости
+python.exe -m pip install -r requirements.txt
 
-# 3. Установить зависимости
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-
-# 4. (Опционально) Задать API-ключи
-$env:ANTHROPIC_API_KEY="your_key_here"
-
-# 5. Запустить сервер
-.\.venv\Scripts\python.exe iigenerator\app.py
+# 3. Запустить сервер
+cd C:\Users\ИмяПользователя\hackathon\iigenerator
+python app.py
 ```
 
 После запуска откройте в браузере:
 
 ```
 http://localhost:8000
-```
-
-Если порт `8000` занят, запустите на другом:
-
-```bash
-.venv/bin/python -m uvicorn iigenerator.app:app --host 127.0.0.1 --port 8001
 ```
 
 > Если страница не обновилась после правок — нажмите `Ctrl+F5`.
@@ -205,7 +192,7 @@ hackathon/
 
 ## Материалы
 
-- 📊 **Презентация, Скринкаст:** _ссылка_
+- 📊 **Презентация, Скринкаст:** [https://disk.yandex.ru/d/8J-_rUVg0OaHvw](https://disk.yandex.ru/d/8J-_rUVg0OaHvw)
 
 ---
 
