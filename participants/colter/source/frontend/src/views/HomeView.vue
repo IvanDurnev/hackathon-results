@@ -1,35 +1,23 @@
 <template>
   <div class="home-shell">
     <header class="home-header">
-      <div class="home-logo">
-        <div class="mark">A</div>
-        <div>
-          <div class="name">Amur Code</div>
-          <div class="tag">AI · Презентации</div>
-        </div>
-      </div>
       <nav class="home-nav">
         <a class="active">Главная</a>
         <a @click.prevent="scrollTo('decks')">Презентации</a>
         <a @click.prevent="scrollTo('templates')">Шаблоны</a>
       </nav>
       <div class="spacer" />
-      <button class="tb-btn ghost" style="gap:8px;">
-        <AcIcon name="search" :size="14" /> Поиск <span class="ac-kbd" style="margin-left:6px;">⌘K</span>
-      </button>
-      <button class="tb-btn icon ghost" title="Уведомления"><AcIcon name="bell" :size="16" /></button>
-      <div class="home-avatar">{{ avatarInitials }}</div>
     </header>
 
     <!-- Hero composer -->
     <section class="hero">
       <div class="hero-top">
-        <span class="ac-chip"><AcIcon name="sparkle" :size="12" /> AI генерация · Amur 4.0</span>
+        <span class="ac-chip"><AcIcon name="sparkle" :size="12" /> AI генерация</span>
         <h1>
           Опиши идею
           <span class="accent">— получи презентацию</span>
         </h1>
-        <p>Amur Code собирает структуру, верстает слайды и экспортирует в PPTX. Вы редактируете — он подстраивается.</p>
+        <p>Редактор собирает структуру, верстает слайды и экспортирует в PPTX. Вы редактируете — он подстраивается.</p>
       </div>
 
       <div class="composer">
@@ -86,14 +74,18 @@
           <button
             class="tb-btn primary"
             style="padding:8px 14px;"
-            :disabled="!canGenerate"
+            :disabled="!canGenerate || generationLoading"
             @click="generate"
           >
             <AcIcon name="sparkle" :size="14" />
-            Сгенерировать
+            {{ generationLoading ? 'Готовим оглавление…' : 'Сгенерировать' }}
             <span class="ac-kbd" style="background:rgba(255,255,255,0.30); color:rgba(255,255,255,0.92); border-color:rgba(255,255,255,0.35);">⏎</span>
           </button>
         </div>
+      </div>
+
+      <div v-if="generationError" class="generation-error">
+        {{ generationError }}
       </div>
 
       <div class="examples">
@@ -206,6 +198,59 @@
         </div>
       </div>
     </div>
+
+    <!-- Outline approval dialog -->
+    <div v-if="outlineOpen" class="modal-backdrop" @click.self="closeOutline">
+      <div class="modal outline-modal">
+        <div class="modal-head">
+          <span>Оглавление презентации</span>
+          <button class="tb-btn ghost icon" :disabled="generationLoading || buildingPresentation" @click="closeOutline">
+            <AcIcon name="plus" :size="14" :stroke-width="2" style="transform: rotate(45deg);" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <div v-if="generationError" class="generation-error modal-error">
+            {{ generationError }}
+          </div>
+          <div v-if="outline" class="outline-summary">
+            <h3>{{ outline.title }}</h3>
+            <div class="outline-meta">
+              <span v-if="outline.audience">{{ outline.audience }}</span>
+              <span v-if="outline.goal">{{ outline.goal }}</span>
+            </div>
+          </div>
+          <div v-if="outline?.slides?.length" class="outline-list">
+            <div v-for="slide in outline.slides" :key="slide.order" class="outline-slide">
+              <div class="outline-slide-number">{{ slide.order }}</div>
+              <div class="outline-slide-content">
+                <div class="outline-slide-title">{{ slide.title }}</div>
+                <div v-if="slide.purpose" class="outline-slide-purpose">{{ slide.purpose }}</div>
+                <ul v-if="slide.keyPoints?.length">
+                  <li v-for="point in slide.keyPoints" :key="point">{{ point }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <textarea
+            class="outline-feedback"
+            v-model="outlineFeedback"
+            rows="3"
+            placeholder="Что изменить в структуре?"
+          />
+        </div>
+        <div class="modal-foot">
+          <button class="tb-btn ghost" :disabled="generationLoading || buildingPresentation" @click="closeOutline">
+            Отмена
+          </button>
+          <button class="tb-btn" :disabled="!outlineFeedback.trim() || generationLoading || buildingPresentation" @click="retryOutline">
+            <AcIcon name="redo" :size="13" /> Переделать
+          </button>
+          <button class="tb-btn primary" :disabled="generationLoading || buildingPresentation" @click="approveOutline">
+            <AcIcon name="check" :size="13" /> {{ buildingPresentation ? 'Собираем…' : 'Собрать презентацию' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -218,6 +263,12 @@ import { uid } from '../core/ids.js';
 
 const ACCENTS = ['#ffb547', '#5a8ff0', '#38d2a4', '#ef5d4a', '#a85a05', '#92b8ff'];
 const STYLE_PRESETS = ['Деловой', 'Дружелюбный', 'Академичный', 'Рекламный'];
+const STYLE_IDS = {
+  Деловой: 'business',
+  Дружелюбный: 'friendly',
+  Академичный: 'academic',
+  Рекламный: 'promo',
+};
 const STYLE_THEMES = {
   Деловой: {
     fonts: { heading: 'Inter', body: 'Inter' },
@@ -276,6 +327,13 @@ export default {
       basisKind: 'layout',
       stylePreset: STYLE_PRESETS[0],
       composerTpl: null,
+      generationId: null,
+      outline: null,
+      outlineOpen: false,
+      outlineFeedback: '',
+      generationLoading: false,
+      buildingPresentation: false,
+      generationError: '',
       examples: [
         'Презентация для инвесторов: SaaS B2B, 10 слайдов, упор на трекшн',
         'Внутренний отчёт по итогам Q3 для команды product-маркетинга',
@@ -284,20 +342,28 @@ export default {
     };
   },
   computed: {
-    avatarInitials() {
-      return 'А';
-    },
     templateOptionLabels() {
       return this.templates.map((t) => t.name);
     },
     styleOptions() {
       return STYLE_PRESETS;
     },
+    selectedTemplateId() {
+      return this.templates.find((t) => t.name === this.composerTpl)?.id || null;
+    },
+    selectedStyleId() {
+      return STYLE_IDS[this.stylePreset] || 'business';
+    },
+    slideCount() {
+      const match = this.length.match(/\d+/);
+      return match ? Number(match[0]) : 12;
+    },
     canGenerate() {
+      if (!this.prompt.trim()) return false;
       if (this.basisKind === 'layout') {
-        return this.templates.length === 0 || Boolean(this.composerTpl);
+        return Boolean(this.selectedTemplateId);
       }
-      return Boolean(this.stylePreset);
+      return Boolean(this.selectedStyleId);
     },
     canCreatePresentation() {
       return Boolean(this.createName) && (
@@ -378,8 +444,85 @@ export default {
         : null;
       this.createOpen = true;
     },
-    generate() {
-      this.openCreateDialog();
+    generationPayload() {
+      const basis = this.basisKind === 'layout'
+        ? { kind: 'layout', templateId: this.selectedTemplateId }
+        : { kind: 'style', styleId: this.selectedStyleId };
+      return {
+        prompt: this.prompt.trim(),
+        slideCount: this.slideCount,
+        language: 'ru',
+        basis,
+      };
+    },
+    async generate() {
+      if (!this.canGenerate || this.generationLoading) return;
+      this.generationError = '';
+      this.generationLoading = true;
+      try {
+        const response = await api.createGenerationOutline(this.generationPayload());
+        this.generationId = response.generationId;
+        this.outline = response.outline;
+        this.outlineFeedback = '';
+        this.outlineOpen = true;
+      } catch (err) {
+        this.generationError = this.apiErrorMessage(err, 'Не удалось получить оглавление.');
+      } finally {
+        this.generationLoading = false;
+      }
+    },
+    async retryOutline() {
+      if (!this.generationId || !this.outline || !this.outlineFeedback.trim()) return;
+      this.generationError = '';
+      this.generationLoading = true;
+      try {
+        const response = await api.retryGenerationOutline(this.generationId, {
+          feedback: this.outlineFeedback.trim(),
+          outline: this.outline,
+        });
+        this.outline = response.outline;
+        this.outlineFeedback = '';
+      } catch (err) {
+        this.generationError = this.apiErrorMessage(err, 'Не удалось переделать оглавление.');
+      } finally {
+        this.generationLoading = false;
+      }
+    },
+    async approveOutline() {
+      if (!this.generationId || !this.outline || this.buildingPresentation) return;
+      this.generationError = '';
+      this.buildingPresentation = true;
+      try {
+        const saved = await api.buildGeneratedPresentation(this.generationId, {
+          outline: this.outline,
+          imagePolicy: { generateImages: true, imageType: 'png' },
+        });
+        this.presentations = [
+          {
+            id: saved.id,
+            name: saved.name,
+            templateId: saved.templateId,
+            slideCount: saved.slides?.length || 0,
+          },
+          ...this.presentations.filter((p) => p.id !== saved.id),
+        ];
+        this.outlineOpen = false;
+        this.$router.push(`/presentations/${saved.id}`);
+      } catch (err) {
+        this.generationError = this.apiErrorMessage(err, 'Не удалось собрать презентацию.');
+      } finally {
+        this.buildingPresentation = false;
+      }
+    },
+    closeOutline() {
+      if (this.generationLoading || this.buildingPresentation) return;
+      this.outlineOpen = false;
+    },
+    apiErrorMessage(err, fallback) {
+      const detail = err?.detail?.detail || err?.detail;
+      if (typeof detail === 'string' && detail.trim()) return detail;
+      if (detail && typeof detail === 'object') return JSON.stringify(detail);
+      return fallback;
     },
     async createPresentation() {
       if (this.basisKind === 'style') {

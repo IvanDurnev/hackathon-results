@@ -2,14 +2,30 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: amur-backend
+    container_name: backend
     restart: unless-stopped
     ports:
       - "8000:8000"
+    environment:
+      RT_AI_BASE_URL: ${RT_AI_BASE_URL:-https://ai.rt.ru/api/1.0}
+      RT_AI_TOKEN: ${RT_AI_TOKEN:-}
+      RT_AI_LLM_MODEL: ${RT_AI_LLM_MODEL:-Qwen/Qwen2.5-72B-Instruct}
+      RT_AI_TIMEOUT_SECONDS: ${RT_AI_TIMEOUT_SECONDS:-240}
+      RT_AI_IMAGE_PROVIDER: ${RT_AI_IMAGE_PROVIDER:-yandex}
+      RT_AI_YANDEX_MODEL: ${RT_AI_YANDEX_MODEL:-yandex-art}
+      RT_AI_YANDEX_ASPECT: ${RT_AI_YANDEX_ASPECT:-16:9}
+      RT_AI_MOCK: ${RT_AI_MOCK:-0}
+    env_file: ".env"
     volumes:
       - backend_storage:/app/storage
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/health').status == 200 else 1)"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/health').status == 200 else 1)",
+        ]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -18,7 +34,7 @@ services:
   frontend:
     build:
       context: ./frontend
-    container_name: amur-frontend
+    container_name: frontend
     restart: unless-stopped
     depends_on:
       backend:

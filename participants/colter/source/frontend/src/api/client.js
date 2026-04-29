@@ -55,4 +55,32 @@ export const api = {
   },
 
   exportPptxUrl: (id) => `/api/presentations/${id}/export/pptx`,
+
+  createGenerationOutline: (payload) =>
+    request('/api/ai/generations/outline', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  retryGenerationOutline: (generationId, payload) =>
+    request(`/api/ai/generations/${generationId}/outline/retry`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  buildGeneratedPresentation: (generationId, payload) =>
+    request(`/api/ai/generations/${generationId}/presentation`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  getImageJobsStatus: (presentationId) =>
+    request(`/api/ai/presentations/${presentationId}/images/status`),
+  regenerateSlideContent: (presentationId, slideId, payload) =>
+    request(`/api/ai/presentations/${presentationId}/slides/${slideId}/regenerate`, {
+      method: 'POST',
+      body: JSON.stringify(payload || {}),
+    }),
+  regenerateSlideImage: (presentationId, slideId, payload) =>
+    request(`/api/ai/presentations/${presentationId}/slides/${slideId}/image/regenerate`, {
+      method: 'POST',
+      body: JSON.stringify(payload || {}),
+    }),
 };

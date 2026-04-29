@@ -22,6 +22,13 @@
           @commit-text="(p) => onCommitText(el.id, p)"
         />
         <div
+          v-for="(guide, idx) in snapGuides"
+          :key="`guide-${idx}`"
+          class="alignment-guide"
+          :class="guide.orientation"
+          :style="guideStyle(guide)"
+        />
+        <div
           v-if="marquee"
           class="marquee"
           :class="{ intersect: marquee.intersect }"
@@ -32,7 +39,7 @@
     </div>
     <div class="canvas-meta">
       <span>{{ slideSize.ratio }}</span>
-      <span>{{ slideSize.widthEmu.toLocaleString('ru-RU') }} × {{ slideSize.heightEmu.toLocaleString('ru-RU') }} EMU</span>
+      <span>{{ slideSizeLabel }}</span>
     </div>
   </div>
 </template>
@@ -41,7 +48,9 @@
 import ElementFrame from './ElementFrame.vue';
 import { useDocumentStore } from '../../stores/document.js';
 import { useEditorStore } from '../../stores/editor.js';
-import { fitScale } from '../../core/emu.js';
+import { emuToCm, fitScale, roundNumber } from '../../core/emu.js';
+
+const ALIGN_SNAP_PX = 8;
 
 function rectsIntersect(a, b) {
   return !(a.x + a.w < b.x || b.x + b.w < a.x || a.y + a.h < b.y || b.y + b.h < a.y);
@@ -51,6 +60,192 @@ function rectContains(outer, inner) {
     && inner.y >= outer.y
     && inner.x + inner.w <= outer.x + outer.w
     && inner.y + inner.h <= outer.y + outer.h;
+}
+
+function rectFromFrame(frame) {
+  return {
+    x: frame.xEmu,
+    y: frame.yEmu,
+    w: frame.wEmu,
+    h: frame.hEmu,
+  };
+}
+
+function guide(orientation, positionEmu, startEmu, endEmu) {
+  return {
+    orientation,
+    positionEmu,
+    startEmu: Math.min(startEmu, endEmu),
+    endEmu: Math.max(startEmu, endEmu),
+  };
+}
+
+function buildAlignmentCandidates(elements, movingId, slideSize) {
+  const vertical = [
+    { value: 0, start: 0, end: slideSize.heightEmu },
+    { value: slideSize.widthEmu / 2, start: 0, end: slideSize.heightEmu },
+    { value: slideSize.widthEmu, start: 0, end: slideSize.heightEmu },
+  ];
+  const horizontal = [
+    { value: 0, start: 0, end: slideSize.widthEmu },
+    { value: slideSize.heightEmu / 2, start: 0, end: slideSize.widthEmu },
+    { value: slideSize.heightEmu, start: 0, end: slideSize.widthEmu },
+  ];
+
+  elements.forEach((el) => {
+    if (el.id === movingId) return;
+    const r = rectFromFrame(el.frame);
+    vertical.push(
+      { value: r.x, start: r.y, end: r.y + r.h },
+      { value: r.x + r.w / 2, start: r.y, end: r.y + r.h },
+      { value: r.x + r.w, start: r.y, end: r.y + r.h },
+    );
+    horizontal.push(
+      { value: r.y, start: r.x, end: r.x + r.w },
+      { value: r.y + r.h / 2, start: r.x, end: r.x + r.w },
+      { value: r.y + r.h, start: r.x, end: r.x + r.w },
+    );
+  });
+
+  return { vertical, horizontal };
+}
+
+function findBestAlignmentMatch(anchors, candidates, thresholdEmu) {
+  let best = null;
+  anchors.forEach((anchor) => {
+    candidates.forEach((candidate) => {
+      const delta = candidate.value - anchor.value;
+      const abs = Math.abs(delta);
+      if (abs > thresholdEmu) return;
+      if (!best || abs < best.abs) {
+        best = { anchor, candidate, delta, abs };
+      }
+    });
+  });
+  return best;
+}
+
+function applyMoveAlignmentSnap(rect, candidates, thresholdEmu) {
+  const next = { ...rect };
+  const guides = [];
+
+  const xMatch = findBestAlignmentMatch([
+    { value: rect.x },
+    { value: rect.x + rect.w / 2 },
+    { value: rect.x + rect.w },
+  ], candidates.vertical, thresholdEmu);
+  if (xMatch) {
+    next.x += xMatch.delta;
+    guides.push(guide(
+      'vertical',
+      xMatch.candidate.value,
+      Math.min(next.y, xMatch.candidate.start),
+      Math.max(next.y + next.h, xMatch.candidate.end),
+    ));
+  }
+
+  const yMatch = findBestAlignmentMatch([
+    { value: rect.y },
+    { value: rect.y + rect.h / 2 },
+    { value: rect.y + rect.h },
+  ], candidates.horizontal, thresholdEmu);
+  if (yMatch) {
+    next.y += yMatch.delta;
+    guides.push(guide(
+      'horizontal',
+      yMatch.candidate.value,
+      Math.min(next.x, yMatch.candidate.start),
+      Math.max(next.x + next.w, yMatch.candidate.end),
+    ));
+  }
+
+  return {
+    rect: next,
+    guides,
+    snappedX: !!xMatch,
+    snappedY: !!yMatch,
+  };
+}
+
+function normalizeResizedRect(rect, handle, minW, minH) {
+  const next = { ...rect };
+  if (next.w < minW) {
+    if (handle.includes('l')) next.x -= (minW - next.w);
+    next.w = minW;
+  }
+  if (next.h < minH) {
+    if (handle.includes('t')) next.y -= (minH - next.h);
+    next.h = minH;
+  }
+  return next;
+}
+
+function applyResizeAlignmentSnap(rect, handle, candidates, thresholdEmu, minW, minH) {
+  const next = { ...rect };
+  const guides = [];
+  let snappedX = false;
+  let snappedY = false;
+
+  if (handle.includes('l')) {
+    const match = findBestAlignmentMatch([{ value: next.x }], candidates.vertical, thresholdEmu);
+    if (match) {
+      next.x += match.delta;
+      next.w -= match.delta;
+      snappedX = true;
+      guides.push(guide(
+        'vertical',
+        match.candidate.value,
+        Math.min(next.y, match.candidate.start),
+        Math.max(next.y + next.h, match.candidate.end),
+      ));
+    }
+  } else if (handle.includes('r')) {
+    const match = findBestAlignmentMatch([{ value: next.x + next.w }], candidates.vertical, thresholdEmu);
+    if (match) {
+      next.w += match.delta;
+      snappedX = true;
+      guides.push(guide(
+        'vertical',
+        match.candidate.value,
+        Math.min(next.y, match.candidate.start),
+        Math.max(next.y + next.h, match.candidate.end),
+      ));
+    }
+  }
+
+  if (handle.includes('t')) {
+    const match = findBestAlignmentMatch([{ value: next.y }], candidates.horizontal, thresholdEmu);
+    if (match) {
+      next.y += match.delta;
+      next.h -= match.delta;
+      snappedY = true;
+      guides.push(guide(
+        'horizontal',
+        match.candidate.value,
+        Math.min(next.x, match.candidate.start),
+        Math.max(next.x + next.w, match.candidate.end),
+      ));
+    }
+  } else if (handle.includes('b')) {
+    const match = findBestAlignmentMatch([{ value: next.y + next.h }], candidates.horizontal, thresholdEmu);
+    if (match) {
+      next.h += match.delta;
+      snappedY = true;
+      guides.push(guide(
+        'horizontal',
+        match.candidate.value,
+        Math.min(next.x, match.candidate.start),
+        Math.max(next.x + next.w, match.candidate.end),
+      ));
+    }
+  }
+
+  return {
+    rect: normalizeResizedRect(next, handle, minW, minH),
+    guides,
+    snappedX,
+    snappedY,
+  };
 }
 
 export default {
@@ -63,6 +258,7 @@ export default {
       drag: null,
       resize: null,
       marquee: null, // { startX, startY, x, y, w, h, intersect }
+      snapGuides: [],
     };
   },
   computed: {
@@ -126,6 +322,11 @@ export default {
         height: `${this.marquee.h}px`,
       };
     },
+    slideSizeLabel() {
+      const widthCm = roundNumber(emuToCm(this.slideSize.widthEmu), 2).toLocaleString('ru-RU');
+      const heightCm = roundNumber(emuToCm(this.slideSize.heightEmu), 2).toLocaleString('ru-RU');
+      return `${widthCm} × ${heightCm} см`;
+    },
     slideNumberLabel() {
       if (this.docStore.mode !== 'presentation') return '';
       const cfg = this.doc?.slideNumbering;
@@ -165,11 +366,30 @@ export default {
       if (e.target === this.$refs.area || e.target.classList.contains('slide-canvas-wrapper')) {
         this.docStore.clearSelection();
         this.editorStore.stopEditing();
+        this.snapGuides = [];
       }
+    },
+    guideStyle(guideData) {
+      if (guideData.orientation === 'vertical') {
+        return {
+          left: `${guideData.positionEmu * this.scale}px`,
+          top: `${guideData.startEmu * this.scale}px`,
+          height: `${Math.max(1, (guideData.endEmu - guideData.startEmu) * this.scale)}px`,
+        };
+      }
+      return {
+        left: `${guideData.startEmu * this.scale}px`,
+        top: `${guideData.positionEmu * this.scale}px`,
+        width: `${Math.max(1, (guideData.endEmu - guideData.startEmu) * this.scale)}px`,
+      };
+    },
+    alignmentCandidates(movingId) {
+      return buildAlignmentCandidates(this.slide?.elements || [], movingId, this.slideSize);
     },
     onBackgroundMouseDown(e) {
       this.docStore.clearSelection();
       this.editorStore.stopEditing();
+      this.snapGuides = [];
       if (e.button !== 0) return;
       const canvas = this.$refs.canvas;
       if (!canvas) return;
@@ -210,11 +430,11 @@ export default {
       window.removeEventListener('mousemove', this.onMarqueeMove);
       const m = this.marquee;
       this.marquee = null;
+      this.snapGuides = [];
       if (!m || !m.moved || !this.slide) return;
       const sel = { x: m.x, y: m.y, w: m.w, h: m.h };
       const ids = [];
       this.slide.elements.forEach((el) => {
-        if (el.visible === false) return;
         const r = {
           x: el.frame.xEmu * this.scale,
           y: el.frame.yEmu * this.scale,
@@ -263,7 +483,10 @@ export default {
         clientY: event.clientY,
         x: el.frame.xEmu,
         y: el.frame.yEmu,
+        w: el.frame.wEmu,
+        h: el.frame.hEmu,
       };
+      this.snapGuides = [];
       this.drag = { id, start, moved: false };
       window.addEventListener('mousemove', this.onDragMove);
       window.addEventListener('mouseup', this.onDragEnd, { once: true });
@@ -275,11 +498,23 @@ export default {
       const dy = (e.clientY - this.drag.start.clientY) / this.scale;
       let xEmu = Math.round(this.drag.start.x + dx);
       let yEmu = Math.round(this.drag.start.y + dy);
+      let guides = [];
       if (this.editorStore.snap) {
+        const thresholdEmu = ALIGN_SNAP_PX / this.scale;
+        const snapped = applyMoveAlignmentSnap({
+          x: xEmu,
+          y: yEmu,
+          w: this.drag.start.w,
+          h: this.drag.start.h,
+        }, this.alignmentCandidates(this.drag.id), thresholdEmu);
+        xEmu = Math.round(snapped.rect.x);
+        yEmu = Math.round(snapped.rect.y);
+        guides = snapped.guides;
         const step = this.editorStore.snapStepEmu;
-        xEmu = Math.round(xEmu / step) * step;
-        yEmu = Math.round(yEmu / step) * step;
+        if (!snapped.snappedX) xEmu = Math.round(xEmu / step) * step;
+        if (!snapped.snappedY) yEmu = Math.round(yEmu / step) * step;
       }
+      this.snapGuides = guides;
       this.docStore.run(
         {
           type: 'element.move',
@@ -293,6 +528,7 @@ export default {
     },
     onDragEnd() {
       this.drag = null;
+      this.snapGuides = [];
       window.removeEventListener('mousemove', this.onDragMove);
     },
     onResizeStart({ id, handle, event }) {
@@ -307,6 +543,7 @@ export default {
         preserveAspect: el.type === 'image' && !!el.preserveAspect,
         ratio: el.frame.wEmu / Math.max(1, el.frame.hEmu),
       };
+      this.snapGuides = [];
       this.resize = { id, start, moved: false };
       window.addEventListener('mousemove', this.onResizeMove);
       window.addEventListener('mouseup', this.onResizeEnd, { once: true });
@@ -347,13 +584,40 @@ export default {
 
       f.xEmu = Math.round(f.xEmu);
       f.yEmu = Math.round(f.yEmu);
+      let guides = [];
       if (this.editorStore.snap) {
-        const step = this.editorStore.snapStepEmu;
-        f.xEmu = Math.round(f.xEmu / step) * step;
-        f.yEmu = Math.round(f.yEmu / step) * step;
-        f.wEmu = Math.max(minW, Math.round(f.wEmu / step) * step);
-        f.hEmu = Math.max(minH, Math.round(f.hEmu / step) * step);
+        if (!this.resize.start.preserveAspect) {
+          const thresholdEmu = ALIGN_SNAP_PX / this.scale;
+          const snapped = applyResizeAlignmentSnap({
+            x: f.xEmu,
+            y: f.yEmu,
+            w: f.wEmu,
+            h: f.hEmu,
+          }, h, this.alignmentCandidates(this.resize.id), thresholdEmu, minW, minH);
+          f.xEmu = Math.round(snapped.rect.x);
+          f.yEmu = Math.round(snapped.rect.y);
+          f.wEmu = Math.round(snapped.rect.w);
+          f.hEmu = Math.round(snapped.rect.h);
+          guides = snapped.guides;
+
+          const step = this.editorStore.snapStepEmu;
+          if (!snapped.snappedX) {
+            f.xEmu = Math.round(f.xEmu / step) * step;
+            f.wEmu = Math.max(minW, Math.round(f.wEmu / step) * step);
+          }
+          if (!snapped.snappedY) {
+            f.yEmu = Math.round(f.yEmu / step) * step;
+            f.hEmu = Math.max(minH, Math.round(f.hEmu / step) * step);
+          }
+        } else {
+          const step = this.editorStore.snapStepEmu;
+          f.xEmu = Math.round(f.xEmu / step) * step;
+          f.yEmu = Math.round(f.yEmu / step) * step;
+          f.wEmu = Math.max(minW, Math.round(f.wEmu / step) * step);
+          f.hEmu = Math.max(minH, Math.round(f.hEmu / step) * step);
+        }
       }
+      this.snapGuides = guides;
       this.docStore.run(
         {
           type: 'element.resize',
@@ -367,6 +631,7 @@ export default {
     },
     onResizeEnd() {
       this.resize = null;
+      this.snapGuides = [];
       window.removeEventListener('mousemove', this.onResizeMove);
     },
     onKey(e) {

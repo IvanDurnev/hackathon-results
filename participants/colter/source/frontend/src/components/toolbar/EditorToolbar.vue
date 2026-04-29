@@ -27,14 +27,14 @@
     <div class="toolbar-divider" />
 
     <button class="tb-btn ghost" @click="addText"><AcIcon name="text" :size="14" /> Текст</button>
-    <button class="tb-btn ghost" @click="addImage"><AcIcon name="image" :size="14" /> Картинка</button>
+    <button class="tb-btn ghost" :title="imageButtonTitle" @click="handleImageAction"><AcIcon name="image" :size="14" /> {{ imageButtonLabel }}</button>
     <button class="tb-btn ghost" @click="addRect"><AcIcon name="shape" :size="14" /> Фигура</button>
     <button class="tb-btn ghost" @click="addLine"><AcIcon name="line" :size="14" /> Линия</button>
 
     <div class="spacer" />
 
-    <button class="tb-btn amber-soft" title="Скоро: AI помощник" @click="askAmurHint">
-      <AcIcon name="sparkle" :size="13" /> Спросить Amur
+    <button class="tb-btn amber-soft" title="Скоро: AI помощник" @click="askAiHint">
+      <AcIcon name="sparkle" :size="13" /> AI помощник
       <span class="ac-kbd" style="background: rgba(255,181,71,0.10); border-color: rgba(255,181,71,0.25); color: var(--amber-200);">⌘K</span>
     </button>
 
@@ -69,6 +69,7 @@ import { useEditorStore } from '../../stores/editor.js';
 import { api } from '../../api/client.js';
 import {
   makeImageElement,
+  makeImagePlaceholderElement,
   makeLineElement,
   makeShapeElement,
   makeTextElement,
@@ -81,6 +82,15 @@ export default {
   computed: {
     docStore() { return useDocumentStore(); },
     editorStore() { return useEditorStore(); },
+    isTemplateMode() {
+      return this.docStore.mode === 'template';
+    },
+    imageButtonLabel() {
+      return this.isTemplateMode ? 'Изображение' : 'Картинка';
+    },
+    imageButtonTitle() {
+      return this.isTemplateMode ? 'Добавить заполнитель изображения' : 'Загрузить изображение';
+    },
     zoomLabel() {
       if (this.editorStore.autoFit) return 'fit';
       return `${Math.round(this.editorStore.zoom * 100)}%`;
@@ -116,7 +126,16 @@ export default {
     },
     addRect() { this.addElement(makeShapeElement('rect')); },
     addLine() { this.addElement(makeLineElement()); },
-    addImage() { this.$refs.upload.click(); },
+    addImagePlaceholder() {
+      this.addElement(makeImagePlaceholderElement());
+    },
+    handleImageAction() {
+      if (this.isTemplateMode) {
+        this.addImagePlaceholder();
+        return;
+      }
+      this.$refs.upload.click();
+    },
     async onUpload(e) {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -133,7 +152,7 @@ export default {
       const cur = this.editorStore.autoFit ? 1 : this.editorStore.zoom;
       this.editorStore.setZoom(cur - 0.1);
     },
-    askAmurHint() {
+    askAiHint() {
       // Placeholder while AI panel is wired up — keeps the button responsive.
     },
   },

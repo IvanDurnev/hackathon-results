@@ -2,11 +2,11 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
-from .routers import assets, presentations, templates
+from .routers import ai, assets, presentations, templates
 from .seed import seed_if_empty
 from .storage import asset_path
 
-app = FastAPI(title="Amur Code — Presentation Editor", version="0.1.0")
+app = FastAPI(title="Presentation Editor", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,6 +19,7 @@ app.add_middleware(
 app.include_router(templates.router)
 app.include_router(presentations.router)
 app.include_router(assets.router)
+app.include_router(ai.router)
 
 
 @app.on_event("startup")

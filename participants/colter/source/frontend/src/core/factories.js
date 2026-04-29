@@ -63,12 +63,26 @@ export function makeImageElement(overrides = {}) {
     role: 'image',
     contentBehavior: overrides.contentBehavior || makeBehavior('manual'),
     assetId: overrides.assetId,
-    fit: 'cover',
+    placeholder: overrides.placeholder,
+    fit: overrides.fit || 'cover',
     frame: overrides.frame || makeFrame({ wEmu: 5000000, hEmu: 3500000 }),
     zIndex: overrides.zIndex ?? 10,
     locked: false,
     visible: true,
   };
+}
+
+export function makeImagePlaceholderElement(overrides = {}) {
+  const {
+    placeholder = 'Изображение',
+    contentBehavior = makeBehavior('placeholder', false, 'image'),
+    ...rest
+  } = overrides;
+  return makeImageElement({
+    ...rest,
+    placeholder,
+    contentBehavior,
+  });
 }
 
 export function makeShapeElement(shape = 'rect', overrides = {}) {

@@ -16,6 +16,7 @@ export const useDocumentStore = defineStore('document', {
     dirty: false,
     revision: 0,
     lastSavedAt: null,
+    imagePollKick: 0,
   }),
   getters: {
     activeSlide(state) {
@@ -158,6 +159,9 @@ export const useDocumentStore = defineStore('document', {
       this.dirty = false;
       this.lastSavedAt = new Date();
     },
+    kickImagePolling() {
+      this.imagePollKick += 1;
+    },
     addAsset(asset) {
       if (!this.doc) return;
       if (!this.doc.assets) this.doc.assets = [];
@@ -165,6 +169,27 @@ export const useDocumentStore = defineStore('document', {
         this.doc.assets.push(asset);
         this.markDirty();
       }
+    },
+    /**
+     * Replaces the current presentation with a freshly fetched one,
+     * preserving the active slide selection where possible.
+     */
+    replacePresentation(doc) {
+      const previousSlideId = this.activeSlideId;
+      const previousSelection = this.selection.slice();
+      this.doc = doc;
+      this.mode = 'presentation';
+      const stillExists = doc.slides.find((s) => s.id === previousSlideId);
+      this.activeSlideId = stillExists ? stillExists.id : (doc.slides[0]?.id || null);
+      const elementIdSet = new Set(
+        doc.slides.flatMap((s) => s.elements.map((e) => e.id))
+      );
+      this.selection = previousSelection.filter((id) => elementIdSet.has(id));
+      this.pastStack = [];
+      this.futureStack = [];
+      this.dirty = false;
+      this.revision += 1;
+      this.lastSavedAt = new Date();
     },
   },
 });

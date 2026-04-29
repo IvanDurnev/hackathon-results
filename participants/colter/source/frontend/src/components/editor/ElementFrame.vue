@@ -57,7 +57,6 @@ export default {
         opacity: this.element.opacity != null ? this.element.opacity : 1,
         transform: f.rotate ? `rotate(${f.rotate}deg)` : null,
         zIndex: this.element.zIndex || 0,
-        visibility: this.element.visible === false ? 'hidden' : 'visible',
       };
     },
     overflow() {

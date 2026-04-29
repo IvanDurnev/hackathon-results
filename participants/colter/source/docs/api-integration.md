@@ -9,7 +9,7 @@ The user generation flow is split into two phases:
 1. Create or regenerate an outline.
 2. Approve the outline and build a presentation document.
 
-Image generation is a backend side effect during phase 2: the backend asks Stable Diffusion for an image, downloads the produced file, stores it as an `Asset`, and inserts the asset into the presentation JSON.
+Image generation is a backend side effect during phase 2: by default the backend asks Yandex ART for an image, downloads the produced file, stores it as an `Asset`, and inserts the asset into the presentation JSON. Stable Diffusion remains available via `RT_AI_IMAGE_PROVIDER=sd`.
 
 ## External Services
 
@@ -58,12 +58,12 @@ Relevant response fields:
 ]
 ```
 
-### Stable Diffusion
+### Yandex ART
 
 Request image:
 
 ```http
-POST https://ai.rt.ru/api/1.0/sd/img
+POST https://ai.rt.ru/api/1.0/ya/image
 Authorization: Bearer <RT_AI_TOKEN>
 Content-Type: application/json
 ```
@@ -71,10 +71,12 @@ Content-Type: application/json
 ```json
 {
   "uuid": "generation-or-asset-uuid",
-  "sdImage": {
+  "image": {
     "request": "Image prompt",
     "seed": 123456789,
-    "translate": false
+    "translate": false,
+    "model": "yandex-art",
+    "aspect": "16:9"
   }
 }
 ```
@@ -84,7 +86,7 @@ Relevant response field: `message.id`.
 Download image:
 
 ```http
-GET https://ai.rt.ru/api/1.0/download?id=231719&serviceType=sd&imageType=png
+GET https://ai.rt.ru/api/1.0/download?id=231719&serviceType=yaArt&imageType=png
 Authorization: Bearer <RT_AI_TOKEN>
 ```
 
@@ -94,7 +96,14 @@ Authorization: Bearer <RT_AI_TOKEN>
 RT_AI_BASE_URL=https://ai.rt.ru/api/1.0
 RT_AI_TOKEN=...
 RT_AI_LLM_MODEL=Qwen/Qwen2.5-72B-Instruct
+RT_AI_TIMEOUT_SECONDS=240
+RT_AI_IMAGE_PROVIDER=yandex
+RT_AI_YANDEX_MODEL=yandex-art
+RT_AI_YANDEX_ASPECT=16:9
+RT_AI_MOCK=0
 ```
+
+For local contract checks without external calls, set `RT_AI_MOCK=1`.
 
 ## Internal Frontend-To-Backend API
 
@@ -260,4 +269,3 @@ The backend validates and normalizes model output before creating `PresentationD
 - `401`: backend token is missing or rejected by the external service.
 - `409`: the generation is in the wrong state, for example presentation build before outline approval.
 - `502`: external Qwen or SD call failed.
-

@@ -3,9 +3,20 @@
     <div v-if="mode === 'presentation'">
       <div class="slide-navigator-head">
         <span>Слайды · {{ slides.length }}</span>
-        <button class="tb-btn ghost icon" style="width:22px;height:22px;" title="Добавить слайд" @click="openLayoutPicker">
-          <AcIcon name="plus" :size="13" />
-        </button>
+        <div class="slide-navigator-head-actions">
+          <button
+            class="tb-btn ghost icon"
+            style="width:22px;height:22px;"
+            title="Дублировать активный слайд"
+            :disabled="!activeSlide"
+            @click="duplicateActive"
+          >
+            <AcIcon name="duplicate" :size="13" />
+          </button>
+          <button class="tb-btn ghost icon" style="width:22px;height:22px;" title="Добавить слайд" @click="openLayoutPicker">
+            <AcIcon name="plus" :size="13" />
+          </button>
+        </div>
       </div>
       <div class="slide-navigator-list">
         <div
@@ -47,9 +58,20 @@
     <div v-else>
       <div class="slide-navigator-head">
         <span>Макеты · {{ layouts.length }}</span>
-        <button class="tb-btn ghost icon" style="width:22px;height:22px;" title="Добавить макет" @click="addLayout">
-          <AcIcon name="plus" :size="13" />
-        </button>
+        <div class="slide-navigator-head-actions">
+          <button
+            class="tb-btn ghost icon"
+            style="width:22px;height:22px;"
+            title="Дублировать активный макет"
+            :disabled="!activeLayout"
+            @click="duplicateLayout"
+          >
+            <AcIcon name="duplicate" :size="13" />
+          </button>
+          <button class="tb-btn ghost icon" style="width:22px;height:22px;" title="Добавить макет" @click="addLayout">
+            <AcIcon name="plus" :size="13" />
+          </button>
+        </div>
       </div>
       <div class="slide-navigator-list">
         <div
@@ -73,6 +95,9 @@
         </div>
       </div>
       <div class="nav-actions">
+        <button class="tb-btn" :disabled="!activeLayout" @click="duplicateLayout">
+          <AcIcon name="duplicate" :size="13" /> Дублировать макет
+        </button>
         <button class="tb-btn danger" :disabled="!activeLayout || layouts.length <= 1" @click="deleteLayout">
           <AcIcon name="trash" :size="13" /> Удалить макет
         </button>
@@ -219,6 +244,18 @@ export default {
       this.doc.layouts.push(layout);
       this.docStore.markDirty();
       this.docStore.selectActiveLayout(layout.id);
+    },
+    duplicateLayout() {
+      const layout = this.activeLayout;
+      if (!layout) return;
+      const copy = JSON.parse(JSON.stringify(layout));
+      copy.id = uid('layout');
+      copy.name = `${layout.name} (копия)`;
+      copy.elements = (copy.elements || []).map((el) => ({ ...el, id: uid('el') }));
+      const idx = this.layouts.findIndex((item) => item.id === layout.id);
+      this.doc.layouts.splice(idx + 1, 0, copy);
+      this.docStore.markDirty();
+      this.docStore.selectActiveLayout(copy.id);
     },
     deleteLayout() {
       const id = this.activeLayoutId;

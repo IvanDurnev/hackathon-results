@@ -8,7 +8,7 @@
       :key="el.id"
       :style="elStyle(el)"
     >
-      <span v-if="el.type === 'text'" :style="textStyle(el)">{{ el.text || el.placeholder || '' }}</span>
+      <div v-if="el.type === 'text'" :style="textStyle(el)" v-html="renderText(el)" />
       <div v-else-if="el.type === 'image'" :style="imgStyle(el)" />
       <svg v-else-if="el.type === 'shape'" :width="emuW(el) * scale" :height="emuH(el) * scale" style="display:block;">
         <rect
@@ -73,13 +73,30 @@ export default {
     },
     visibleElements() {
       return [...(this.slide.elements || [])]
-        .filter((e) => e.visible !== false)
         .sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
     },
   },
   methods: {
     emuW(el) { return el.frame.wEmu; },
     emuH(el) { return el.frame.hEmu; },
+    escape(text) {
+      return String(text).replace(/[&<>]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[char]));
+    },
+    bulletLines(text) {
+      return String(text)
+        .split('\n')
+        .map((line) => line.replace(/^[\s\u2022*-]+\s*/, '').trim())
+        .filter(Boolean);
+    },
+    renderText(el) {
+      const value = el.text || el.placeholder || '';
+      if (el.role !== 'bulletList') {
+        return this.escape(value).replace(/\n/g, '<br>');
+      }
+      const lines = this.bulletLines(value);
+      if (!lines.length) return '';
+      return lines.map((line) => `• ${this.escape(line)}`).join('<br>');
+    },
     elStyle(el) {
       return {
         position: 'absolute',

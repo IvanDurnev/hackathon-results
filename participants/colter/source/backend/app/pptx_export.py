@@ -162,9 +162,14 @@ def _add_text(slide, el, theme_text_color: str) -> None:
     lines = (el.text or "").split("\n") if el.text else [""]
     for i, line in enumerate(lines):
         para = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        text_value = line
+        if el.role == "bulletList":
+            text_value = line.lstrip().removeprefix("•").removeprefix("-").removeprefix("*").strip()
+        if el.role == "bulletList" and text_value:
+            _enable_bullet(para)
         para.alignment = ALIGN_MAP.get(el.style.align, PP_ALIGN.LEFT)
         run = para.add_run()
-        run.text = line
+        run.text = text_value
         run.font.name = el.style.fontFamily
         run.font.size = Pt(el.style.fontSize)
         if el.style.fontWeight and el.style.fontWeight >= 600:
@@ -174,6 +179,14 @@ def _add_text(slide, el, theme_text_color: str) -> None:
         if el.style.underline:
             run.font.underline = True
         run.font.color.rgb = _hex_to_rgb(el.style.color or theme_text_color)
+
+
+def _enable_bullet(paragraph) -> None:
+    p_pr = paragraph._p.get_or_add_pPr()
+    for child in list(p_pr):
+        if child.tag in {qn("a:buNone"), qn("a:buAutoNum"), qn("a:buChar"), qn("a:buBlip")}:
+            p_pr.remove(child)
+    p_pr.insert(0, parse_xml(f'<a:buChar {nsdecls("a")} char="•"/>'))
 
 
 def _add_image(slide, el, doc: PresentationDocument) -> None:
@@ -224,8 +237,6 @@ def _add_line(slide, el) -> None:
 
 
 def _emit(slide, el: SlideElement, doc: PresentationDocument) -> None:
-    if not el.visible:
-        return
     if el.type == "text":
         _add_text(slide, el, doc.theme.colors.text)
     elif el.type == "image":

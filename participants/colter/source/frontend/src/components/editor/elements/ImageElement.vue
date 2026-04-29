@@ -1,6 +1,6 @@
 <template>
   <div class="element-image" :style="bgStyle" @mousedown="$emit('select', $event)">
-    <span v-if="!resolvedUrl">Изображение не выбрано</span>
+    <span v-if="!resolvedUrl">{{ element.placeholder || 'Изображение не выбрано' }}</span>
   </div>
 </template>
 

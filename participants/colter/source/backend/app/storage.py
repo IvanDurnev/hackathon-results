@@ -18,8 +18,16 @@ ROOT = Path(__file__).resolve().parents[1] / "storage"
 TEMPLATES_DIR = ROOT / "templates"
 PRESENTATIONS_DIR = ROOT / "presentations"
 ASSETS_DIR = ROOT / "assets"
+GENERATIONS_DIR = ROOT / "generations"
+IMAGE_JOBS_DIR = ROOT / "image_jobs"
 
-for _d in (TEMPLATES_DIR, PRESENTATIONS_DIR, ASSETS_DIR):
+for _d in (
+    TEMPLATES_DIR,
+    PRESENTATIONS_DIR,
+    ASSETS_DIR,
+    GENERATIONS_DIR,
+    IMAGE_JOBS_DIR,
+):
     _d.mkdir(parents=True, exist_ok=True)
 
 
@@ -89,6 +97,46 @@ def save_presentation(doc: PresentationDocument) -> PresentationDocument:
 
 def delete_presentation(presentation_id: str) -> bool:
     p = PRESENTATIONS_DIR / f"{presentation_id}.json"
+    if p.exists():
+        p.unlink()
+        return True
+    return False
+
+
+# --- ai generation state -----------------------------------------------------
+
+
+def get_generation(generation_id: str) -> dict | None:
+    p = GENERATIONS_DIR / f"{generation_id}.json"
+    if not p.exists():
+        return None
+    return _read_json(p)
+
+
+def save_generation(generation_id: str, payload: dict) -> dict:
+    p = GENERATIONS_DIR / f"{generation_id}.json"
+    _write_json(p, payload)
+    return payload
+
+
+# --- image generation jobs ---------------------------------------------------
+
+
+def get_image_jobs(presentation_id: str) -> dict | None:
+    p = IMAGE_JOBS_DIR / f"{presentation_id}.json"
+    if not p.exists():
+        return None
+    return _read_json(p)
+
+
+def save_image_jobs(presentation_id: str, payload: dict) -> dict:
+    p = IMAGE_JOBS_DIR / f"{presentation_id}.json"
+    _write_json(p, payload)
+    return payload
+
+
+def delete_image_jobs(presentation_id: str) -> bool:
+    p = IMAGE_JOBS_DIR / f"{presentation_id}.json"
     if p.exists():
         p.unlink()
         return True
