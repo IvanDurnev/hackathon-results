@@ -1,7 +1,7 @@
 # БПК-IT_ALPHA-ver.3.0
 
 - Repository: https://github.com/Rifreshik/BPK-IT_Alpha-ver-30
-- Video: n/a
+- Video: https://disk.yandex.ru/d/BQFmFQmuzJihug
 - Description: n/a
-- Updated at: 2026-04-29T01:57:58+00:00
+- Updated at: 2026-04-29T03:47:41+00:00
 - Repository accessible: yes
