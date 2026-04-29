@@ -1,7 +1,7 @@
-# К.И.С.И.
+# КПН
 
-- Repository: https://github.com/Rexilone/hackathon2026
-- Video: n/a
-- Description: n/a
-- Updated at: 2026-04-29T04:42:16+00:00
+- Repository: https://github.com/ArtemChik103/amurcode
+- Video: https://disk.yandex.ru/d/stlQ6Fynb1KCAQ
+- Description: в папке КПН.pdf - презентация; demo.mp4 - демонстрация.
+- Updated at: 2026-04-29T04:46:18+00:00
 - Repository accessible: yes
