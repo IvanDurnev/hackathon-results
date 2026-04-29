@@ -1,80 +1,148 @@
-<div align="center">
-  <img src="https://img.shields.io/badge/Hackathon-2026-FF6B6B?style=for-the-badge&logo=github&logoColor=white" alt="Hackathon">
-  <img src="https://img.shields.io/badge/Status-Coding-4ECDC4?style=for-the-badge" alt="Status">
-  <br>
-  <img src="https://img.shields.io/badge/Team-К.И.С.И.-1A535C?style=flat-square" alt="Team">
-  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/Rust-1.70+-000000?logo=rust&logoColor=white" alt="Rust">
-</div>
+# Простая аналитика расходов
 
-<br>
+Демо: https://amurcode.onrender.com
 
-<div align="center">
-  <!-- Здесь будет логотип или баннер проекта -->
-  <!-- Пример: <img src="assets/logo.png" width="200"> -->
-  <h1 align="center"> НАЗВАНИЕ ПРОЕКТА </h1>
-  <p align="center">
-    <strong> описание приложения тута крч краткое </strong>
-  </p>
-  <p align="center">
-    <i>Проект создан в рамках хакатона "Амурский код" — 28-29 Апреля </i>
-  </p>
-</div>
+Локальный MVP для кейса БФТ и Минфина Амурской области. Приложение запускается одной командой, читает CSV из `case/`, держит данные в памяти и отдаёт Vue 3 UI без Vite, npm, PostgreSQL и отдельного ETL-сервиса.
 
----
+## Запуск
 
-## 👥 Команда «К.И.С.И.»
+```powershell
+python app.py 8000
+```
 
-| Участник | Роль | Контакты |
-| :--- | :--- | :--- |
-| **Руденко Тимур Иванович** | rust, qt, python dev / ui.ux desiner / mobile dev (kotlin) | [GitHub](https://github.com/Rexilone) • [Telegram](https://t.me/Rexilone) |
-| **Есипчук Никита Анатольевич** | web developer | [GitHub](https://github.com/) • [Telegram](https://t.me/DamnSonic) |
-| **Гончаров Андрей Александрович** | python developer | [GitHub](https://github.com/) • [Telegram](https://t.me/Beradl) |
-| **Беззуб Виолетта Андреевна** | team Lead | [github](https://github.com/) • [Telegram](https://t.me/frewqk) |
-| **Зотов Вадим Сергеевич** | presentation Designer | [GitHub](https://github.com/) • [Telegram](https://t.me/itsVAD) |
+Открыть в браузере:
 
----
+```text
+http://127.0.0.1:8000
+```
 
-## 💡 О проекте
+## Простой режим
 
-### Проблема 
+Первый экран построен вокруг задач, а не фильтров. Пользователь может нажать быстрый сценарий, ввести код или название в единую строку, получить короткий вывод на отчетную дату, посмотреть готовность данных, открыть карточку объекта со строками-источниками и скачать Excel-отчет.
 
-### Решение
-*Создание качественных презентаций рутинная и трудоёмкая задача, на которую сотрудники компаний тратят значительное время.
-Типичный процесс включает анализ исходных материалов, структурирование информации, написание текстов для слайдов, подбор визуального оформления и вёрстку. Каждый из этих этапов требует как содержательной работы, так и дизайнерских навыков.*
+Короткий вывод теперь строится как управленческая подсказка: система показывает, что требует внимания, и выводит главные риски. Риск не является юридическим выводом или автоматическим решением о нарушении; это приоритет для ручной проверки объекта.
 
-### Ключевые фичи (MVP)
+После вывода появляется блок `Что делать дальше`: открыть главный риск, показать объекты без кассы/оплат/документов или скачать Excel. Пользователю не нужно помнить фильтры и формулировать следующий запрос вручную.
 
-- [ ] **Фича 1** — Hybrid LLM Mode: автоматическое переключение на локальную модель при обрыве интернет-соединения.
-- [ ] **Фича 2** — 
+## Демо за 60 секунд
 
----
+Первый быстрый сценарий `Демо за 60 секунд` открывает проблемные СКК, вкладку `Проблемы`, главные риски и плашку с шагами показа. Рекомендуемый путь: посмотреть короткий вывод, открыть главный риск, показать источник цифр в карточке объекта и скачать Excel.
 
-## 🛠 Технологический стек
+## Быстрый старт
 
-**Основные технологии:**
+Доступны готовые сценарии:
 
-<code><img width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg" title="Rust"/></code> RUST
+- Собрать отчет СКК.
+- Собрать отчет КИК.
+- Собрать отчет 2/3.
+- Собрать отчет ОКВ.
+- Демо за 60 секунд.
+- Найти проблемные объекты.
+- Проблемные СКК.
+- Сравнить две даты.
+- Найти объект.
 
-<code><img width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" title="Python"/></code> Python
+UI использует `/api/query?view=as_of&date=...` и `/api/compare`. Старый периодический режим `/api/query` без `view` сохранен для совместимости.
 
-<code><img width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" title="Docker"/></code> docker
+## Семантика дат
 
-**Инструменты**: Git, Python, RUST
+Основной режим MVP - состояние на дату. РЧБ и соглашения считаются месячными срезами с семантикой `balance_as_of`: выбирается последний срез не позже выбранной даты, а не сумма срезов за период. Контракты, платежи и БУАУ считаются событиями с накоплением до выбранной даты.
 
----
+Отчетные даты берутся только из РЧБ и соглашений через `GET /api/catalog/reporting-dates`, чтобы пользователь не выбирал одиночную дату платежа как дату месячного среза.
 
-## ⚙️ Установка и запуск (локально)
+Колонки РЧБ для лимитов, БО и кассы ищутся по смысловому префиксу, например `Лимиты ПБС` и `Подтв. лимитов по БО`, поэтому файлы 2025 и 2026 годов читаются одним правилом.
 
-> ℹ️ Инструкция для членов жюри и разработчиков.
+## Экспорт
 
-### Требования
-- **Rust** (1.70+) — [установить](https://www.rust-lang.org/tools/install)
-- **Python** (3.10+) — [установить](https://www.python.org/downloads/)
-- **Git**
-- **Docker** (опционально)
+Основной рабочий экспорт:
 
-### Шаг 1: Клонирование репозитория
-```bash
-git clone https://github.com/Rexilone/hackathon2026.git
-cd hackathon2026
+- `GET /api/export.xlsx?date=&template=&q=&code=&budget=&source=&post_filter=`
+- `GET /api/export.xlsx?mode=compare&base=&target=&template=&q=&code=&budget=&source=`
+- `GET /api/export.pdf?date=&template=&q=&code=&budget=&source=&post_filter=`
+- `GET /api/export.pdf?mode=compare&base=&target=&template=&q=&code=&budget=&source=`
+
+Excel содержит листы `Выводы`, `Итоги`, `Объекты`, `Проблемы`, `Исходные строки`, `Методика`. Файл оформлен как отчет: заголовки, фильтры, закрепленные строки, подсветка рисков, денежные форматы, блоки внимания, главные риски и следующие действия. CSV-экспорт в UI сохранен как дополнительная таблица.
+
+PDF-экспорт доступен кнопкой `Скачать PDF` и теми же фильтрами, что Excel. Excel остается детальной рабочей таблицей для проверки строк, а PDF - коротким оформленным отчетом для показа или пересылки.
+
+Для новой машины:
+
+```powershell
+python -m pip install openpyxl reportlab
+```
+
+Excel требует `openpyxl`, PDF требует `reportlab`. Если `reportlab` не установлен, `/api/export.pdf` вернет понятную JSON-ошибку `pdf_dependency_missing`; остальное приложение и Excel продолжают работать. Для корректной кириллицы в PDF лучше иметь системный TTF-шрифт Windows, например Arial, Calibri или Tahoma.
+
+## Assistant
+
+Пользователь пишет обычный запрос в единую строку первого экрана. Система сама выбирает быстрый сценарий, rule-based разбор или LLM и применяет действие в UI.
+
+Endpoint `POST /api/assistant` принимает обычный текст и возвращает intent, объяснение, действие для UI и follow-up кнопки. Без `GROQ_API_KEY` assistant работает по правилам. Если ключ задан, он может использовать Groq как enhancer, но суммы всё равно считает только backend.
+
+## Локальный Groq ключ
+
+Создайте локальный `.env` из примера:
+
+```powershell
+Copy-Item .env.example .env
+notepad .env
+```
+
+`.env` локальный и не коммитится. `GROQ_API_KEY` используется только сервером, не возвращается в API и не нужен для обычных тестов. Без ключа помощник работает по правилам.
+
+Опциональные переменные окружения:
+
+```env
+GROQ_API_KEY=
+GROQ_MODEL=openai/gpt-oss-120b
+ASSISTANT_ENABLED=auto
+RUN_LLM_TESTS=0
+```
+
+В Groq не отправляются raw records. Используются только запрос пользователя, список шаблонов, список метрик, доступные даты, короткий RAG-контекст из `docs/rag` и агрегированные выводы для `/api/explain`.
+
+## API
+
+- `GET /api/meta`
+- `GET /api/query?view=as_of&date=&q=&code=&budget=&source=&template=&metrics=&post_filter=`
+- `GET /api/query?q=&code=&budget=&source=&start=&end=&template=&metrics=` legacy period mode
+- `GET /api/compare?base=&target=&q=&code=&budget=&source=&template=&metrics=`
+- `GET /api/readiness?view=as_of&date=&template=&q=&code=&budget=`
+- `GET /api/object?date=&template=&object_key=&budget=`
+- `GET /api/export.xlsx?date=&template=&q=&code=&budget=&source=&post_filter=`
+- `GET /api/export.pdf?date=&template=&q=&code=&budget=&source=&post_filter=`
+- `GET /api/export.pdf?mode=compare&base=&target=&template=&q=&code=&budget=&source=`
+- `GET /api/quality`
+- `GET /api/trace?id=`
+- `GET /api/catalog/dates`
+- `GET /api/catalog/reporting-dates`
+- `GET /api/catalog/sources`
+- `GET /api/catalog/budgets`
+- `GET /api/catalog/templates`
+- `GET /api/catalog/metrics`
+- `GET /api/catalog/objects?q=&template=`
+- `GET /api/catalog/quick-actions`
+- `POST /api/assistant`
+- `POST /api/explain`
+
+`/api/query` добавляет к строкам `risk_score`, `risk_level`, `risk_label`, `risk_explanation` и общий блок `attention_summary`. `/api/compare` добавляет `compare_insights` с новыми проблемами, снижением риска, ростом риска и объектами, где план вырос без движения кассы.
+
+## Тесты
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+В набор входят backend-тесты, безбраузерные проверки Vue-логики через Node VM и Playwright-тесты реальных кликов в Chromium. Для новой машины:
+
+```powershell
+python -m pip install playwright
+python -m playwright install chromium
+```
+
+## Ограничения
+
+- Данные хранятся in-memory.
+- Суммы хранятся как `float`, не `Decimal`.
+- Trace показывает источник, файл и строку исходного CSV там, где она доступна.
+- Векторная база не используется. Мини-RAG реализован чтением markdown из `docs/rag`.
