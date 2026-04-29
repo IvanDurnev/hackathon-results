@@ -1,0 +1,892 @@
+{% extends "base.html" %}
+{% block title %}RT_Генератор{% endblock %}
+{% block content %}
+<section class="mx-auto mb-6 max-w-5xl text-center">
+  <p class="mb-2 text-xs uppercase tracking-[0.22em] text-indigo-300">Рабочая среда длясоздания презентаций с использованием ИИ</p>
+  <h2 class="text-4xl font-extrabold leading-tight text-white light:text-slate-900 md:text-5xl">
+    Создавайте презентации вместе с
+    <span class="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">RT_Генератор</span>
+  </h2>
+  <p class="mx-auto mt-4 max-w-2xl text-sm text-slate-300 light:text-slate-600">
+    Введите тему, настройте стиль и получите структуру слайдов с интерактивным предпросмотром без перезагрузки страницы.
+  </p>
+</section>
+
+<section class="glass mb-6 rounded-2xl p-4 shadow-glass md:p-6 relative z-10">
+  <form id="generator-form" class="grid gap-4 lg:grid-cols-12">
+    <div class="lg:col-span-8">
+      <label for="prompt" class="mb-2 block text-sm font-medium">Промпт</label>
+      <div class="group relative rounded-2xl border border-slate-600/60 bg-slate-900/50 p-3 transition focus-within:border-violet-400 focus-within:shadow-[0_0_0_3px_rgba(139,92,246,0.22)] light:border-slate-300 light:bg-white/80">
+        <textarea id="prompt" name="prompt" required placeholder="Например: Подготовь презентацию по стратегии цифровой трансформации Ростелеком..." class="app-scroll h-36 w-full resize-none bg-transparent text-sm outline-none placeholder:text-slate-400 light:placeholder:text-slate-500"></textarea>
+        <button id="voice-button" type="button" class="absolute right-3 bottom-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-900/20 transition hover:bg-indigo-500" title="Голосовой ввод">
+          <i data-lucide="mic" class="h-5 w-5"></i>
+        </button>
+      </div>
+      <div id="voice-status" class="mt-2 text-xs text-slate-300 light:text-slate-600"></div>
+      <div class="mt-3 flex flex-wrap gap-2 text-xs text-slate-300 light:text-slate-600">
+        <span class="rounded-full border border-slate-600 px-3 py-1 light:border-slate-300">ИИ ассистент</span>
+        <span class="rounded-full border border-slate-600 px-3 py-1 light:border-slate-300">Редактирование в реальном времени</span>
+      </div>
+    </div>
+
+    <div class="space-y-3 lg:col-span-4">
+      <div>
+        <label for="file" class="text-sm font-medium">Документ (PDF/DOCX/TXT)</label>
+        <input id="file" name="file" type="file" accept=".pdf,.docx,.txt" class="mt-2 w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm text-slate-200 transition file:mr-3 file:rounded-lg file:border-0 file:bg-gradient-to-r file:from-indigo-500 file:to-violet-600 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white hover:file:brightness-110 light:border-slate-300 light:bg-white/80 light:text-slate-700">
+      </div>
+      <div>
+        <label class="text-sm font-medium">Тип презентации</label>
+        <input id="presentation_type" name="presentation_type" type="hidden" value="public">
+        <div id="presentation_type_select" class="relative mt-2 overflow-visible z-60">
+          <button id="presentation_type_toggle" type="button" class="flex w-full items-center justify-between rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80">
+            <span id="presentation_type_label">Для выступления</span>
+            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+          </button>
+          <div id="presentation_type_menu" class="absolute z-60 mt-1 hidden w-full overflow-hidden rounded-xl border border-slate-600/70 bg-slate-900/95 shadow-xl light:border-slate-300 light:bg-white/95">
+            <button type="button" class="presentation-option w-full px-3 py-2 text-left text-sm transition hover:bg-indigo-600/40 light:hover:bg-indigo-100" data-value="public">Для выступления</button>
+            <button type="button" class="presentation-option w-full px-3 py-2 text-left text-sm transition hover:bg-indigo-600/40 light:hover:bg-indigo-100" data-value="self_study">Для самостоятельного ознакомления</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="text-sm font-medium">Режим расчета</label>
+        <input id="count_mode" name="count_mode" type="hidden" value="minutes">
+        <div class="mt-2 grid grid-cols-2 gap-2">
+          <button data-mode="minutes" type="button" class="count-mode-btn rounded-xl border border-slate-500 bg-indigo-600/70 px-3 py-2 text-sm font-medium text-white">Минуты</button>
+          <button data-mode="slides" type="button" class="count-mode-btn rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm font-medium light:border-slate-300 light:bg-white/80">Слайды</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label id="duration_label" for="duration_minutes" class="text-sm font-medium">Минуты</label>
+          <div class="mt-2 flex items-stretch gap-2">
+            <input id="duration_minutes" name="duration_minutes" type="number" min="1" max="120" value="5" class="w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm [appearance:textfield] light:border-slate-300 light:bg-white/80">
+            <div class="flex flex-col gap-1">
+              <button id="duration_plus" type="button" class="rounded-lg border border-slate-500/60 bg-slate-800/60 px-2 py-1 text-xs font-semibold light:border-slate-300 light:bg-white/70">+</button>
+              <button id="duration_minus" type="button" class="rounded-lg border border-slate-500/60 bg-slate-800/60 px-2 py-1 text-xs font-semibold light:border-slate-300 light:bg-white/70">-</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm font-medium">Стиль изображений</label>
+          <input id="slidesgo_style" name="slidesgo_style" type="hidden" value="">
+          <div id="slidesgo_style_select" class="relative mt-2 overflow-visible z-60">
+            <button id="slidesgo_style_toggle" type="button" class="flex w-full items-center justify-between rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80">
+              <span id="slidesgo_style_label">Без стиля</span>
+              <i data-lucide="chevron-down" class="h-4 w-4"></i>
+            </button>
+            <div id="slidesgo_style_menu" class="app-scroll absolute z-60 mt-1 hidden max-h-56 w-full overflow-auto rounded-xl border border-slate-600/70 bg-slate-900/95 shadow-xl light:border-slate-300 light:bg-white/95"></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="text-sm font-medium">Шаблон презентации</label>
+        <input id="pptx_template" name="pptx_template" type="hidden" value="">
+        <div id="pptx_template_select" class="relative mt-2 overflow-visible z-60">
+          <button id="pptx_template_toggle" type="button" class="flex w-full items-center justify-between rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80">
+            <span id="pptx_template_label">Без шаблона</span>
+            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+          </button>
+          <div id="pptx_template_menu" class="app-scroll absolute z-60 mt-1 hidden max-h-56 w-full overflow-auto rounded-xl border border-slate-600/70 bg-slate-900/95 shadow-xl light:border-slate-300 light:bg-white/95"></div>
+        </div>
+        <div id="pptx_template_preview" class="mt-3 rounded-3xl border border-slate-600 bg-slate-950/80 p-4 shadow-lg shadow-slate-950/10 light:border-slate-300 light:bg-white/90 light:shadow-slate-300/10">
+          <div class="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <div id="pptx_template_preview_title" class="text-sm font-semibold text-slate-100 light:text-slate-900">Выбран шаблон</div>
+              <div id="pptx_template_preview_subtitle" class="text-xs text-slate-400 light:text-slate-600">Предпросмотр шаблона презентации</div>
+            </div>
+            <span id="pptx_template_preview_status" class="rounded-full bg-slate-800/80 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-200 light:bg-slate-200 light:text-slate-900">Пусто</span>
+          </div>
+          <div id="pptx_template_preview_empty" class="flex h-52 items-center justify-center rounded-3xl border border-dashed border-slate-600 text-sm text-slate-400 light:border-slate-300 light:text-slate-600">Выберите шаблон, чтобы увидеть предпросмотр</div>
+          <img id="pptx_template_preview_image" src="" alt="Preview" class="hidden h-52 w-full rounded-3xl object-cover" />
+        </div>
+      </div>
+      <label class="flex items-center gap-2 text-sm">
+        <input id="generate_images" name="generate_images" type="checkbox" value="true" checked class="h-4 w-4 rounded border-slate-500 bg-slate-800">
+        Нужны картинки (Yandex Art)
+      </label>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 lg:col-span-12">
+      <button id="btn-generate" type="submit" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-2.5 text-sm font-semibold shadow-lg shadow-indigo-900/30 transition hover:scale-[1.02]">
+        <i data-lucide="wand-sparkles" class="h-4 w-4"></i>Сгенерировать
+      </button>
+      <button id="btn-download" type="button" disabled class="inline-flex items-center gap-2 rounded-xl border border-slate-500/60 bg-slate-800/60 px-5 py-2.5 text-sm font-semibold disabled:opacity-50 light:border-slate-300 light:bg-white/70">
+        <i data-lucide="download" class="h-4 w-4"></i>Скачать PPTX
+      </button>
+      <button id="btn-notes" type="button" disabled class="inline-flex items-center gap-2 rounded-xl border border-slate-500/60 bg-slate-800/60 px-5 py-2.5 text-sm font-semibold disabled:opacity-50 light:border-slate-300 light:bg-white/70">
+        <i data-lucide="file-text" class="h-4 w-4"></i>Сгенерировать спич
+      </button>
+      <p id="status" class="text-sm text-slate-300 light:text-slate-600"></p>
+    </div>
+  </form>
+</section>
+
+<section class="glass rounded-2xl p-4 shadow-glass md:p-6 relative z-5">
+  <div class="mb-4 flex items-center justify-between">
+    <h3 class="text-lg font-semibold">Рабочее пространство</h3>
+    <span id="counter" class="text-xs text-slate-300 light:text-slate-600">Слайдов: 0</span>
+  </div>
+  <div id="slides" class="grid gap-4 md:grid-cols-2"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const form = document.getElementById("generator-form");
+  const slidesEl = document.getElementById("slides");
+  const statusEl = document.getElementById("status");
+  const counterEl = document.getElementById("counter");
+  const generateBtn = document.getElementById("btn-generate");
+  const downloadBtn = document.getElementById("btn-download");
+  const notesBtn = document.getElementById("btn-notes");
+  const styleInput = document.getElementById("slidesgo_style");
+  const styleSelectWrap = document.getElementById("slidesgo_style_select");
+  const styleToggle = document.getElementById("slidesgo_style_toggle");
+  const styleMenu = document.getElementById("slidesgo_style_menu");
+  const styleLabel = document.getElementById("slidesgo_style_label");
+  const templateInput = document.getElementById("pptx_template");
+  const templateSelectWrap = document.getElementById("pptx_template_select");
+  const templateToggle = document.getElementById("pptx_template_toggle");
+  const templateMenu = document.getElementById("pptx_template_menu");
+  const templateLabel = document.getElementById("pptx_template_label");
+  const templatePreview = document.getElementById("pptx_template_preview");
+  const templatePreviewTitle = document.getElementById("pptx_template_preview_title");
+  const templatePreviewSubtitle = document.getElementById("pptx_template_preview_subtitle");
+  const templatePreviewStatus = document.getElementById("pptx_template_preview_status");
+  const templatePreviewEmpty = document.getElementById("pptx_template_preview_empty");
+  const templatePreviewImage = document.getElementById("pptx_template_preview_image");
+  const durationInput = document.getElementById("duration_minutes");
+  const durationLabel = document.getElementById("duration_label");
+  const countModeInput = document.getElementById("count_mode");
+  const countModeButtons = Array.from(document.querySelectorAll(".count-mode-btn"));
+  const durationPlusBtn = document.getElementById("duration_plus");
+  const durationMinusBtn = document.getElementById("duration_minus");
+  const promptInput = document.getElementById("prompt");
+  const presentationTypeInput = document.getElementById("presentation_type");
+  const presentationTypeSelect = document.getElementById("presentation_type_select");
+  const presentationTypeToggle = document.getElementById("presentation_type_toggle");
+  const presentationTypeMenu = document.getElementById("presentation_type_menu");
+  const presentationTypeLabel = document.getElementById("presentation_type_label");
+  const presentationTypeOptions = Array.from(document.querySelectorAll(".presentation-option"));
+  const generateImagesCheckbox = document.getElementById("generate_images");
+  const voiceButton = document.getElementById("voice-button");
+  const voiceStatus = document.getElementById("voice-status");
+  let structureState = null;
+  let mediaRecorder = null;
+  let recordedChunks = [];
+
+  let statusAnimationInterval = null;
+  let statusAnimationIndex = 0;
+
+  function stopStatusAnimation() {
+    if (statusAnimationInterval !== null) {
+      clearInterval(statusAnimationInterval);
+      statusAnimationInterval = null;
+      statusAnimationIndex = 0;
+    }
+  }
+
+  function setStatus(message, error = false, animate = false) {
+    stopStatusAnimation();
+    statusEl.className = error ? "text-sm text-rose-300 light:text-rose-600" : "text-sm text-slate-300 light:text-slate-600";
+    if (animate) {
+      statusAnimationIndex = 0;
+      statusAnimationInterval = setInterval(() => {
+        const dots = ".".repeat(statusAnimationIndex);
+        statusEl.textContent = `${message}${dots}`;
+        statusAnimationIndex = (statusAnimationIndex + 1) % 4;
+      }, 500);
+      statusEl.textContent = message;
+    } else {
+      statusEl.textContent = message;
+    }
+  }
+
+  function esc(v) {
+    return String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function setVoiceStatus(message, error = false) {
+    voiceStatus.textContent = message;
+    voiceStatus.className = error
+      ? "mt-2 text-xs text-rose-300"
+      : "mt-2 text-xs text-slate-300 light:text-slate-600";
+  }
+
+  function stopVoiceRecording() {
+    if (!mediaRecorder) return;
+    mediaRecorder.stop();
+    mediaRecorder = null;
+  }
+
+  async function uploadVoiceBlob(blob, fileExtension) {
+    const formData = new FormData();
+    formData.append("file", blob, `voice.${fileExtension}`);
+
+    const res = await fetch("/api/voice-input", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Ошибка распознавания речи.");
+    }
+    return data.text || "";
+  }
+
+  function startVoiceRecording() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setVoiceStatus("Голосовой ввод не поддерживается в этом браузере.", true);
+      return;
+    }
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then((stream) => {
+        // Choose the best supported audio format
+        let mimeType = 'audio/webm';
+        let fileExtension = 'webm';
+        if (MediaRecorder.isTypeSupported('audio/mp4')) {
+          mimeType = 'audio/mp4';
+          fileExtension = 'mp4';
+        } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+          mimeType = 'audio/webm';
+          fileExtension = 'webm';
+        } else if (MediaRecorder.isTypeSupported('audio/ogg')) {
+          mimeType = 'audio/ogg';
+          fileExtension = 'ogg';
+        }
+
+        mediaRecorder = new MediaRecorder(stream, { mimeType });
+        recordedChunks = [];
+        voiceButton.classList.add("bg-rose-500");
+        setVoiceStatus("Запись... нажмите кнопку, чтобы остановить.");
+
+        mediaRecorder.addEventListener("dataavailable", (event) => {
+          if (event.data && event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        });
+
+        mediaRecorder.addEventListener("stop", async () => {
+          stream.getTracks().forEach((track) => track.stop());
+          voiceButton.classList.remove("bg-rose-500");
+          if (!recordedChunks.length) {
+            setVoiceStatus("Запись пуста.", true);
+            return;
+          }
+          setVoiceStatus("Отправляю голос на распознавание...", false);
+          try {
+            const blob = new Blob(recordedChunks, { type: mimeType });
+            const text = await uploadVoiceBlob(blob, fileExtension);
+            promptInput.value = text;
+            setVoiceStatus("Голос распознан и вставлен в промпт.");
+          } catch (err) {
+            setVoiceStatus(err.message || "Не удалось распознать речь.", true);
+          }
+        });
+
+        mediaRecorder.addEventListener("error", (event) => {
+          setVoiceStatus("Ошибка записи звука.", true);
+          mediaRecorder = null;
+        });
+
+        mediaRecorder.start();
+      })
+      .catch((err) => {
+        if (err.name === "NotAllowedError" || err.name === "SecurityError") {
+          setVoiceStatus("Доступ к микрофону запрещен.", true);
+        } else {
+          setVoiceStatus("Не удалось получить доступ к микрофону.", true);
+        }
+      });
+  }
+
+  voiceButton.addEventListener("click", () => {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      stopVoiceRecording();
+    } else {
+      startVoiceRecording();
+    }
+  });
+
+  function updateCountModeUI() {
+    const mode = countModeInput.value;
+    countModeButtons.forEach((btn) => {
+      const active = btn.dataset.mode === mode;
+      btn.classList.toggle("bg-indigo-600/70", active);
+      btn.classList.toggle("text-white", active);
+      btn.classList.toggle("bg-slate-900/45", !active);
+    });
+    if (mode === "slides") {
+      durationLabel.textContent = "Слайды";
+      durationInput.min = "3";
+      durationInput.max = "20";
+      if (Number(durationInput.value) < 3 || Number(durationInput.value) > 20) durationInput.value = "8";
+      return;
+    }
+    durationLabel.textContent = "Минуты";
+    durationInput.min = "1";
+    durationInput.max = "120";
+    if (Number(durationInput.value) < 1 || Number(durationInput.value) > 120) durationInput.value = "5";
+  }
+
+  function closePresentationTypeMenu() {
+    presentationTypeMenu.classList.add("hidden");
+  }
+
+  function buildOptionButton(value, label, previewUrl) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.value = value;
+    btn.className = "w-full rounded-2xl border border-slate-700/70 bg-slate-950/80 px-3 py-2 text-left text-sm transition hover:bg-indigo-600/40 light:border-slate-300 light:bg-white/90 light:hover:bg-indigo-100";
+    if (previewUrl) {
+      const row = document.createElement("div");
+      row.className = "flex items-center gap-3";
+      const thumbWrapper = document.createElement("div");
+      thumbWrapper.className = "h-16 w-24 overflow-hidden rounded-xl border border-slate-700 bg-slate-900";
+      const thumb = document.createElement("img");
+      thumb.src = previewUrl;
+      thumb.alt = `${label} preview`;
+      thumb.className = "h-full w-full object-cover";
+      thumbWrapper.appendChild(thumb);
+      const textWrapper = document.createElement("div");
+      textWrapper.className = "min-w-0 flex-1";
+      const title = document.createElement("div");
+      title.className = "text-sm font-semibold text-slate-100 light:text-slate-900";
+      title.textContent = label;
+      textWrapper.appendChild(title);
+      row.appendChild(thumbWrapper);
+      row.appendChild(textWrapper);
+      btn.appendChild(row);
+    } else {
+      btn.textContent = label;
+    }
+    return btn;
+  }
+
+  function setCustomOptions(menuEl, inputEl, labelEl, options, defaultLabel, onSelect = null) {
+    menuEl.innerHTML = "";
+    options.forEach((item) => {
+      const btn = buildOptionButton(item.value, item.label, item.preview_url);
+      btn.addEventListener("click", () => {
+        inputEl.value = item.value;
+        labelEl.textContent = item.label;
+        menuEl.classList.add("hidden");
+        if (typeof onSelect === "function") onSelect(item);
+      });
+      menuEl.appendChild(btn);
+    });
+    if (!inputEl.value) labelEl.textContent = defaultLabel;
+  }
+
+  function updateTemplatePreview(item) {
+    if (item && item.value) {
+      templatePreviewTitle.textContent = item.label || "Выбран шаблон";
+      templatePreviewStatus.textContent = item.preview_url ? "С превью" : "Без превью";
+    } else {
+      templatePreviewTitle.textContent = "Выберите шаблон";
+      templatePreviewStatus.textContent = "Пусто";
+    }
+
+    if (item && item.preview_url) {
+      templatePreviewImage.src = item.preview_url;
+      templatePreviewImage.alt = `${item.label} preview`;
+      templatePreviewImage.classList.remove("hidden");
+      templatePreviewEmpty.classList.add("hidden");
+    } else {
+      templatePreviewImage.src = "";
+      templatePreviewImage.classList.add("hidden");
+      templatePreviewEmpty.classList.remove("hidden");
+      templatePreviewEmpty.textContent = item && item.value ? "У этого шаблона нет превью" : "Выберите шаблон, чтобы увидеть предпросмотр";
+    }
+  }
+
+  function renderSlides(slides) {
+    const scrollY = window.scrollY;
+    const active = document.activeElement;
+    const activeField = active?.dataset?.field;
+    const activeIndex = active && active.dataset ? Number(active.dataset.index) : NaN;
+    const activeTag = active?.tagName?.toLowerCase();
+    const activeSelection = activeTag && (activeTag === "input" || activeTag === "textarea")
+      ? { start: active.selectionStart, end: active.selectionEnd }
+      : null;
+
+    slidesEl.innerHTML = "";
+    counterEl.textContent = `Слайдов: ${slides.length}`;
+    slides.forEach((slide, index) => {
+      const dataBlock = Array.isArray(slide.data_blocks) && slide.data_blocks.length ? slide.data_blocks[0] : null;
+      const dataType = String(slide.data_type || (dataBlock ? dataBlock.type : "") || "");
+      const dataTitle = dataBlock ? String(dataBlock.title || "") : String(slide.data_title || "");
+      const dataLabels = dataBlock && Array.isArray(dataBlock.labels) ? dataBlock.labels.join(", ") : String(slide.data_labels || "");
+      const dataValues = dataBlock && Array.isArray(dataBlock.values) ? dataBlock.values.join(", ") : String(slide.data_values || "");
+      const dataRows = dataBlock && Array.isArray(dataBlock.rows) ? dataBlock.rows.map((row) => Array.isArray(row) ? row.join(", ") : String(row)).join("\n") : String(slide.data_rows || "");
+      
+      // Sync slide properties with dataBlock for editing
+      slide.data_type = dataType;
+      slide.data_title = dataTitle;
+      slide.data_labels = dataLabels;
+      slide.data_values = dataValues;
+      slide.data_rows = dataRows;
+      
+      const imageEnabled = slide.image_enabled !== false;
+      const imageCount = Math.max(1, Number(slide.image_count || 1));
+      const chartVisible = dataType === "table" ? "hidden" : "";
+      const tableVisible = dataType === "table" ? "" : "hidden";
+      const card = document.createElement("article");
+      card.className = "opacity-0 translate-y-2 transition duration-500 rounded-2xl border border-slate-600/50 bg-slate-900/45 p-4 light:border-slate-300 light:bg-white/70";
+      card.innerHTML = `
+        <p class="mb-2 text-xs uppercase tracking-wider text-indigo-300 light:text-indigo-600">Slide ${index + 1}</p>
+        <label class="mb-1 block text-xs font-semibold">Заголовок</label>
+        <input data-field="title" data-index="${index}" value="${esc(slide.title)}" class="mb-2 w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80">
+        <label class="mb-1 block text-xs font-semibold">Тезисы</label>
+        <textarea data-field="content" data-index="${index}" class="app-scroll mb-2 h-24 w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80">${esc(slide.content)}</textarea>
+        <label class="mb-1 block text-xs font-semibold">Спич к слайду</label>
+        <textarea data-field="speaker_notes" data-index="${index}" class="app-scroll mb-2 h-20 w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80">${esc(slide.speaker_notes || "")}</textarea>
+        <label class="mb-1 block text-xs font-semibold">Промпт изображения</label>
+        <textarea data-field="image_prompt" data-index="${index}" class="app-scroll mb-2 h-20 w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80">${esc(slide.image_prompt || "")}</textarea>
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-700/80 bg-slate-950/50 px-3 py-3 light:border-slate-300 light:bg-slate-100">
+          <label class="flex items-center gap-2 text-sm font-medium text-slate-100 light:text-slate-800">
+            <input type="checkbox" data-field="image_enabled" data-index="${index}" ${imageEnabled ? "checked" : ""} class="h-4 w-4 rounded border-slate-500 bg-slate-900/45 text-indigo-500" />
+            Нужна картинка
+          </label>
+          <div class="flex items-center gap-2 ${imageEnabled ? "" : "opacity-50"}">
+            <label class="text-xs font-semibold text-slate-300 light:text-slate-600">Количество</label>
+            <input type="number" min="1" max="3" step="1" data-field="image_count" data-index="${index}" value="${esc(imageCount)}" class="w-20 rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm text-slate-100 light:border-slate-300 light:bg-white/80 light:text-slate-900" ${imageEnabled ? "" : "disabled"} />
+          </div>
+        </div>
+        <label class="mb-1 block text-xs font-semibold">Тип визуального блока</label>
+        <div class="mb-2 grid gap-2 sm:grid-cols-2">
+          ${["", "bar", "line", "pie", "statistical", "table"].map((type) => {
+            const labels = {
+              "": "Нет",
+              bar: "Гистограмма",
+              line: "График",
+              pie: "Круговая диаграмма",
+              statistical: "Статистическая диаграмма",
+              table: "Таблица",
+            };
+            const active = type === dataType ? "bg-violet-600 text-white border-transparent" : "bg-slate-800/70 text-slate-200 border-slate-600/70 hover:bg-slate-700/80 light:bg-white/80 light:text-slate-900";
+            return `<button type="button" data-field="data_type" data-index="${index}" data-value="${type}" class="inline-flex h-10 items-center justify-center rounded-2xl border px-3 text-sm font-semibold transition ${active}">${labels[type]}</button>`;
+          }).join("")}
+          <input type="hidden" data-field="data_type" data-index="${index}" value="${esc(dataType)}">
+        </div>
+        <div class="mb-2 ${chartVisible}">
+          <label class="mb-1 block text-xs font-semibold">Заголовок блока</label>
+          <input data-field="data_title" data-index="${index}" value="${esc(dataTitle)}" class="mb-2 w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80">
+          <label class="mb-1 block text-xs font-semibold">Метки (через запятую)</label>
+          <input data-field="data_labels" data-index="${index}" value="${esc(dataLabels)}" class="mb-2 w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80" placeholder="Q1, Q2, Q3">
+          <label class="mb-1 block text-xs font-semibold">Значения (через запятую)</label>
+          <input data-field="data_values" data-index="${index}" value="${esc(dataValues)}" class="mb-2 w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80" placeholder="400, 500, 600">
+        </div>
+        <div class="mb-2 ${tableVisible}">
+          <label class="mb-1 block text-xs font-semibold">Строки таблицы (CSV-строки)</label>
+          <textarea data-field="data_rows" data-index="${index}" class="app-scroll mb-2 h-24 w-full rounded-xl border border-slate-600 bg-slate-900/45 px-3 py-2 text-sm light:border-slate-300 light:bg-white/80" placeholder="Заголовок1,Заголовок2\nДанные1,Данные2">${esc(dataRows)}</textarea>
+        </div>
+        <div class="mb-2 flex flex-wrap gap-2">
+          <button class="regen-note-btn rounded-lg border border-slate-500/60 px-3 py-1.5 text-xs font-semibold" data-index="${index}" type="button">Перегенерировать спич</button>
+          <button class="regen-img-btn rounded-lg border border-slate-500/60 px-3 py-1.5 text-xs font-semibold ${generateImagesCheckbox.checked && imageEnabled ? "" : "opacity-50"}" data-index="${index}" type="button" ${generateImagesCheckbox.checked && imageEnabled ? "" : "disabled"}>Перегенерировать картинку</button>
+        </div>
+        ${imageEnabled && slide.image_url ? `<img src="${esc(slide.image_url)}" alt="slide image" class="h-36 w-full rounded-xl object-cover">` : ""}
+      `;
+      slidesEl.appendChild(card);
+      setTimeout(() => card.classList.remove("opacity-0", "translate-y-2"), 80 * index);
+    });
+
+    if (!Number.isNaN(activeIndex) && activeField) {
+      const nextActive = slidesEl.querySelector(`[data-field="${activeField}"][data-index="${activeIndex}"]`);
+      if (nextActive) {
+        nextActive.focus();
+        if (activeSelection && typeof nextActive.setSelectionRange === "function") {
+          nextActive.setSelectionRange(activeSelection.start, activeSelection.end);
+        }
+      }
+    }
+    window.scrollTo(0, scrollY);
+  }
+
+  function buildDataBlock(slide) {
+    const type = String(slide.data_type || "").trim().toLowerCase();
+    if (!type) {
+      return [];
+    }
+    const block = { type };
+    if (type === "table") {
+      const rawRows = String(slide.data_rows || "").trim();
+      if (!rawRows) {
+        return [];
+      }
+      const rows = rawRows
+        .split(/\r?\n/)
+        .map((line) => line.split(",").map((cell) => cell.trim()));
+      block.rows = rows;
+    } else {
+      const labels = String(slide.data_labels || "")
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+      const values = String(slide.data_values || "")
+        .split(",")
+        .map((item) => Number(item.trim()))
+        .filter((value) => !Number.isNaN(value));
+      if (!labels.length || !values.length) {
+        return [];
+      }
+      block.title = String(slide.data_title || "").trim();
+      if (type === "statistical") {
+        block.type = "bar";
+      }
+      block.labels = labels;
+      block.values = values;
+    }
+    return [block];
+  }
+
+  slidesEl.addEventListener("input", (event) => {
+    const target = event.target;
+    const index = Number(target.dataset.index);
+    const field = target.dataset.field;
+    if (!structureState || !Number.isInteger(index) || !field) return;
+    if (!structureState.slides || !structureState.slides[index]) return;
+    const slide = structureState.slides[index];
+    if (field === "image_enabled") {
+      slide.image_enabled = target.checked;
+      renderSlides(structureState.slides);
+      return;
+    }
+    if (field === "image_count") {
+      slide.image_count = Math.max(1, Number(target.value) || 1);
+      renderSlides(structureState.slides);
+      return;
+    }
+    slide[field] = target.value;
+    if (["data_title", "data_labels", "data_values", "data_rows"].includes(field)) {
+      return;
+    }
+    if (field === "data_type") {
+      slide.data_blocks = buildDataBlock(slide);
+      renderSlides(structureState.slides);
+      return;
+    }
+  });
+
+  slidesEl.addEventListener("focusout", (event) => {
+    const target = event.target;
+    const index = Number(target.dataset.index);
+    const field = target.dataset.field;
+    if (!structureState || !Number.isInteger(index) || !field) return;
+    if (!structureState.slides || !structureState.slides[index]) return;
+    if (["data_title", "data_labels", "data_values", "data_rows"].includes(field)) {
+      structureState.slides[index].data_blocks = buildDataBlock(structureState.slides[index]);
+      renderSlides(structureState.slides);
+    }
+  });
+
+  slidesEl.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    const target = event.target;
+    if (target && target.dataset && target.dataset.field && target.tagName.toLowerCase() !== "textarea") {
+      event.preventDefault();
+    }
+  });
+
+  slidesEl.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-field='data_type'][data-value]");
+    if (!button) return;
+    event.preventDefault();
+    const index = Number(button.dataset.index);
+    const value = button.dataset.value;
+    if (!structureState || !Number.isInteger(index) || !structureState.slides || !structureState.slides[index]) return;
+    structureState.slides[index].data_type = value;
+    structureState.slides[index].data_blocks = buildDataBlock(structureState.slides[index]);
+    renderSlides(structureState.slides);
+  });
+
+  slidesEl.addEventListener("click", async (event) => {
+    if (!structureState || !Array.isArray(structureState.slides)) return;
+    const noteBtn = event.target.closest(".regen-note-btn");
+    if (noteBtn) {
+      const index = Number(noteBtn.dataset.index);
+      const slide = structureState.slides[index];
+      noteBtn.disabled = true;
+      setStatus(`Перегенерирую спич для слайда ${index + 1}`, false, true);
+      try {
+        const res = await fetch("/api/notes/regenerate_slide", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            slide,
+            slide_number: index + 1,
+            prompt: promptInput.value,
+            presentation_type: presentationTypeInput.value,
+            duration_minutes: Number(durationInput.value) || 5
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Ошибка генерации спича");
+        structureState.slides[index].speaker_notes = data.speaker_note || "";
+        renderSlides(structureState.slides);
+        notesBtn.textContent = "Скачать спич";
+        setStatus(`Спич для слайда ${index + 1} обновлен.`);
+      } catch (err) {
+        setStatus(err.message, true);
+      } finally {
+        noteBtn.disabled = false;
+      }
+      return;
+    }
+
+    const imageBtn = event.target.closest(".regen-img-btn");
+    if (!imageBtn) return;
+    const index = Number(imageBtn.dataset.index);
+    const slide = structureState.slides[index];
+    if (!slide.image_prompt) {
+      setStatus("Заполните промпт изображения.", true);
+      return;
+    }
+    imageBtn.disabled = true;
+    setStatus(`Перегенерирую изображение для слайда ${index + 1}`, false, true);
+    try {
+      const res = await fetch("/api/image/regenerate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image_prompt: slide.image_prompt })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Ошибка генерации изображения");
+      structureState.slides[index].image_url = data.image_url || "";
+      structureState.slides[index].image_id = data.image_id || "";
+      renderSlides(structureState.slides);
+      setStatus(`Картинка для слайда ${index + 1} обновлена.`);
+    } catch (err) {
+      setStatus(err.message, true);
+    } finally {
+      imageBtn.disabled = false;
+    }
+  });
+
+  async function loadStyles() {
+    try {
+      const res = await fetch("/api/slidesgo_styles");
+      const data = await res.json();
+      const all = data?.styles?.all || [];
+      const options = [{ value: "", label: "Без стиля" }, ...all.map((s) => ({ value: String(s.key || ""), label: String(s.title || "") }))];
+      setCustomOptions(styleMenu, styleInput, styleLabel, options, "Без стиля");
+    } catch {
+      setCustomOptions(styleMenu, styleInput, styleLabel, [{ value: "", label: "Ошибка загрузки" }], "Ошибка загрузки");
+    }
+  }
+
+  async function loadTemplates() {
+    try {
+      const res = await fetch("/api/pptx_templates");
+      const data = await res.json();
+      const list = data?.templates || [];
+      const options = [
+        { value: "", label: "Без шаблона", preview_url: "" },
+        ...list.map((s) => ({
+          value: String(s.key || ""),
+          label: String(s.title || ""),
+          preview_url: String(s.preview_url || ""),
+        })),
+      ];
+      setCustomOptions(templateMenu, templateInput, templateLabel, options, "Без шаблона", (item) => updateTemplatePreview(item));
+      updateTemplatePreview(options[0]);
+    } catch {
+      setCustomOptions(templateMenu, templateInput, templateLabel, [{ value: "", label: "Ошибка загрузки", preview_url: "" }], "Ошибка загрузки");
+      updateTemplatePreview(null);
+    }
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    generateBtn.disabled = true;
+    setStatus("Генерирую контент", false, true);
+    try {
+      const fd = new FormData(form);
+      if (countModeInput.value === "slides") {
+        fd.set("slide_count", durationInput.value);
+      } else {
+        fd.delete("slide_count");
+      }
+      const res = await fetch("/api/structure", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Ошибка генерации");
+      structureState = data.structure;
+      if (Array.isArray(structureState.slides)) {
+        structureState.slides = structureState.slides.map((slide) => ({
+          ...slide,
+          speaker_notes: slide.speaker_notes || "",
+          data_blocks: slide.data_blocks || [],
+          image_enabled: slide.image_enabled !== false,
+          image_count: Math.max(1, Number(slide.image_count || 1)),
+        }));
+      }
+      renderSlides(structureState.slides || []);
+      downloadBtn.disabled = false;
+      notesBtn.disabled = false;
+      notesBtn.textContent = "Сгенерировать спич";
+      setStatus(`Готово: ${data.slide_count || (structureState.slides || []).length} слайдов.`);
+    } catch (err) {
+      setStatus(err.message, true);
+    } finally {
+      generateBtn.disabled = false;
+      lucide.createIcons();
+    }
+  });
+
+  countModeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      countModeInput.value = btn.dataset.mode || "minutes";
+      updateCountModeUI();
+    });
+  });
+
+  presentationTypeToggle.addEventListener("click", () => {
+    presentationTypeMenu.classList.toggle("hidden");
+  });
+  styleToggle.addEventListener("click", () => {
+    styleMenu.classList.toggle("hidden");
+  });
+  templateToggle.addEventListener("click", () => {
+    templateMenu.classList.toggle("hidden");
+  });
+
+  presentationTypeOptions.forEach((option) => {
+    option.addEventListener("click", () => {
+      presentationTypeInput.value = option.dataset.value || "public";
+      presentationTypeLabel.textContent = option.textContent || "Для выступления";
+      closePresentationTypeMenu();
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!presentationTypeSelect.contains(event.target)) {
+      closePresentationTypeMenu();
+    }
+    if (!styleSelectWrap.contains(event.target)) {
+      styleMenu.classList.add("hidden");
+    }
+    if (!templateSelectWrap.contains(event.target)) {
+      templateMenu.classList.add("hidden");
+    }
+  });
+
+  function changeDuration(delta) {
+    const min = Number(durationInput.min || "1");
+    const max = Number(durationInput.max || "120");
+    const current = Number(durationInput.value || min);
+    const next = Math.max(min, Math.min(max, current + delta));
+    durationInput.value = String(next);
+  }
+
+  durationPlusBtn.addEventListener("click", () => changeDuration(1));
+  durationMinusBtn.addEventListener("click", () => changeDuration(-1));
+
+  downloadBtn.addEventListener("click", async () => {
+    if (!structureState) return;
+    downloadBtn.disabled = true;
+    setStatus("Собираю PPTX", false, true);
+    try {
+      const payload = {
+        structure: structureState,
+        style: "professional",
+        slidesgo_style: styleInput.value,
+        pptx_template: templateInput.value,
+        background: "white",
+        font_family: "Inter",
+        layout: "centered",
+        image_position: "center"
+      };
+      const res = await fetch("/api/pptx", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Не удалось собрать PPTX");
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "presentation.pptx";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setStatus("Презентация загружена.");
+    } catch (err) {
+      setStatus(err.message, true);
+    } finally {
+      downloadBtn.disabled = false;
+    }
+  });
+
+  notesBtn.addEventListener("click", async () => {
+    if (!structureState) return;
+    notesBtn.disabled = true;
+    try {
+      const hasNotes = Array.isArray(structureState.slides)
+        && structureState.slides.some((slide) => (slide.speaker_notes || "").trim());
+      if (!hasNotes) {
+        setStatus("Генерирую спич по слайдам", false, true);
+        const res = await fetch("/api/notes/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            structure: structureState,
+            prompt: promptInput.value,
+            presentation_type: presentationTypeInput.value,
+            duration_minutes: Number(durationInput.value) || 5
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Не удалось сгенерировать спич");
+        const notes = Array.isArray(data.notes) ? data.notes : [];
+        structureState.slides.forEach((slide, index) => {
+          slide.speaker_notes = notes[index] || "";
+        });
+        renderSlides(structureState.slides);
+        notesBtn.textContent = "Скачать спич";
+        setStatus("Спич сгенерирован. Можно отредактировать и скачать.");
+        return;
+      }
+      setStatus("Собираю текст спича", false, true);
+      const res = await fetch("/api/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          structure: structureState,
+          prompt: promptInput.value,
+          presentation_type: presentationTypeInput.value,
+          duration_minutes: Number(durationInput.value) || 5
+        })
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Не удалось собрать спич");
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "speaker_notes.txt";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setStatus("Спич загружен.");
+    } catch (err) {
+      setStatus(err.message, true);
+    } finally {
+      notesBtn.disabled = false;
+    }
+  });
+
+  loadStyles();
+  loadTemplates();
+  updateCountModeUI();
+</script>
+{% endblock %}
