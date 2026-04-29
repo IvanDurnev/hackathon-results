@@ -1,255 +1,328 @@
-# Budget Analytics
+<div align="center">
 
-Система для загрузки бюджетных данных, поиска показателей на естественном языке и построения сводной аналитики по объектам, организациям, кодам и периодам.
+  <h1>Интеллектуальный отбор данных</h1>
 
-Проект сделан в виде двух независимых слоёв:
+  <p>
+    <b>Конструктор аналитических выборок для бюджетного планирования Амурской области</b>
+  </p>
 
-- `FastAPI` отвечает только за API, импорт данных, аналитику, экспорт и speech-to-text
-- `Django` отвечает за пользовательский сайт
-## Демо
+  <img src="./image.jpg">
+  <p>
+    <sub>Команда «Некодеры»: Александр Самарин и Степан Исаков</sub>
+  </p>
 
-Приложение доступно по ссылке:
-https://budget-analytics28.ru/
+  <p style="margin-top: 10px;">
+    <a href="https://necoders.tech/">
+      <img src="https://img.shields.io/badge/Демо-necoders.tech-2f6fed?style=for-the-badge" alt="Демо">
+    </a>
+    <img src="https://img.shields.io/badge/Команда-Некодеры-8ade3f?style=for-the-badge" alt="Команда Некодеры">
+    <img src="https://img.shields.io/badge/Frontend-React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React">
+    <img src="https://img.shields.io/badge/Backend-Python_3.12-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+    <img src="https://img.shields.io/badge/Deploy-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+  </p>
 
-## Что умеет проект
+  <p>
+    <img src="https://img.shields.io/badge/Product-UI%2FUX-7c3aed?style=flat-square" alt="Product UI/UX">
+    <img src="https://img.shields.io/badge/Architecture-Fullstack-0f766e?style=flat-square" alt="Architecture Fullstack">
+    <img src="https://img.shields.io/badge/Data-ETL%20%2B%20Analytics-2563eb?style=flat-square" alt="ETL Analytics">
+    <img src="https://img.shields.io/badge/Delivery-Docker%20%2B%20Amvera-ea580c?style=flat-square" alt="Docker Amvera">
+  </p>
 
-- автоматически подхватывать стартовый набор данных из `project_file`
-- импортировать архивы и папки с CSV
-- строить аналитику по текстовому запросу и ручным фильтрам
-- показывать итоги, таблицы и графики
-- экспортировать сводный результат в `Excel`
-- принимать голосовой запрос через `Whisper`
-- работать в режиме витрины `deploy: true`, когда пользователь не может загружать свои файлы
+  <p>
+    <a href="https://necoders.tech/">Открыть демо</a>
+    ·
+    <a href="https://disk.yandex.ru/i/l3V9591GVSwTWA">Скринкаст</a>
+    ·
+    <a href="https://example.com/presentation">Презентация</a>
+  </p>
+
+</div>
+
+---
+
+## Ссылки
+
+- **Развернутое решение:** [https://necoders.tech/](https://necoders.tech/)
+- **Скринкаст:** [https://disk.yandex.ru/i/l3V9591GVSwTWA](https://disk.yandex.ru/i/l3V9591GVSwTWA)
+- **Презентация:** [ссылка будет добавлена](https://example.com/presentation)
+
+---
+
+## О продукте
+
+Проект решает кейс **«Интеллектуальный отбор данных. Конструктор аналитических выборок для бюджетного планирования»**. Платформа помогает специалистам собирать единую аналитическую картину по бюджетным объектам без ручного сведения CSV-выгрузок из разных ведомственных систем.
+
+Система работает с обезличенными данными из набора кейса:
+
+- **РЧБ** - бюджетные данные по месяцам нарастающим итогом: лимиты, обязательства, кассовые выплаты, остатки;
+- **Соглашения** - межбюджетные трансферты, субсидии учреждениям и иным получателям;
+- **ГЗ** - контракты, договоры, бюджетные строки и факты оплат;
+- **БУАУ** - выплаты бюджетным и автономным учреждениям.
+
+Вместо работы с тяжелыми таблицами пользователь выбирает объект, показатели и период, а приложение формирует итоговую таблицу, динамику, сравнение дат, расшифровку строк и экспорт.
+
+---
+
+## Ключевые возможности
+
+- **Импорт источников администратором.** CSV-файлы проходят нормализацию кодировок, разделителей, дат, сумм и бюджетных кодов, после чего сохраняются в аналитическую базу.
+- **Контрольные шаблоны.** Реализованы сценарии `КИК`, `СКК`, `Раздел 3. 2/3` и `ОКВ` по правилам контрольного Excel-примера.
+- **Поиск объекта.** Можно искать по коду, названию, получателю, номеру договора или фрагменту бюджетной классификации.
+- **Показатели по разным источникам.** Поддерживаются лимиты, бюджетные обязательства, касса, соглашения, договоры, оплаты и выплаты БУАУ.
+- **Периоды и сравнение дат.** Для накопительных выгрузок РЧБ и БУАУ берется актуальный снимок на дату окончания периода, а для договоров и платежей используется событийная дата.
+- **Качество данных.** Отдельная вкладка показывает предупреждения: платеж без договора, договор без бюджетной строки, распределение суммы между строками и ошибки парсинга.
+- **Интерактивные результаты.** Таблица, итоговые суммы, помесячная динамика, расшифровка документов и история запусков в текущей сессии.
+- **Экспорт.** Результат можно скачать в `CSV` или `XLSX`; в Excel добавляется лист с предупреждениями активной выборки.
+- **Помощник и голосовой ввод.** В интерфейсе есть опциональный помощник для подбора параметров и объяснения выборок. Он вынесен в отдельный адаптер и может обращаться к совместимому внешнему зарубежному ресурсу; голосовой ввод реализован таким же изолированным способом через сервис распознавания речи. В закрытом контуре эти компоненты можно отключить или заменить внутренними аналогами без изменения ядра аналитики.
+
+---
+
 ## Стек
 
-- Backend API: FastAPI
-- Веб-приложение: Django
-- База данных: PostgreSQLPRO
-- ORM и миграции: SQLAlchemy + Alembic
-- Контейнеризация: Docker, Docker Compose
-- Reverse proxy и HTTPS: Caddy
-- Работа с речью: Whisper (API и локальный faster-whisper)
-- LLM: YandexGPT (дообучение через SFT) или API 302.ai Deepseek-v4 fast
-- Frontend: Django templates (SSR)
-## Архитектура
+### Frontend
 
-- `core/api` — API на `FastAPI`
-- `core/web` — сайт на `Django`
-- `training/llm_sft` — датасет для дообучения модели
-- `notebooks` — ноутбуки для экспериментов и обучения
-- `scripts` — утилиты генерации датасета и запуска обучения
-- `project_file` — стартовый набор CSV
-- `storage` — импортированные данные и служебные файлы
+- **React 19** + **TypeScript** - интерфейс конструктора, авторизации, профиля и админ-раздела.
+- **Vite 6** - сборка и dev-сервер.
+- **Tailwind CSS 4** + локальный UI-kit - адаптивная корпоративная верстка.
+- **TanStack Query** - загрузка, кэширование и синхронизация API-данных.
+- **React Router 7** - маршрутизация и защищенные страницы.
+- **React Hook Form** + **Zod** - формы и валидация.
+- **Radix UI**, **lucide-react**, **sonner** - доступные UI-примитивы, иконки и уведомления.
 
-## Быстрый старт
+### Backend
 
-### 1. Установка зависимостей
+- **Python 3.12**.
+- **Flask 3** - REST API и раздача собранного frontend в production.
+- **SQLAlchemy** + **Flask-Migrate/Alembic** - модели, миграции и работа с БД.
+- **Pydantic 2** - API-схемы и валидация входных данных.
+- **Flask-Login** - сессионная авторизация и роли `user` / `admin`.
+- **openpyxl** - формирование Excel-экспорта.
+- **Gunicorn** - production-запуск.
+
+### Инфраструктура
+
+- **Docker multi-stage build** - сборка frontend и запуск backend одним контейнером.
+- **Amvera** - подготовленный `amvera.yaml`, постоянное хранилище `/data` и entrypoint с миграциями.
+- **SQLite** - удобен для локального контура.
+- **PostgreSQL** - рекомендован для production/Amvera.
+- **Отдельный интеллектуальный адаптер** - изолированный Python-сервис, который подключается к backend только по внутреннему HTTP API.
+
+---
+
+## Архитектура приложения
+
+```mermaid
+flowchart LR
+    A["Администратор"] --> B["Импорт CSV / папки task"]
+    B --> C["Backend Flask API"]
+    C --> D["Парсинг и нормализация"]
+    D --> E["Аналитическая БД"]
+    E --> F["Query engine"]
+    F --> G["REST API /api/v1/analytics"]
+    G --> H["React workspace"]
+    H --> I["Таблицы, графики, экспорт"]
+    H --> J["Опциональный помощник"]
+    J --> K["Изолированный внешний/заменяемый сервис"]
+```
+
+Приложение построено как **модульный монолит**:
+
+- `backend/app/api/v1` собирает API под префиксом `/api/v1`;
+- `auth`, `users`, `admin`, `files` отвечают за базовую платформенную часть;
+- `budget_constructor` содержит доменную аналитику: импорт, поиск, шаблоны, выборки, сравнение, динамику, расшифровку и экспорт;
+- `assistant` проксирует запросы к отдельному помощнику и не смешивает внешние сервисы с ядром аналитики;
+- `frontend/src` разделен на `app`, `pages`, `widgets`, `features`, `entities`, `shared`.
+
+Основной поток данных:
+
+1. Администратор импортирует набор CSV из источников кейса.
+2. Backend определяет формат файлов, нормализует данные и сохраняет аналитические факты.
+3. Пользователь выбирает шаблон или ищет объект вручную.
+4. Query engine агрегирует показатели по объектам, источникам и периоду.
+5. Frontend показывает таблицу, график, сравнение дат, предупреждения качества и экспорт.
+
+---
+
+## Структура репозитория
+
+```text
+newhaka_full/
+├── backend/                  # Flask API, доменная логика, миграции, тесты
+│   ├── app/
+│   │   ├── api/v1/           # Регистрация API endpoints
+│   │   ├── core/             # Ошибки, ответы, безопасность, пагинация
+│   │   └── modules/
+│   │       ├── auth/         # Регистрация, вход, сессии
+│   │       ├── users/        # Профиль пользователя
+│   │       ├── admin/        # Управление аккаунтами
+│   │       ├── files/        # Файловое хранилище
+│   │       ├── assistant/    # Прокси к помощнику
+│   │       └── budget_constructor/
+│   │           ├── engine.py     # Агрегация, шаблоны, поиск, динамика
+│   │           ├── parsing.py    # Чтение CSV и нормализация
+│   │           ├── exporters.py  # CSV/XLSX экспорт
+│   │           └── storage.py    # Сохранение импортированного набора
+│   ├── migrations/           # Alembic-миграции
+│   └── tests/                # Unit, API, integration, smoke
+├── frontend/                 # React/Vite приложение
+│   └── src/
+│       ├── app/              # Провайдеры, роутер, конфиг API
+│       ├── pages/            # Login, Register, Admin, Workspace, Profile
+│       ├── widgets/          # Shell, top nav, результаты аналитики
+│       ├── features/         # Формы и пользовательские сценарии
+│       ├── entities/         # API-клиенты, схемы, query hooks
+│       └── shared/           # UI-kit, api client, утилиты
+├── task/                     # Тестовые обезличенные данные кейса
+├── deploy/                   # Production entrypoint
+├── Dockerfile                # Единый production-контейнер
+├── amvera.yaml               # Конфигурация Amvera
+├── prepare.cmd / prepare.sh  # Первичная подготовка окружения
+└── dev.cmd / dev.sh          # Запуск локального dev-контура
+```
+
+---
+
+## Локальное развертывание
+
+### Требования
+
+- Python **3.12+**
+- Node.js **22 LTS** и npm
+- Git Bash, WSL или Linux shell для запуска `.sh`-скриптов на Linux/macOS
+- Для production-контура: Docker и PostgreSQL
+
+### Быстрый старт на Windows
+
+```powershell
+prepare.cmd
+dev.cmd
+```
+
+Скрипт подготовки создает `.venv`, устанавливает backend/frontend-зависимости, создает `.env` из примеров, применяет миграции и подготавливает роли. После запуска:
+
+- frontend: `http://localhost:5173`
+- backend API: `http://127.0.0.1:5000/api/v1`
+
+Если виртуальное окружение было создано на другой ОС:
+
+```powershell
+prepare.cmd --force-venv
+```
+
+### Быстрый старт на Linux/macOS
 
 ```bash
-python -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
+chmod +x ./prepare.sh ./dev.sh
+./prepare.sh
+./dev.sh
 ```
 
-### 2. Настройка окружения
+### Создание администратора
 
-Создай `.env` на основе `.env.example`.
+Администратор нужен для импорта аналитических данных и управления пользователями.
 
-Минимально обычно нужны:
+Windows:
 
-- `POSTGRES_DB`
-- `POSTGRES_USER`
-- `POSTGRES_PASSWORD`
-- `LLM_API_KEY`
-- `DJANGO_SECRET_KEY`
+```powershell
+$env:PYTHONPATH = "backend"
+.\.venv\Scripts\python.exe -m flask --app wsgi create-admin
+```
 
-### 3. Запуск через Docker
-
-Для локальной разработки:
+Linux/macOS:
 
 ```bash
-docker compose up --build
+PYTHONPATH=backend ./.venv/bin/python -m flask --app wsgi create-admin
 ```
 
-После запуска будут доступны:
+После входа администратор открывает вкладку **«Источники данных»**, импортирует папку `task` или набор CSV-файлов и затем формирует выборки во вкладке **«Конструктор»**.
 
-- API: `http://localhost:8000`
-- сайт: `http://localhost:8001`
+### Проверки
 
-## Локальный запуск без Docker
+```powershell
+.\.venv\Scripts\python.exe -m pytest backend
 
-### API
+cd frontend
+npm test
+npm run build
+```
+
+---
+
+## Production / Docker
 
 ```bash
-.venv/bin/python -m alembic upgrade head
-.venv/bin/python -m uvicorn core.api.app.main:app --reload --port 8000
+docker build -t budget-constructor .
+docker run -d --name budget-constructor \
+  -p 8080:8080 \
+  -e APP_ENV=production \
+  -e SECRET_KEY=<long-random-secret> \
+  -e DATABASE_URL=postgresql+psycopg://user:password@host:5432/dbname \
+  -v "$(pwd)/data:/data" \
+  --restart unless-stopped \
+  budget-constructor
 ```
 
-### Сайт
+Production-контейнер:
 
-```bash
-.venv/bin/python manage.py runserver 8001
+- собирает `frontend/dist`;
+- запускает Flask через Gunicorn на порту `8080`;
+- применяет миграции при старте;
+- хранит загружаемые файлы и изменяемые данные в `/data`;
+- требует `DATABASE_URL`, если SQLite отключен.
+
+Для Amvera уже подготовлены `Dockerfile`, `amvera.yaml` и `deploy/amvera-entrypoint.sh`. Обязательные переменные:
+
+```text
+SECRET_KEY=<long-random-secret>
+DATABASE_URL=postgresql+psycopg://user:password@host:5432/dbname
 ```
 
-По умолчанию сайт обращается к API по `http://localhost:8000`.
+Опционально для первого администратора:
 
-## Импорт данных
-
-Есть три основных сценария:
-
-- автоимпорт стартового набора из `project_file`
-- загрузка архива
-- загрузка папки/набора файлов
-
-После запуска импорта создаётся `batch`, который обрабатывается в фоне. Затем фронтенд опрашивает его статус и показывает результат.
-
-Полезные эндпоинты:
-
-- `POST /api/v1/imports/default`
-- `POST /api/v1/imports/archive`
-- `POST /api/v1/imports/files`
-- `GET /api/v1/imports/{batch_id}`
-
-## Аналитика
-
-Основной сценарий:
-
-1. данные импортированы
-2. пользователь вводит текстовый запрос или заполняет фильтры
-3. API интерпретирует запрос
-4. строится сводка, таблица, графики и Excel
-
-Примеры запросов:
-
-- `Покажи лимиты по Благовещенску по месяцам`
-- `Покажи кассовые выплаты по 0502`
-- `Покажи сумму контрактов по источнику gz`
-
-Для этих трёх демо-запросов в интерфейсе используются заранее подготовленные ответы, чтобы результат открывался быстрее и стабильнее.
-
-## Голосовой ввод
-
-Поддерживаются два режима:
-
-- `Whisper API` через `302.ai`
-- локальный `faster-whisper`
-
-Настройка идёт через `config.yaml`:
-
-- `whisper.provider: api | local`
-- `whisper.api_model`
-- `whisper.local_model`
-- `whisper.language`
-- `whisper.postprocess_with_llm`
-
-Сейчас дополнительная постобработка распознанного текста через LLM по умолчанию выключена, чтобы не замедлять систему.
-
-## Режим деплоя
-
-В `config.yaml` есть флаг:
-
-```yaml
-deploy: true
+```text
+ADMIN_EMAIL=admin@example.com
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=<strong-password>
 ```
 
-Если он включён:
+---
 
-- пользователь не может загружать свои архивы и папки
-- сайт работает как витрина на уже подключённом наборе данных
-- drag-and-drop в интерфейсе отключён
-- API-ручки прямой загрузки блокируются
+## API
 
-## Продакшен-запуск
+Все endpoints живут под `/api/v1`.
 
-Для боевого запуска используется:
+Ключевые группы:
 
-- [docker-compose.prod.yml](./docker-compose.prod.yml)
-- [Caddyfile](./Caddyfile)
+- `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`
+- `GET/PATCH /users/me`
+- `GET /analytics/sources`
+- `POST /analytics/import`
+- `DELETE /analytics/import`
+- `GET /analytics/import-issues`
+- `GET /analytics/templates`
+- `GET /analytics/metrics`
+- `GET /analytics/search?q=...`
+- `POST /analytics/query`
+- `POST /analytics/timeline`
+- `POST /analytics/compare`
+- `POST /analytics/drilldown`
+- `POST /analytics/export`
+- `GET /assistant/health`, `POST /assistant/chat`, `POST /assistant/transcribe`
+- `GET/POST/PATCH/DELETE /admin/users` для администраторов
 
-Запуск:
+Подробные контракты и правила расширения описаны в `docs/`.
 
-```bash
-docker compose -f docker-compose.prod.yml up -d --build
-```
+---
 
-Что поднимается:
+## Команда
 
-- `PostgreSQL`
-- `FastAPI`
-- `Django`
-- `Caddy` как reverse proxy и TLS-терминатор
+| Участник | Зона ответственности |
+| --- | --- |
+| **Самарин Александр** | Product, UI/UX, пользовательские сценарии, презентация решения |
+| **Исаков Степан** | Архитектура, backend, frontend, ETL-логика, контейнеризация |
 
-`Caddy` автоматически выпускает HTTPS-сертификаты, если домен уже смотрит на сервер.
+---
 
-## База данных
-
-Схема БД управляется через `Alembic`.
-
-Применить миграции вручную:
-
-```bash
-.venv/bin/python -m alembic upgrade head
-```
-
-## Excel-экспорт
-
-Экспорт формирует не сырую выгрузку CSV, а аналитический отчёт.
-
-В файле есть листы:
-
-- `Параметры`
-- `Сводка по объектам`
-- `Итоги по объектам`
-- `Динамика`
-- `Детализация`
-
-Это соответствует задаче: пользователь выбирает объект, показатели и период, а на выходе получает сводный файл с лимитами, обязательствами, кассовыми выплатами, соглашениями, контрактами и динамикой.
-
-## Дообучение модели
-
-В проекте есть артефакты для SFT-задачи:
-
-`text query -> JSON filters`
-
-Основные файлы:
-
-- [training/llm_sft/budget_query_sft_train.jsonl](./training/llm_sft/budget_query_sft_train.jsonl)
-- [training/llm_sft/budget_query_sft_val.jsonl](./training/llm_sft/budget_query_sft_val.jsonl)
-- [training/llm_sft/dataset_loader.py](./training/llm_sft/dataset_loader.py)
-- [scripts/generate_budget_sft_assets.py](./scripts/generate_budget_sft_assets.py)
-- [scripts/train_yandexgpt5_lite_t4.py](./scripts/train_yandexgpt5_lite_t4.py)
-
-Скрипт `train_yandexgpt5_lite_t4.py` подготовлен под запуск в `Google Colab` с `T4`:
-
-- умеет монтировать `Google Drive`
-- умеет брать `HF_TOKEN` из `Colab Secrets`
-- может подхватывать датасет из проекта или попросить загрузить `jsonl`
-
-## Тесты
-
-Запуск основных тестов:
-
-```bash
-.venv/bin/python -m unittest tests.test_site
-.venv/bin/python -m unittest tests.test_analytics
-.venv/bin/python -m unittest tests.test_import_jobs
-```
-
-Проверка Django:
-
-```bash
-.venv/bin/python manage.py check
-```
-
-## Основные файлы конфигурации
-
-- [config.yaml](./config.yaml) — общие настройки проекта
-- [.env.example](./.env.example) — шаблон переменных окружения
-- [requirements.txt](./requirements.txt) — Python-зависимости
-- [core/api/README.md](./core/api/README.md) — техническое описание API-слоя
-
-## Примечания
-
-- Для продакшена не коммить реальные ключи и пароли.
-- Для HTTPS домен должен уже смотреть на IP сервера.
-- Для локального импорта в Docker путь с данными должен быть смонтирован в контейнер.
+<div align="center">
+  <i>Платформа превращает разрозненные бюджетные выгрузки в понятные аналитические выборки, которые можно получить без программирования, ручных сводных таблиц и долгой сверки кодов.</i>
+</div>
