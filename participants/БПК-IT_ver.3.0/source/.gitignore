@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+generated/
+uploads/
+*.mp4
+.env
+*.pptx
+*.pdf
+.DS_Store
