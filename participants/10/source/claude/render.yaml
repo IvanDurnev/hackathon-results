@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: budget-constructor
-    runtime: docker
-    plan: free
-    autoDeploy: true
