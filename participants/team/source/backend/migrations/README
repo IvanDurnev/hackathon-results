@@ -1,0 +1,5 @@
+Alembic migrations for the Flask backend.
+
+Use:
+  python -m flask --app wsgi db migrate -m "describe change"
+  python -m flask --app wsgi db upgrade
